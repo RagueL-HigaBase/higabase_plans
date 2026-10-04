@@ -1382,3 +1382,325 @@ If the authoritative Vacancy changes materially, the ESCO normalization may be r
 
 Historical decisions may retain the ESCO snapshot/version that was used at the time of that decision.
 
+---
+
+## 43. Data contract boundary
+
+Every external or internal integration must cross a defined Higa data contract boundary.
+
+External systems must not write arbitrary payload structures directly into Higa domain persistence.
+
+Conceptually:
+
+```text
+External Source
+      ↓
+Adapter
+      ↓
+Higa Data Contract
+      ↓
+Validation
+      ↓
+Normalization
+      ↓
+Consistency Evaluation
+      ↓
+Canonical Domain Model
+```
+
+Adapters are responsible for translating source-specific formats into Higa contracts.
+
+Domain logic must depend on canonical Higa contracts rather than on provider-specific payload shapes.
+
+This allows integrations to change independently without contaminating the core domain model.
+
+---
+
+## 44. Canonical data domains
+
+Consistency rules should be defined by semantic data domain, not repeated independently for every provider.
+
+Examples include:
+- personal identity;
+- contact data;
+- employment data;
+- Organization / Location / Department assignment;
+- financial and commercial data;
+- Vacancy data;
+- Request data;
+- Candidate data;
+- ESCO occupation and skill data;
+- planning/scheduling data;
+- documents and certifications.
+
+Different APIs may provide the same semantic information.
+
+After adaptation, that information must be evaluated against the same canonical Higa rules.
+
+---
+
+## 45. Source authority
+
+For every data category or field where multiple systems can provide values, Higa must be able to define source authority.
+
+Conceptually:
+
+```text
+Field / Domain
+→ authoritative source
+→ secondary sources
+→ conflict policy
+```
+
+Examples:
+
+```text
+Identity data
+→ Higa identity domain may be authoritative
+
+Planning schedule
+→ configured planning integration may be authoritative
+
+Payroll identifier
+→ configured payroll system may be authoritative
+
+Client Request
+→ originating client Organization may be authoritative
+```
+
+A difference does not automatically mean that incoming data should overwrite the current value.
+
+The system must understand whether the incoming source is authoritative for that information.
+
+---
+
+## 46. Consistency evaluation
+
+Incoming data should be classified before it affects canonical state.
+
+Conceptual outcomes:
+
+```text
+SAME
+→ no action
+
+NORMALIZABLE
+→ deterministic normalization
+→ no human attention required
+
+VALID_UPDATE
+→ source is authoritative and update is allowed
+
+CONFLICT
+→ values differ and policy cannot safely resolve
+
+MISSING_REQUIRED
+→ required information is absent
+
+INVALID
+→ violates canonical contract
+
+UNCERTAIN
+→ semantic interpretation is insufficiently confident
+```
+
+Only outcomes requiring business judgment or unresolved ambiguity should create a human checkpoint.
+
+---
+
+## 47. Automatic normalization
+
+Deterministic differences should be resolved automatically where safe.
+
+Examples may include:
+- phone formatting;
+- whitespace;
+- casing where semantics are unchanged;
+- canonical country codes;
+- normalized date formats;
+- stable identifier formatting;
+- known external enum mappings.
+
+Normalization must not silently change semantic meaning.
+
+A normalization rule belongs to the canonical data contract, not to an individual user's manual workflow.
+
+---
+
+## 48. Conflict detection and anomaly feed
+
+The system should actively detect data inconsistencies and surface only unresolved anomalies.
+
+Users should not manually inspect every successful data exchange.
+
+Conceptually:
+
+```text
+Large data volume
+      ↓
+automatic validation / normalization / comparison
+      ↓
+most records pass silently
+      ↓
+small anomaly set
+      ↓
+human attention
+```
+
+The user-facing experience should focus on:
+- conflicting values;
+- missing required information;
+- invalid values;
+- uncertain mappings;
+- incompatible domain relationships;
+- failed integration assumptions.
+
+This anomaly feed is an operational surface, not a replacement for canonical domain state.
+
+---
+
+## 49. AI in data consistency
+
+AI may assist with:
+- parsing;
+- semantic comparison;
+- anomaly detection;
+- explanation;
+- summarization;
+- identifying likely contradictions;
+- proposing ESCO mappings;
+- preparing human-readable difference summaries.
+
+AI must not:
+- approve a lifecycle transition;
+- grant access;
+- change permissions;
+- publish externally;
+- accept an Organization relationship;
+- override an authoritative source;
+- silently resolve a business conflict when policy requires human approval.
+
+AI detects and explains uncertainty.
+
+Workflow enforces process.
+
+Humans own business decisions when a checkpoint requires them.
+
+---
+
+## 50. Difference review contract
+
+When human review is required, the system should present the minimum information necessary to make the decision.
+
+A review surface should be able to show:
+
+```text
+CURRENT VALUE
+INCOMING VALUE
+SOURCE
+AUTHORITY
+DIFFERENCE
+IMPACT
+AI EXPLANATION (optional)
+```
+
+Possible human outcomes depend on domain policy, for example:
+
+```text
+ACCEPT
+KEEP_CURRENT
+IGNORE
+FIX
+REQUEST_INFORMATION
+DECLINE
+STOP_FLOW
+CONTINUE
+```
+
+The UI must not force users to inspect unrelated fields when only a small subset changed.
+
+---
+
+## 51. Dirty-data containment
+
+Provider-specific dirty data must be contained at the system boundary.
+
+The canonical Higa domain must not accumulate:
+- provider-specific field names;
+- duplicate semantic fields;
+- uncontrolled free-form enums;
+- unvalidated identifiers;
+- arbitrary provider status values;
+- contradictory copies of authoritative facts.
+
+External complexity belongs in adapters and mapping configuration.
+
+Internal domain models remain canonical and predictable.
+
+---
+
+## 52. Observability without manual monitoring
+
+The system, not the user, is responsible for continuously observing configured data flows.
+
+Operational users should not need to watch integrations manually.
+
+The platform should detect and classify:
+- failed imports;
+- contract violations;
+- data drift;
+- stale mappings;
+- source conflicts;
+- unexpected deletions;
+- missing required relationships;
+- semantic inconsistencies.
+
+Only actionable exceptions should require user attention.
+
+---
+
+## 53. Workflow independence from personnel
+
+Configured flows, consistency rules and integration contracts belong to the Organization/system, not to individual users.
+
+A user may operate a checkpoint or resolve an anomaly when authorized.
+
+If that user:
+- leaves;
+- is absent;
+- is blocked;
+- changes Department;
+- is replaced;
+
+the configured flow must continue unchanged.
+
+Only responsibility/assignment changes.
+
+This is a mandatory consistency invariant.
+
+---
+
+## 54. Operational architecture summary
+
+The core operational pipeline is:
+
+```text
+SOURCE
+→ ADAPTER
+→ DATA CONTRACT
+→ VALIDATE
+→ NORMALIZE
+→ COMPARE
+→ AUTHORITY CHECK
+→ CONSISTENCY RESULT
+→ ROUTING / WORKFLOW
+→ CHECKPOINT ONLY IF REQUIRED
+→ CONTINUE
+```
+
+AI may assist inside parsing, normalization, comparison and explanation.
+
+AI does not own the pipeline.
+
+The pipeline remains deterministic, auditable and Organization-controlled.
+
