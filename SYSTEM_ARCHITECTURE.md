@@ -746,3 +746,332 @@ through which relationship or App context?
 
 Until that architecture exists, do not prematurely encode a large permanent permission matrix into the database.
 
+---
+
+## 22. Create Once, Use Forever
+
+A core HigaBase design principle is:
+
+```text
+CREATE ONCE
+USE FOREVER
+```
+
+Business data should be created once at its authoritative source and reused throughout the system.
+
+The architecture must avoid repeated manual recreation of the same semantic information at every downstream step.
+
+Examples:
+- a Vacancy description is created once and reused by Requests;
+- Organization identity is created once and reused throughout its Locations and flows;
+- Candidate profile data is created once and exposed through permitted views;
+- relationship routing is configured once and reused by subsequent domain flows.
+
+The system should move references, scope and visibility rules whenever possible rather than forcing users to reproduce the same business data.
+
+---
+
+## 23. Source-of-truth propagation
+
+Every shared domain object has an authoritative source.
+
+The initiating Organization remains the source of truth for the fields it owns.
+
+Conceptually:
+
+```text
+Initiator
+   ↓
+Authoritative Domain Object
+   ↓
+Relationship / Scope / Visibility
+   ↓
+Downstream presentation
+```
+
+If the initiator changes an authoritative field, all downstream live representations that are allowed to expose that field must resolve the updated value automatically.
+
+Example:
+
+```text
+Factory creates Vacancy
+salary = 20.00
+
+Factory changes salary = 21.50
+
+Every active downstream view
+that is allowed to see salary
+must resolve 21.50.
+```
+
+Downstream Organizations must not fork or silently overwrite the initiator-owned source field.
+
+This provides one semantic source of truth across the flow.
+
+---
+
+## 24. Visibility, not duplication
+
+Cross-Organization flow is primarily controlled by visibility rules.
+
+For every relevant field or block, the routing context determines whether it is:
+
+```text
+VISIBLE
+or
+INVISIBLE
+```
+
+A downstream participant may see only the subset permitted by:
+- Organization relationship;
+- Location scope;
+- Department scope;
+- domain-flow configuration;
+- future permission policy;
+- App capability contract.
+
+Invisible data remains at the authoritative source and is not exposed downstream.
+
+The system should not create unnecessary copied records merely to hide fields.
+
+Where practical, downstream views should resolve the authoritative source through a controlled projection.
+
+---
+
+## 25. Live data versus historical snapshots
+
+Automatic propagation applies to live business state.
+
+Historical evidence must remain historically correct.
+
+Therefore distinguish:
+
+```text
+LIVE VIEW
+→ resolves current authoritative values
+
+HISTORICAL SNAPSHOT / EVENT
+→ preserves values that were effective at that historical moment
+```
+
+Examples:
+- current Vacancy view may immediately show a newly changed salary;
+- a signed agreement, submitted offer, invoice, audit entry or historical decision may retain a snapshot of the previous value.
+
+Create Once, Use Forever does not mean rewriting history.
+
+The domain must explicitly decide where live propagation is required and where immutable snapshots are required.
+
+---
+
+## 26. Flow control points
+
+A relationship flow may contain control points.
+
+A control point can decide whether data:
+- continues;
+- stops;
+- becomes visible;
+- becomes hidden;
+- changes destination;
+- requires approval;
+- requires additional data;
+- activates another domain process.
+
+Conceptually:
+
+```text
+Source
+  ↓
+Relationship
+  ↓
+Control Point
+  ├─ continue
+  ├─ stop
+  ├─ expose selected data
+  └─ route to another destination
+```
+
+Control points belong to flow configuration and domain workflow.
+
+They are not user ownership.
+
+Users may operate a control point when authorized, but the configured flow exists independently of the individual user account.
+
+---
+
+## 27. Vacancy as reusable position definition
+
+A Vacancy should represent a reusable description of a position or role.
+
+It may contain stable position-level information such as:
+- title;
+- description;
+- requirements;
+- working conditions;
+- compensation information;
+- skills;
+- certifications;
+- Location;
+- Department;
+- other domain-specific attributes.
+
+The Vacancy should be created once and reused.
+
+A Request should not duplicate the complete Vacancy definition.
+
+Conceptually:
+
+```text
+Vacancy
+= what the position is
+
+Request
+= how much / when / under what immediate demand
+```
+
+---
+
+## 28. Request as lightweight demand activation
+
+A Request is a demand event connected to an existing Vacancy and organizational scope.
+
+Typical Request-specific data may include:
+- requested quantity;
+- requested start date;
+- urgency;
+- shift or time-specific demand;
+- temporary request-specific conditions;
+- lifecycle/status.
+
+Conceptually:
+
+```text
+Organization
+  ↓
+Location
+  ↓
+Department
+  ↓
+Vacancy
+  ↓
+Request
+```
+
+A user should be able to activate a Request from an existing Vacancy with minimal additional input.
+
+Example:
+
+```text
+Vacancy:
+Warehouse Operator
+
+Request:
+quantity = 15
+startDate = 2026-11-01
+```
+
+The Request resolves the position description from the linked Vacancy rather than copying the full description.
+
+If the authoritative Vacancy changes, active Requests and downstream live views resolve the updated Vacancy data unless a specific workflow requires a historical snapshot.
+
+---
+
+## 29. Vacancy and Request routing
+
+Vacancies and Requests participate in relationship flows.
+
+The routing configuration determines:
+- which relationship receives the data;
+- in which direction;
+- which Location scope is included;
+- which Department scope is included;
+- which fields are visible;
+- which control points apply.
+
+A configured flow may allow one Organization to:
+
+```text
+create Vacancy
+→ activate Request
+→ route Request to Partner
+→ Partner continues flow
+→ downstream Organization receives permitted data
+```
+
+The same Vacancy may support multiple Requests over time without recreating the Vacancy.
+
+The same relationship routing may be reused for future Requests.
+
+---
+
+## 30. Minimal-input principle
+
+When the system already knows a fact from authoritative domain context, the user should not have to enter it again.
+
+Examples:
+- Request reuses Vacancy description;
+- Request reuses Department and Location context;
+- downstream flow reuses configured Organization relationship;
+- App reuses its configured scope;
+- invitation reuses Organization and Location target;
+- user assignment reuses existing domain object rather than recreating it.
+
+New input should be limited to genuinely new business information.
+
+This principle reduces:
+- duplication;
+- inconsistent data;
+- user error;
+- maintenance cost;
+- reconciliation work.
+
+---
+
+## 31. Flow continuation and flow initiation
+
+A domain participant may either initiate a new flow or continue an existing one.
+
+Conceptually:
+
+```text
+INITIATE
+→ create authoritative domain object or demand
+
+CONTINUE
+→ receive permitted object/context
+→ apply allowed local operation
+→ route onward
+```
+
+Both operations use the same relationship/routing architecture.
+
+The system must not require separate special-case architectures for:
+- the original initiator;
+- an intermediary Organization;
+- a downstream partner.
+
+The participant's position in the graph determines its role in the current flow.
+
+---
+
+## 32. Reusable routing architecture
+
+Configured routing must be reusable.
+
+Once a relationship and its scope are configured, future eligible domain objects should be able to use that route without rebuilding the flow manually.
+
+Conceptually:
+
+```text
+Relationship configured once
++ Scope configured once
++ Visibility configured once
++ Control points configured once
+= reusable domain pipeline
+```
+
+New Vacancies, Requests, Candidates or supported future domain objects can then enter that pipeline when activated.
+
+This is a central scalability property of HigaBase.
+
