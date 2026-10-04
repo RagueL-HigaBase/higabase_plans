@@ -1075,3 +1075,310 @@ New Vacancies, Requests, Candidates or supported future domain objects can then 
 
 This is a central scalability property of HigaBase.
 
+---
+
+## 33. ESCO as semantic source of truth
+
+ESCO is the canonical semantic layer for occupations, skills and related professional concepts used by HigaBase.
+
+HigaBase domain entities must not independently invent competing occupation or skill vocabularies when an applicable ESCO concept exists.
+
+Conceptually:
+
+```text
+Free text / external data / user input
+        ↓
+Normalization
+        ↓
+ESCO concepts
+        ↓
+HigaBase domain usage
+```
+
+The normalized ESCO layer is therefore shared by:
+- Vacancies;
+- Candidate profiles;
+- matching;
+- AI-assisted parsing;
+- skill comparison;
+- occupation comparison;
+- future recommendation and routing logic.
+
+The existing Higa ESCO normalized dataset remains a separate reference domain and Higa business entities reference normalized `EscoConcept` identities rather than duplicating ESCO data.
+
+---
+
+## 34. Vacancy normalization through ESCO
+
+A Vacancy may contain human-readable business text, but its professional meaning should be normalized into ESCO concepts.
+
+Conceptually:
+
+```text
+Vacancy description
++ requirements
++ responsibilities
+        ↓
+AI / deterministic extraction
+        ↓
+ESCO occupations
+ESCO skills
+ESCO relations
+        ↓
+Structured Vacancy profile
+```
+
+The original business text remains available.
+
+ESCO normalization does not replace the original description; it provides the structured semantic layer used by the system.
+
+A Vacancy should therefore have both:
+
+```text
+HUMAN VIEW
+→ readable job description
+
+SEMANTIC VIEW
+→ normalized ESCO profile
+```
+
+This allows the same Vacancy to be reused across Requests, matching, relationship routing and Apps without repeatedly interpreting its meaning.
+
+---
+
+## 35. Candidate normalization through ESCO
+
+Candidate information may originate from:
+- CV upload;
+- document parsing;
+- manual profile entry;
+- recruiter input;
+- voice input;
+- external systems.
+
+Regardless of source, professional experience and skills should be normalized against the same ESCO reference layer used by Vacancies.
+
+Conceptually:
+
+```text
+Candidate source data
+        ↓
+AI-assisted interpretation
+        ↓
+ESCO normalization
+        ↓
+Structured Candidate profile
+```
+
+AI may propose mappings.
+
+AI is not the source of truth for occupation or skill identity.
+
+The selected normalized ESCO concepts are the semantic reference used by downstream matching.
+
+---
+
+## 36. Matching on a common semantic layer
+
+Candidate-to-Vacancy matching should compare structured profiles built on the same ESCO vocabulary.
+
+Conceptually:
+
+```text
+Candidate ESCO profile
+        ↘
+         Matching Engine
+        ↗
+Vacancy ESCO profile
+```
+
+This enables explainable comparison of:
+- occupation fit;
+- required skills;
+- possessed skills;
+- missing skills;
+- transferable skills;
+- related occupations;
+- relevant certifications or future additional domain signals.
+
+A match result may expose a percentage or score, but the score must be supported by explainable contributing factors.
+
+The system should be able to answer not only:
+
+```text
+Match = 82%
+```
+
+but also:
+
+```text
+why 82%?
+which required skills matched?
+which skills are missing?
+which related ESCO concepts contributed?
+```
+
+---
+
+## 37. AI role in semantic processing
+
+AI is an interpretation and assistance layer.
+
+AI may:
+- parse unstructured CVs;
+- interpret recruiter/user descriptions;
+- propose occupation mappings;
+- propose skill mappings;
+- summarize candidate or Vacancy information;
+- identify likely ESCO concepts;
+- generate human-readable explanations of matching results.
+
+AI must not silently redefine canonical ESCO concepts.
+
+Where confidence is insufficient or mappings are ambiguous, the system should expose the uncertainty to an authorized human checkpoint rather than fabricate certainty.
+
+---
+
+## 38. Automated flow with human checkpoints
+
+HigaBase should automate the routine flow and reserve human attention for decision points.
+
+Conceptually:
+
+```text
+Input
+↓
+Normalize
+↓
+Evaluate
+↓
+Route automatically
+↓
+CHECKPOINT
+├─ approve / continue
+├─ decline
+├─ request clarification
+├─ reroute
+└─ stop
+↓
+continue automated flow
+```
+
+Checkpoints should exist only where a business decision, legal decision, quality decision or explicit responsibility requires human confirmation.
+
+The system should prepare the decision by presenting:
+- source data;
+- normalized data;
+- match result;
+- missing or conflicting information;
+- recommended next action;
+- relevant provenance/context.
+
+The responsible user should not need to manually reconstruct information already available to the system.
+
+---
+
+## 39. Minimal-human-effort principle
+
+The default operating principle is:
+
+```text
+SYSTEM DOES THE WORK
+HUMAN CONFIRMS EXCEPTIONS AND DECISIONS
+```
+
+Users should not spend time on:
+- repeated data entry;
+- manually comparing data the system can normalize;
+- manually moving objects through an already configured route;
+- rebuilding the same Vacancy/Request/Candidate context;
+- searching for information the platform already owns.
+
+Human effort should concentrate on:
+- approval;
+- rejection;
+- exception handling;
+- judgment where automation confidence is insufficient;
+- relationship/customer decisions;
+- legally or commercially sensitive checkpoints.
+
+---
+
+## 40. Checkpoint outcomes
+
+A generic workflow checkpoint may conceptually support outcomes such as:
+
+```text
+CONTINUE
+DECLINE
+HOLD
+REQUEST_INFORMATION
+REROUTE
+STOP
+```
+
+The exact allowed outcomes depend on the domain.
+
+For example, a recruitment matching checkpoint might allow:
+
+```text
+SHORTLIST
+DECLINE
+REQUEST_REVIEW
+FORWARD
+```
+
+A checkpoint is part of domain workflow configuration.
+
+It must not be confused with ownership or user identity.
+
+An authorized user acts on the checkpoint; the workflow remains owned by the domain/Organization.
+
+---
+
+## 41. Explainability and provenance
+
+Automated decisions and recommendations must retain enough provenance to understand their origin.
+
+For ESCO-based matching, provenance may include:
+- source Candidate data;
+- source Vacancy data;
+- normalized ESCO concepts;
+- mapping confidence;
+- matching factors;
+- rule/version used;
+- AI-assisted interpretations;
+- human overrides or confirmations.
+
+This supports:
+- quality review;
+- debugging;
+- auditability;
+- future model improvement;
+- user trust.
+
+The system should never reduce a complex matching decision to an unexplained score when the contributing structured data is available.
+
+---
+
+## 42. ESCO inside Create Once, Use Forever
+
+ESCO normalization follows the same Create Once, Use Forever principle.
+
+A normalized skill or occupation mapping should be created once for the authoritative domain object and reused downstream.
+
+Example:
+
+```text
+Vacancy
+→ normalized once to ESCO
+→ Request reuses Vacancy ESCO profile
+→ Partner view reuses permitted ESCO profile
+→ Matching reuses same ESCO profile
+→ App integrations reuse same semantic structure
+```
+
+If the authoritative Vacancy changes materially, the ESCO normalization may be recalculated and the updated semantic profile propagates through live downstream views.
+
+Historical decisions may retain the ESCO snapshot/version that was used at the time of that decision.
+
