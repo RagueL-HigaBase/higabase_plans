@@ -393,3 +393,356 @@ Especially sensitive changes:
 - changing historical actor/audit identity strategy.
 
 Such changes require updating this central architecture before implementation.
+
+---
+
+## 13. Organization network and data-flow architecture
+
+HigaBase organizations are structurally autonomous and symmetric.
+
+Each Organization uses the same internal organizational model regardless of whether another Organization sees it as a client, partner or another relationship type.
+
+Conceptually:
+
+```text
+Organization
+└─ Locations
+   └─ Departments
+      └─ Users / assignments
+```
+
+No Organization is physically nested inside another Organization.
+
+Cross-company cooperation is represented by relationships between autonomous Organizations.
+
+### 13.1 Relationship perspective is directional
+
+A relationship is interpreted from the perspective of the current Organization.
+
+Example:
+
+```text
+Philips → Shell = PARTNER
+Shell   → Philips = CLIENT
+```
+
+This does not mean two unrelated records with independent meaning.
+
+It describes the same business connection viewed from opposite sides.
+
+The relationship determines the allowed direction and semantics of data flow between the Organizations.
+
+A future relationship model must preserve this complementary perspective explicitly and must not rely on UI naming alone.
+
+### 13.2 Relationships form a graph, not an ownership tree
+
+Internal Organization structure is hierarchical.
+
+External Organization relationships form a graph.
+
+Conceptually:
+
+```text
+INTERNAL
+Organization
+└─ Location
+   └─ Department
+
+EXTERNAL
+Organization A ↔ Organization B ↔ Organization C
+```
+
+This graph may grow recursively without changing the underlying domain model.
+
+Adding another client or partner must create another relationship edge, not a new special-case architecture.
+
+The same routing rules must continue to work regardless of how many Organizations participate in the network.
+
+### 13.3 Relationship determines direction
+
+Relationship type determines what kind of business exchange exists and in which direction data may move.
+
+Examples include:
+- receiving candidate data;
+- sending candidate data;
+- receiving requests;
+- sending vacancies;
+- returning processed candidate or request outcomes.
+
+The architecture must not assume that every relationship is bidirectional for every domain object.
+
+A future routing layer must be able to express allowed inbound and outbound flows per relationship.
+
+---
+
+## 14. Department as data scope
+
+Departments do not define a separate external relationship.
+
+Departments define the internal scope of data exposed through an existing Organization relationship.
+
+Conceptually:
+
+```text
+Organization Relationship
+        ↓
+allowed Location scope
+        ↓
+allowed Department scope
+        ↓
+allowed domain data
+```
+
+Example:
+
+```text
+Philips ↔ Shell
+relationship = CLIENT / PARTNER
+
+Shell exposes:
+- Location A
+  - Recruitment Department
+  - Planning Department
+
+Only Recruitment may participate in the relationship.
+```
+
+In this case, the Organization relationship exists at Organization level, while Department assignment limits the data volume visible or transferable through that relationship.
+
+The same concept applies to Locations.
+
+A future routing policy may therefore scope a relationship by:
+- Organization;
+- one or more Locations;
+- one or more Departments;
+- one or more domain flows.
+
+This scope controls data exposure and routing.
+
+It is not the same thing as user permission.
+
+---
+
+## 15. Core domain flows
+
+The initial cross-organization business flows are conceptually separate domains:
+
+```text
+Candidate
+Vacancy
+Request
+```
+
+These domains must remain independent business entities even when they travel through the same relationship network.
+
+A routing layer may determine whether a specific relationship permits:
+
+```text
+Candidate → outbound
+Candidate ← inbound
+
+Vacancy → outbound
+Vacancy ← inbound
+
+Request → outbound
+Request ← inbound
+```
+
+The same Organization relationship can therefore support different directions for different domain objects.
+
+Do not collapse Candidate, Vacancy and Request into one generic persisted "business object" merely because they share routing infrastructure.
+
+Shared routing infrastructure may operate across them, but their domain ownership and lifecycle remain separate.
+
+---
+
+## 16. Apps and capability modules
+
+Apps are capability modules attached to the HigaBase platform.
+
+An App is not an Organization membership and is not a data owner.
+
+An App may:
+- execute a defined business operation;
+- display or transform existing domain data;
+- integrate an external product or service through API;
+- remain entirely internal to one Organization;
+- exchange data with external systems when explicitly configured;
+- be free or paid.
+
+Examples may include:
+- recruiting functionality;
+- planning/scheduling integrations;
+- workforce-management systems;
+- external products such as Planbition, FullFlex or NoCore.
+
+Each App must have a clear contract defining:
+- which domain data it may read;
+- which domain data it may create or modify;
+- whether it may send data outside the Organization;
+- which Organization/Location/Department scope it operates in.
+
+Apps must not silently create new cross-Organization access paths.
+
+Any external data exchange must still respect the Organization relationship and routing architecture.
+
+---
+
+## 17. User as actor, not owner
+
+A SystemUser is an operational actor.
+
+A SystemUser is not the durable owner of business data.
+
+Conceptually:
+
+```text
+Organization owns business context
+Domain entity owns its lifecycle
+User performs an action
+```
+
+A user may:
+- create;
+- edit;
+- review;
+- approve;
+- route;
+- send;
+- receive;
+- assign;
+- manage
+
+a domain object when authorized.
+
+The business object must remain valid when that user:
+- leaves the company;
+- is blocked;
+- is deactivated;
+- is deleted;
+- is replaced by another employee.
+
+Do not model core business ownership in a way that requires a live user account for the object to continue existing.
+
+User references may identify:
+- current assignee;
+- current responsible actor;
+- creator;
+- last editor;
+- approver;
+- historical actor.
+
+These relationships are operational metadata, not durable ownership.
+
+---
+
+## 18. Assignment and replacement principle
+
+Operational responsibility may move from one user to another without moving or recreating the underlying business object.
+
+Example:
+
+```text
+Vacancy / Candidate / Request / Task
+        ↓
+assigned actor = User A
+
+User A leaves
+        ↓
+assigned actor = User B
+```
+
+The domain entity remains the same.
+
+Its Organization, Location, Department and relationship context do not change merely because the responsible user changes.
+
+This principle is mandatory for long-lived business data.
+
+---
+
+## 19. Data consistency across user lifecycle
+
+User lifecycle changes must not destroy business continuity.
+
+When a SystemUser is removed or deactivated:
+- Organization-owned data remains;
+- domain entities remain;
+- relationship/routing context remains;
+- historical actions remain interpretable;
+- active assignments may be reassigned;
+- audit records preserve actor identity snapshots where required.
+
+Foreign keys to users must therefore be chosen by purpose.
+
+Use:
+- nullable/set-null references when the relationship is historical or optional;
+- restricted references when deletion must be prevented;
+- immutable actor snapshots when human-readable history must survive user removal.
+
+Do not use cascading user deletion for durable business-domain records unless that record is genuinely user-owned and disposable.
+
+---
+
+## 20. Separation of architecture layers
+
+The system must keep these concerns separate:
+
+```text
+OWNERSHIP
+Who owns the data?
+→ Organization / domain entity
+
+STRUCTURE
+Where does it live internally?
+→ Location / Department
+
+RELATIONSHIP
+Which Organizations are connected?
+→ Client / Partner / future relationship types
+
+ROUTING
+What data may move and in which direction?
+→ Candidate / Vacancy / Request flows
+
+APPLICATION CAPABILITY
+Which module performs or exposes operations?
+→ Apps
+
+AUTHORIZATION
+What may this specific user do?
+→ Roles / permissions / scopes
+
+ACTOR
+Who performed the operation?
+→ SystemUser
+```
+
+These layers may reference each other but must not be collapsed into one table or one permission concept.
+
+This separation is a core architectural invariant.
+
+---
+
+## 21. Permissions dependency
+
+Final fine-grained permissions must be designed only after the following are sufficiently stable:
+
+1. Organization / Location / Department structure;
+2. invitation and membership model;
+3. Client / Partner relationship model;
+4. Candidate / Vacancy / Request domain boundaries;
+5. relationship routing rules;
+6. App capability boundaries.
+
+Permissions will then answer:
+
+```text
+Which user
+may perform which action
+on which domain object
+inside which Organization / Location / Department scope
+through which relationship or App context?
+```
+
+Until that architecture exists, do not prematurely encode a large permanent permission matrix into the database.
+
