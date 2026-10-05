@@ -68,7 +68,29 @@ Web/Phoenix mapping:
 - solid FontAwesome icons at `fs-9`;
 - do not hardcode a custom black color.
 
-## 4. Consistency rule
+## 4. Identity rail pattern
+
+Use the identity rail for a persistent person/context block beside a domain workspace.
+
+Semantic structure:
+- avatar or identity image with presence/status;
+- primary name using the Section label heading role;
+- supporting registration/context line;
+- location/address summary when relevant;
+- compact contextual action menu;
+- dashed separator between identity/address context and primary contact facts;
+- compact key/value rows for primary contact facts;
+- full-width domain navigation below the identity/contact area.
+
+The identity rail is persistent context. Domain pages opened from its navigation are separate workspace surfaces and should not be simulated as one large in-page form.
+
+Candidate dossier is the first approved implementation of this pattern.
+
+Future Member/SystemUser surfaces may reuse the same semantic structure, but should remain visually distinguishable where the working context differs.
+
+Implementation-specific widths, route structure, icons, spacing and framework classes stay in the client repository.
+
+## 5. Consistency rule
 
 Do not tune these roles independently per page.
 
