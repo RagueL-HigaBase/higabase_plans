@@ -9,11 +9,12 @@ This repository owns cross-project architectural rules that must remain consiste
 Use documentation in this order:
 
 1. `SYSTEM_ARCHITECTURE.md` — cross-project system invariants and domain boundaries.
-2. `UI_STANDARDS.md` — cross-project semantic UI roles and typography conventions.
-3. Repository-local `PROJECT_RULES.md` — rules specific to one implementation repository.
-4. Repository-local `CURRENT_TASK.md` — active temporary implementation scope.
-5. Repository-local `PROJECT_STATE.md` — implemented current state and known gaps.
-6. Repository-local domain and production documents.
+2. `CANDIDATE_ARCHITECTURE.md` — Candidate / Resume / Intake / ESCO / verification / component boundaries.
+3. `UI_STANDARDS.md` — cross-project semantic UI roles and typography conventions.
+4. Repository-local `PROJECT_RULES.md` — rules specific to one implementation repository.
+5. Repository-local `CURRENT_TASK.md` — active temporary implementation scope.
+6. Repository-local `PROJECT_STATE.md` — implemented current state and known gaps.
+7. Repository-local domain and production documents.
 
 A repository-local rule may refine a central rule for implementation details, but it must not contradict a central system invariant.
 
@@ -36,7 +37,8 @@ It should contain:
 - future permission architecture;
 - audit/history invariants;
 - cross-project contracts;
-- cross-client semantic UI conventions.
+- cross-client semantic UI conventions;
+- Candidate / Resume / intake / verification architecture.
 
 Do not use this repository for:
 - implementation-specific source code;
@@ -45,4 +47,4 @@ Do not use this repository for:
 - framework-specific styling or component rules;
 - duplicated copies of repository-local state.
 
-Last reviewed: 2026-10-04
+Last reviewed: 2026-10-05
