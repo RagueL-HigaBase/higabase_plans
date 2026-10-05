@@ -46,7 +46,29 @@ Web/Phoenix mapping:
 - Phoenix `text-body-tertiary` for descriptive/supporting copy unless an existing Phoenix reference for the same semantic role requires `text-body-secondary`;
 - preserve the theme color token instead of hardcoding a color value.
 
-## 3. Consistency rule
+## 3. Compact key/value data rows
+
+Use for compact operational data such as:
+- Phone;
+- Email;
+- WhatsApp;
+- other short primary facts shown in a dossier identity rail.
+
+Semantic rule:
+- 12.8px text size;
+- darkest normal body emphasis available from the active theme;
+- slightly stronger than ordinary body copy, but not headline weight;
+- label and value use the same emphasis;
+- use solid FontAwesome icons for the leading data icon where an icon is present.
+
+Web/Phoenix mapping:
+- `fs-9`;
+- `text-body-emphasis`;
+- `fw-semibold`;
+- solid FontAwesome icons at `fs-9`;
+- do not hardcode a custom black color.
+
+## 4. Consistency rule
 
 Do not tune these roles independently per page.
 
