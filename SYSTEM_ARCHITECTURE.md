@@ -1,7 +1,7 @@
 # HigaBase System Architecture
 
 Status: **FOUNDATION**
-Last reviewed: **2026-10-04**
+Last reviewed: **2026-10-05**
 
 This document defines cross-project architectural invariants for HigaBase.
 
@@ -1703,4 +1703,301 @@ AI may assist inside parsing, normalization, comparison and explanation.
 AI does not own the pipeline.
 
 The pipeline remains deterministic, auditable and Organization-controlled.
+---
+
+## 55. Candidate as a first-class core domain
+
+Candidate is a first-class HigaBase domain, not an App and not a SystemUser subtype.
+
+Core invariant:
+
+```text
+Candidate
+→ independent identity/domain object
+→ independent lifecycle
+→ reusable across Resume, ESCO, matching, workflow and enabled components
+```
+
+Candidate must remain valid regardless of which optional Organization components are enabled.
+
+Do not place component-specific fields directly on Candidate merely because a component can display them in the Candidate dossier.
+
+The Candidate domain is the stable reference point used by downstream modules through `candidateId`.
+
+---
+
+## 56. Candidate Resume as a separate base layer
+
+Resume is a base Candidate domain layer, not an optional Organization component.
+
+Conceptually:
+
+```text
+Candidate
+└─ Resume
+   ├─ Employment experience
+   ├─ Education
+   ├─ Languages
+   ├─ Skills
+   ├─ Certifications
+   └─ other professional source data
+```
+
+Resume data preserves the original human/source information.
+
+Normalized ESCO mappings are attached as semantic references and must not overwrite the original Resume text.
+
+Example:
+
+```text
+CandidateExperience
+- originalTitle
+- employer
+- country
+- startedAt
+- endedAt
+
+CandidateExperienceOccupation
+- candidateExperienceId
+- escoConceptId
+- source
+- confidence
+- confirmedAt?
+```
+
+The exact persistence model belongs to the backend implementation, but the separation between original Resume data and normalized ESCO references is an architectural invariant.
+
+---
+
+## 57. Candidate intake pipeline
+
+The next Candidate foundation must support a real intake path from CV upload to an operational Candidate record.
+
+Conceptually:
+
+```text
+Candidates
+→ Add Candidate
+→ Upload CV
+→ Extract source content
+→ AI-assisted parsing
+→ Build Candidate/Resume draft
+→ ESCO normalization proposals
+→ Human review / correction
+→ Persist Candidate + Resume
+→ Open Candidate dossier
+```
+
+The parser output is a draft, not authoritative truth.
+
+The system must preserve enough source/provenance information to understand where each extracted fact came from.
+
+Candidate intake may later support sources beyond CV files, including:
+- manual entry;
+- voice input;
+- recruiter notes;
+- external integrations;
+- candidate mobile input.
+
+All of these sources must converge into the same canonical Candidate/Resume contracts.
+
+---
+
+## 58. AI parsing and provenance
+
+AI may extract and propose Candidate data, but AI-generated values must be distinguishable from confirmed values.
+
+A Candidate fact should be able to carry provenance such as:
+
+```text
+value
+source
+sourceReference?
+confidence?
+createdAt
+confirmedBy?
+confirmedAt?
+```
+
+Conceptual source examples:
+
+```text
+CV
+AI_PARSE
+RECRUITER
+CANDIDATE
+EXTERNAL_SYSTEM
+ESCO_MAPPING
+```
+
+AI may populate a draft and confidence score.
+
+AI must not silently mark a business fact as human-verified.
+
+Verification may come from:
+- the Candidate;
+- an authorized recruiter/user;
+- a trusted authoritative external source.
+
+---
+
+## 59. Recruiter verification questionnaire
+
+Candidate intake should support a recruiter verification session after parsing.
+
+The questionnaire is not a fixed duplicate profile form.
+
+It should primarily ask about:
+- missing required information;
+- low-confidence parsed values;
+- contradictions;
+- unconfirmed dates;
+- certifications;
+- language levels;
+- availability or Organization-required facts;
+- other explicit checkpoints.
+
+Conceptually:
+
+```text
+Parsed Candidate draft
+        ↓
+Missing / uncertain / conflicting facts
+        ↓
+CandidateVerificationSession
+        ↓
+YES / NO / UNKNOWN / EDIT
+        ↓
+confirmed Candidate/Resume facts
+```
+
+The questionnaire should minimize recruiter input.
+
+The default principle is:
+
+```text
+SYSTEM PREPARES
+RECRUITER CONFIRMS
+```
+
+Verification-session records belong to workflow/history and must not be modeled as permanent duplicate Candidate profile fields.
+
+---
+
+## 60. Candidate dossier and component boundary
+
+The Candidate dossier is a consolidated presentation shell over Candidate core data and Organization-enabled component data.
+
+Dependency direction:
+
+```text
+Candidate core
+    ↑ referenced by candidateId
+Component domains
+
+Candidate dossier
+→ resolves Candidate core
+→ resolves available component surfaces
+→ presents one consolidated operational workspace
+```
+
+Candidate core must not depend on Housing, Vehicle, Planning, Planbition or other optional component schemas.
+
+A component owns its own domain tables and references Candidate through a stable Candidate identity.
+
+Example:
+
+```text
+HousingAssignment
+- organizationId
+- candidateId
+- housingUnitId
+- ...
+
+VehicleAssignment
+- organizationId
+- candidateId
+- vehicleId
+- ...
+```
+
+Adding a new component must not require adding component-specific columns to Candidate.
+
+---
+
+## 61. Component availability, Candidate data and access are separate
+
+Three different questions must remain separate:
+
+```text
+1. Is the component enabled for this Organization?
+2. Does this Candidate have data/participation in the component?
+3. May this SystemUser access the component surface/action?
+```
+
+Conceptually:
+
+```text
+OrganizationComponent
+→ capability availability
+
+Component candidate record
+→ Candidate-specific participation/data
+
+Permission / scope
+→ user authorization
+```
+
+Do not collapse these into one table or one boolean.
+
+Candidate dossier menu discovery may later combine these layers, but the backend remains authoritative.
+
+Different components may use different entry policies, for example:
+
+```text
+ALWAYS_WHEN_ENABLED
+WHEN_DATA_EXISTS
+WHEN_ASSIGNED
+```
+
+The exact registry/API shape should be derived from real component implementations rather than over-designed in advance.
+
+---
+
+## 62. Candidate architecture implementation sequence
+
+The current recommended implementation sequence is:
+
+```text
+CANDIDATE-CORE
+→ Candidate persistence and stable identity
+
+RESUME-CORE
+→ professional source data and Resume structure
+
+CANDIDATE-INTAKE
+→ CV upload, parse, review and save
+
+ESCO-1
+→ first real occupation/skill normalization over Resume data
+
+CANDIDATE-VERIFICATION
+→ recruiter questionnaire and confirmation/provenance
+
+COMPONENT-FOUNDATION
+→ minimal reusable component contract derived from a real integration
+
+FIRST EXTERNAL COMPONENT
+→ e.g. Planbition
+```
+
+This order is intentional.
+
+Do not build a large speculative component framework before Candidate + Resume + intake have been exercised with real CVs.
+
+Do not build final fine-grained permissions before the Candidate/component boundaries are sufficiently stable.
+
+The purpose of the first Candidate intake implementation is to force the architecture through real heterogeneous CV data and expose incorrect assumptions early.
+
+The detailed Candidate architecture is maintained in `CANDIDATE_ARCHITECTURE.md`.
 
