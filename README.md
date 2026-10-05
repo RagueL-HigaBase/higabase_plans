@@ -9,10 +9,11 @@ This repository owns cross-project architectural rules that must remain consiste
 Use documentation in this order:
 
 1. `SYSTEM_ARCHITECTURE.md` — cross-project system invariants and domain boundaries.
-2. Repository-local `PROJECT_RULES.md` — rules specific to one implementation repository.
-3. Repository-local `CURRENT_TASK.md` — active temporary implementation scope.
-4. Repository-local `PROJECT_STATE.md` — implemented current state and known gaps.
-5. Repository-local domain and production documents.
+2. `UI_STANDARDS.md` — cross-project semantic UI roles and typography conventions.
+3. Repository-local `PROJECT_RULES.md` — rules specific to one implementation repository.
+4. Repository-local `CURRENT_TASK.md` — active temporary implementation scope.
+5. Repository-local `PROJECT_STATE.md` — implemented current state and known gaps.
+6. Repository-local domain and production documents.
 
 A repository-local rule may refine a central rule for implementation details, but it must not contradict a central system invariant.
 
@@ -34,7 +35,8 @@ It should contain:
 - invitation lifecycle rules;
 - future permission architecture;
 - audit/history invariants;
-- cross-project contracts.
+- cross-project contracts;
+- cross-client semantic UI conventions.
 
 Do not use this repository for:
 - implementation-specific source code;
