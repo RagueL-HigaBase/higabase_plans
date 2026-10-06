@@ -1271,3 +1271,168 @@ EscoSearchTerm
 This preserves the already-designed graph foundation while removing search-engine concerns from canonical label storage.
 
 No Candidate or Vacancy mapping tables are added to the ESCO schema.
+
+## 49. Approved snapshot importer pipeline
+
+The runtime importer consumes only the validated normalized snapshot produced by `higa-esco-extractor`.
+
+It does not crawl ESCO, interpret raw API responses or repair malformed source data.
+
+Approved order:
+
+```text
+manifest.json
+    ↓
+validate dataset/version/identity contract
+    ↓
+SHA-256 verify every JSONL file
+    ↓
+recompute aggregate snapshotHash
+    ↓
+create/recover dataset as IMPORTING
+    ↓
+concept stable identities
+    ↓
+concept versions
+    ↓
+canonical labels
+    ↓
+EscoSearchTerm projection
+    ↓
+canonical texts
+    ↓
+relation types
+    ↓
+canonical relations + semantic classification
+    ↓
+references
+    ↓
+occupation-skill inverse audit
+    ↓
+EscoOccupationSkill projection
+    ↓
+EscoHierarchyClosure projection
+    ↓
+database count/integrity audit
+    ↓
+atomic dataset activation
+```
+
+The first importer is explicitly pinned to ESCO 1.2.0 and snapshot format version/identity expectations.
+
+## 50. Import fail-closed rules
+
+A dataset may become ACTIVE only after the complete canonical and derived pipeline succeeds.
+
+Failure at any point keeps the new dataset from activation and marks its import FAILED.
+
+The currently ACTIVE dataset is not archived until the replacement dataset has passed its complete audit.
+
+Activation is atomic:
+
+```text
+old ACTIVE → ARCHIVED
+new IMPORTING → ACTIVE
+```
+
+inside one database transaction.
+
+A failed snapshot retry clears dataset-owned canonical/versioned data and disposable projections before rebuilding.
+
+Stable `EscoConcept` URI identities are not deleted during retry because they are cross-version semantic identities.
+
+## 51. Import batching and memory discipline
+
+Million-row label/text workloads are streamed from JSONL and inserted in bounded batches.
+
+The importer must not load the full label, text or relation corpus into Node.js memory.
+
+The current concept set is small enough to load for URI→runtime-ID resolution, while high-cardinality files remain streaming workloads.
+
+Search projection is also built in bounded batches ordered by canonical label ID.
+
+Batch size is an operational tuning parameter, not a semantic contract.
+
+## 52. Import audit contract
+
+Manifest-backed canonical counts must match database counts before activation:
+
+```text
+concepts
+labels
+texts
+relations
+references
+```
+
+The first-generation search projection has one row per canonical label, therefore:
+
+```text
+searchTerms == labels
+```
+
+is an activation invariant.
+
+Derived graph projections do not have manifest source counts because they are computed representations. They require structural audits instead:
+- Occupation↔Skill inverse relation validation before projection;
+- hierarchy cycle detection;
+- valid positive hierarchy depth;
+- deterministic uniqueness constraints.
+
+The importer returns canonical and projection counts for operational verification.
+
+## 53. Search projection build contract
+
+The initial `EscoSearchTerm` projection is a deterministic one-to-one projection of canonical labels.
+
+For every label it stores:
+- owning dataset;
+- concept version;
+- stable concept;
+- source label ID;
+- language;
+- preferred/alternative term type;
+- original value;
+- normalized value;
+- initial ranking priority.
+
+Initial type priority:
+
+```text
+PREFERRED   100
+ALTERNATIVE  70
+```
+
+These numbers are internal lexical ranking inputs, not semantic confidence or matching percentages.
+
+Changing ranking priority later does not modify canonical ESCO and may rebuild the projection.
+
+## 54. Import idempotency and snapshot identity
+
+`snapshotHash` identifies an exact normalized snapshot import.
+
+Behavior:
+- ACTIVE same snapshot → no duplicate import; audit existing dataset and return ALREADY_ACTIVE;
+- IMPORTING same snapshot → reject concurrent/re-entrant import;
+- ARCHIVED same snapshot → do not silently reactivate/reimport;
+- FAILED same snapshot → clear its dataset-owned imported state and rebuild deterministically.
+
+This prevents duplicate copies of the same ESCO snapshot and makes import recovery explicit.
+
+## 55. Importer implementation ownership
+
+Snapshot import implementation belongs to the runtime ESCO module in `higa_systems_express`.
+
+The extractor owns normalized snapshot production and audit.
+
+```text
+higa-esco-extractor
+    owns: source → normalized snapshot
+
+higa_systems_express / ESCO module
+    owns: normalized snapshot → runtime persistence/read models
+```
+
+Neither side owns Candidate/Vacancy mappings.
+
+The importer remains an operational CLI/process and is not exposed as a normal public frontend endpoint.
