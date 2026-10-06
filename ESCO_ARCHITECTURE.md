@@ -1043,3 +1043,231 @@ Core invariants:
 - transport protocols do not shape persistence;
 - optimization is benchmark-driven;
 - ESCO 1.2.0 remains the frozen baseline for this implementation phase.
+
+## 44. Approved physical Prisma/PostgreSQL schema contract
+
+The first physical implementation follows the conceptual model above.
+
+Canonical identity/version tables:
+
+```text
+EscoDataset
+EscoConcept
+EscoConceptVersion
+EscoLabel
+EscoText
+EscoRelationType
+EscoRelation
+EscoReference
+```
+
+Rebuildable performance projections:
+
+```text
+EscoSearchTerm
+EscoOccupationSkill
+EscoHierarchyClosure
+```
+
+### EscoDataset
+
+Owns one imported normalized snapshot and its lifecycle.
+
+Important fields:
+- integer runtime ID;
+- dataset name;
+- dataset version;
+- extractor snapshot format version;
+- SHA-256 snapshot hash;
+- complete source manifest JSON;
+- lifecycle status;
+- import completion timestamp.
+
+The snapshot hash is unique. Dataset/version lookup and status lookup are indexed.
+
+### EscoConcept
+
+Represents stable URI-backed identity across dataset versions.
+
+Important fields:
+- compact integer runtime ID;
+- official ESCO URI, globally unique in Higa ESCO storage.
+
+No language, Candidate, Vacancy or dataset-specific semantic fields belong here.
+
+### EscoConceptVersion
+
+Represents one concept as observed in one imported dataset.
+
+It contains:
+- dataset ID;
+- stable concept ID;
+- concept kind;
+- source family;
+- class ID/name;
+- code/codes;
+- source status;
+- reference languages;
+- source roles;
+- reference families.
+
+There is exactly one ConceptVersion per dataset + stable concept.
+
+### EscoLabel
+
+Canonical multilingual source label.
+
+It preserves:
+- concept-version ownership;
+- extractor source identity;
+- normalized language code when available;
+- original source language key;
+- preferred/alternative type;
+- original source value.
+
+It intentionally does **not** contain a search-normalized value. Search normalization belongs to `EscoSearchTerm`.
+
+### EscoText
+
+Canonical multilingual descriptive text.
+
+It preserves extractor source identity, language/source language key, text type, original value and mimetype.
+
+### EscoRelationType
+
+Stores the source relation key independently from individual graph edges.
+
+Inverse-key metadata may be recorded when verified. It must not synthesize source edges.
+
+### EscoRelation
+
+Canonical dataset graph edge.
+
+It contains:
+- dataset;
+- deterministic extractor source identity;
+- source concept;
+- source relation type;
+- target concept;
+- Higa semantic group classification.
+
+Uniqueness protects both source identity and duplicate source/type/target edges within a dataset.
+
+Indexes support outgoing, incoming, semantic-group and direct source-target lookup.
+
+### EscoReference
+
+Preserves extractor reference-family membership and overlap metadata.
+
+### EscoSearchTerm
+
+Disposable lexical read model derived from canonical labels.
+
+It contains:
+- dataset;
+- concept version;
+- stable concept;
+- source label;
+- language;
+- search term type;
+- original searchable value;
+- deterministic normalized value;
+- ranking priority.
+
+The source-label foreign key makes projection provenance explicit.
+
+The initial relational indexes support language/type/priority scoping and concept/language resolution.
+
+Prefix/fuzzy-specific PostgreSQL indexes are deliberately not frozen into the generic Prisma model. If benchmarks justify trigram lookup, the required PostgreSQL extension/index is introduced through an explicit SQL migration and documented as database-specific runtime infrastructure.
+
+### EscoOccupationSkill
+
+Disposable graph projection for verified occupation↔skill edges.
+
+It stores dataset, occupation concept, skill concept and ESSENTIAL/OPTIONAL importance.
+
+### EscoHierarchyClosure
+
+Disposable transitive hierarchy projection.
+
+It stores dataset, semantic hierarchy group, ancestor concept, descendant concept and graph depth.
+
+Only verified hierarchy semantic groups may populate this table.
+
+## 45. Physical ownership and deletion rules
+
+Canonical stable identity is conservative:
+
+```text
+EscoConcept
+→ never cascade-delete because a dataset/projection changes
+```
+
+Canonical dataset content is protected from accidental runtime deletion.
+
+Projection rows are disposable and may cascade with their owning dataset/version/source label where appropriate.
+
+Consumer-domain mappings are outside this schema and are not cascade children of ESCO dataset rows.
+
+Dataset archival is the normal lifecycle operation after activation of a replacement dataset. Physical deletion is an explicit maintenance operation, not normal runtime behavior.
+
+## 46. Search projection provenance invariant
+
+Every first-generation `EscoSearchTerm` is traceable to a canonical `EscoLabel`.
+
+```text
+EscoSearchTerm
+    ↓ sourceLabelId
+EscoLabel
+    ↓
+EscoConceptVersion
+    ↓
+EscoConcept
+```
+
+This prevents an optimization layer from silently creating semantic terminology with no canonical source.
+
+If future search enrichment introduces generated synonyms, transliterations or other non-source terms, they must be explicitly typed/provenanced rather than pretending to be canonical ESCO labels.
+
+## 47. Prisma versus PostgreSQL-specific optimization
+
+Prisma defines the portable relational structure, relations, enums, uniqueness and ordinary B-tree indexes.
+
+PostgreSQL-specific performance features may require explicit SQL migrations.
+
+Examples include:
+- `pg_trgm` extension;
+- GIN/GiST trigram indexes;
+- expression indexes over normalized search representations;
+- partial indexes if benchmarks identify a stable hot path.
+
+These optimizations must remain compatible with the canonical/read-model separation and must be reproducible from migrations.
+
+Do not add a PostgreSQL-specific index merely because it is theoretically useful. Add it after representative `EXPLAIN (ANALYZE, BUFFERS)` and application-level latency benchmarks demonstrate the access pattern.
+
+## 48. Current implementation checkpoint
+
+The existing `higa_systems_express` ESCO graph foundation is the current physical implementation target.
+
+The approved correction after the search/read-model architecture review is:
+
+```text
+BEFORE
+EscoLabel
+- canonical value
+- search-normalized value
+
+AFTER
+EscoLabel
+- canonical value only
+
+EscoSearchTerm
+- source label provenance
+- searchable value
+- normalized value
+- language/type/priority
+```
+
+This preserves the already-designed graph foundation while removing search-engine concerns from canonical label storage.
+
+No Candidate or Vacancy mapping tables are added to the ESCO schema.
