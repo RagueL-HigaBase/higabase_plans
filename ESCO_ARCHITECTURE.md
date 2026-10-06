@@ -1436,3 +1436,111 @@ higa_systems_express / ESCO module
 Neither side owns Candidate/Vacancy mappings.
 
 The importer remains an operational CLI/process and is not exposed as a normal public frontend endpoint.
+
+## 56. EscoKnowledge runtime contract
+
+Runtime consumers use `EscoKnowledge`, not persistence tables.
+
+Initial operation:
+
+```text
+search({
+  query,
+  kind,
+  searchLanguage,
+  displayLanguage,
+  limit
+})
+→ EscoSearchResult[]
+```
+
+The result is concept-oriented and contains:
+- stable Higa concept ID;
+- canonical ESCO URI;
+- concept kind;
+- preferred display label and actual display language;
+- strongest matched term and its language/type.
+
+Matched terminology and presentation terminology are intentionally separate.
+
+## 57. Initial lexical search execution
+
+The first runtime search is deliberately deterministic and inexpensive:
+
+```text
+active dataset
+→ requested search language
+→ requested concept kind
+→ normalized exact/prefix match
+→ preferred/alternative priority
+→ shortest lexical candidate
+→ deduplicate by concept
+→ top N
+→ resolve preferred display label
+```
+
+Initial lexical ranking:
+- exact normalized match outranks prefix;
+- preferred labels outrank alternative labels through projection priority;
+- duplicate matching labels collapse to one semantic concept.
+
+Fuzzy/trigram search remains the next benchmark-driven enhancement and is not mixed into the first correctness baseline.
+
+## 58. Runtime language behavior
+
+`searchLanguage` controls which terms participate in lexical lookup.
+
+`displayLanguage` controls presentation after concept resolution.
+
+Display resolution follows:
+
+```text
+requested display language
+→ English
+→ matched term as last safe fallback
+```
+
+The returned DTO identifies the actual language used.
+
+Interactive clients normally send the same search/display language.
+
+AI and document-resolution flows may search in source language while requesting display in the operator/client language.
+
+## 59. Initial HTTP adapter
+
+The first thin transport adapter exposes:
+
+```text
+GET /api/esco/search
+?q=<term>
+&kind=OCCUPATION|SKILL
+&lang=<search language>
+&displayLang=<optional display language>
+&limit=<1..25>
+```
+
+The adapter validates input and delegates semantic behavior to `EscoKnowledge`.
+
+The HTTP query shape is not the ESCO domain model and may evolve independently.
+
+Current minimum query length is 2 characters, maximum query length is 120, and maximum result count is 25.
+
+These are operational API guardrails, not ESCO semantic constraints.
+
+## 60. Search correctness baseline before fuzzy optimization
+
+Before introducing trigram/fuzzy search, the implementation must establish correctness and latency for exact/prefix lookup against the complete ESCO 1.2.0 projection.
+
+Representative benchmark queries should include:
+- Dutch occupation prefixes;
+- English occupation prefixes;
+- Dutch/English skill prefixes;
+- preferred-label hits;
+- alternative-label hits;
+- exact term hits;
+- same concept reached through multiple labels;
+- display-language fallback.
+
+Only after this baseline is measured should fuzzy indexing/ranking be added.
+
+This provides a stable comparison point for every later optimization.
