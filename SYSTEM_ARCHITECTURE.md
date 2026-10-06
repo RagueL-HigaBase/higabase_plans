@@ -2001,3 +2001,46 @@ The purpose of the first Candidate intake implementation is to force the archite
 
 The detailed Candidate architecture is maintained in `CANDIDATE_ARCHITECTURE.md`.
 
+
+
+---
+
+## 63. AI Core boundary
+
+HigaBase uses a provider-neutral AI Core as the mandatory boundary between unstructured/external information and canonical Higa domain contracts.
+
+Core invariant:
+
+```text
+SOURCE
+→ AI interpretation
+→ strict Higa task contract
+→ schema/domain validation
+→ draft/proposal/checkpoint
+→ canonical domain persistence
+```
+
+The original source artifact remains preserved and available in the file/object-storage layer. AI-derived records reference that source and retain processing provenance; they do not replace the original document.
+
+AI output is always untrusted until validated. Unknown, missing, uncertain and conflicting information must remain explicit rather than being fabricated to complete a schema.
+
+AI may parse, classify, extract, compare, explain and propose normalization. It must not own domain persistence, authorization, workflow decisions, lifecycle approval, source authority, or canonical ESCO identity.
+
+ESCO mappings proposed by AI must resolve to real concepts from Higa's ESCO reference layer; AI must never invent ESCO ids or URIs.
+
+Domain code depends on Higa AI task contracts rather than directly on a specific model provider. Provider-specific formats are contained behind adapters.
+
+The current implementation sequence is therefore:
+
+```text
+AI-CORE
+→ CANDIDATE-CORE
+→ RESUME-CORE
+→ CANDIDATE-INTAKE
+→ ESCO normalization v1
+→ CANDIDATE-VERIFICATION
+→ COMPONENT-FOUNDATION
+→ FIRST EXTERNAL COMPONENT
+```
+
+The detailed cross-project AI architecture is maintained in `AI_CORE.md`.
