@@ -1,7 +1,7 @@
 # ESCO Knowledge Architecture
 
 Status: **FOUNDATION**
-Last reviewed: **2026-10-05**
+Last reviewed: **2026-10-06**
 
 This document defines the cross-project ESCO knowledge boundary for HigaBase.
 
@@ -55,20 +55,29 @@ source ESCO
 
 ## 4. Runtime knowledge model
 
-Runtime storage preserves the semantic separation established by the normalized snapshot:
+Runtime storage preserves the semantic separation established by the normalized snapshot while separating stable concept identity from dataset-version state:
 
 ```text
 EscoDataset
-    ↓
+    │
+    ├─ EscoConceptVersion
+    │    ├─ EscoLabel[]
+    │    └─ EscoText[]
+    │
+    ├─ EscoRelation[]
+    ├─ EscoReference[]
+    ├─ EscoOccupationSkill[]   (derived)
+    └─ EscoHierarchyClosure[]  (derived)
+
 EscoConcept
-    ├─ EscoLabel[]
-    ├─ EscoText[]
-    └─ EscoRelation[]
+    └─ stable URI-backed identity across dataset versions
 ```
 
-`EscoConcept` is language-neutral identity. The official ESCO URI is the durable external identity.
+`EscoConcept` is language-neutral global identity. The official ESCO URI is the durable external identity.
 
-Higa may use a compact internal identifier for joins/performance while preserving the official URI as a unique canonical reference.
+Dataset-specific kind, family, class/code/status and multilingual values belong to `EscoConceptVersion` and its child records.
+
+Higa uses compact integer identifiers for joins/performance while preserving the official URI as the unique canonical external reference.
 
 Labels, texts and relations are separate records. Do not model multilingual data as columns such as `nameEn`, `nameNl` or `nameLv`.
 
@@ -276,13 +285,283 @@ Importer must be repeatable and dataset-aware. Import validation fails closed on
 
 Not part of this foundation:
 - upgrading beyond ESCO 1.2.0;
-- final Prisma schema;
 - final HTTP endpoint naming;
-- final database index implementation;
 - dedicated search engine selection;
 - final AI provider/model;
 - final semantic matching algorithm;
 - final cache strategy;
-- final ranking weights.
+- final ranking weights;
+- Candidate/Vacancy persistence integration;
+- importer implementation and projection population.
 
-These decisions come from implementation and benchmark evidence while preserving the boundaries above.
+The PostgreSQL/Prisma runtime graph foundation and its core indexes are now an approved architecture decision. Search-engine-specific indexes and matching weights remain evidence-driven later work.
+
+## 17. Verified ESCO 1.2.0 graph baseline
+
+The frozen normalized snapshot used for the first runtime integration is verified CLEAN and contains:
+
+```text
+concepts       19,070
+occupations     3,665
+skills         15,383
+labels      1,040,825
+texts         483,734
+relations     404,098
+references        542
+```
+
+There are no dangling normalized relation endpoints.
+
+The graph is therefore sufficiently complete for runtime graph modeling without inventing missing nodes.
+
+## 18. Source graph versus semantic interpretation
+
+The source graph must be preserved losslessly.
+
+```text
+EscoConcept
+    ↑
+EscoRelation
+    ↓
+EscoConcept
+```
+
+Every source relation retains:
+- dataset;
+- source concept;
+- original relation key;
+- target concept;
+- deterministic source identity.
+
+Higa may additionally classify a relation into a semantic group for runtime traversal.
+
+The semantic group is derived metadata. It must never replace the original ESCO relation key.
+
+A raw relation key cannot always be assigned one semantic meaning in isolation. Classification may depend on:
+- relation key;
+- source concept kind;
+- source URI family;
+- target concept kind;
+- target URI family.
+
+Example: `broaderHierarchyConcept` occurs both Skill→Skill and Skill→ISCED-F. The first may participate in skill hierarchy traversal while the second is taxonomy/classification context.
+
+## 19. Verified relation families
+
+The current ESCO 1.2.0 snapshot exposes the following source relation keys:
+
+```text
+isEssentialForOccupation
+hasEssentialSkill
+hasOptionalSkill
+isOptionalForOccupation
+isInScheme
+narrowerSkill
+hasReuseLevel
+hasSkillType
+broaderHierarchyConcept
+isTopConceptInScheme
+broaderSkill
+isOptionalForSkill
+regulatedProfessionNote
+narrowerOccupation
+broaderIscoGroup
+broaderOccupation
+broaderConcept
+narrowerConcept
+isEssentialForSkill
+```
+
+Important inverse pairs include:
+
+```text
+occupation --hasEssentialSkill--> skill
+skill      --isEssentialForOccupation--> occupation
+
+occupation --hasOptionalSkill--> skill
+skill      --isOptionalForOccupation--> occupation
+
+occupation --broaderOccupation--> occupation
+occupation --narrowerOccupation--> occupation
+
+skill --hasOptionalSkill--> skill
+skill --isOptionalForSkill--> skill
+
+skill --hasEssentialSkill--> skill
+skill --isEssentialForSkill--> skill
+
+concept --broaderConcept--> concept
+concept --narrowerConcept--> concept
+```
+
+Both directions remain in the canonical source graph when ESCO provides them.
+
+Derived projections may collapse inverse pairs into one normalized runtime fact.
+
+## 20. Semantic relation groups
+
+Runtime relations may be classified into these Higa semantic groups:
+
+```text
+OCCUPATION_SKILL
+OCCUPATION_HIERARCHY
+SKILL_HIERARCHY
+SKILL_DEPENDENCY
+TAXONOMY
+CLASSIFICATION
+REFERENCE_METADATA
+OTHER
+```
+
+These groups are for traversal/query semantics.
+
+They are not matching percentages and must not contain Candidate/Vacancy business policy.
+
+## 21. Occupation-skill projection
+
+The source graph contains a large verified Occupation↔Skill layer.
+
+For runtime use, build a rebuildable projection:
+
+```text
+EscoOccupationSkill
+- dataset
+- occupationConcept
+- skillConcept
+- importance = ESSENTIAL | OPTIONAL
+```
+
+The projection is derived from canonical relations such as the verified essential/optional Occupation↔Skill inverse pairs.
+
+It must not become a second source of truth.
+
+Its purpose is fast construction of an occupation capability profile:
+
+```text
+Occupation
+→ essential skills
+→ optional skills
+```
+
+Matching policy remains outside this projection.
+
+## 22. Hierarchy closure projection
+
+Hierarchical traversal should not require repeated recursive graph walking for every high-volume matching request.
+
+A rebuildable transitive closure may store:
+
+```text
+EscoHierarchyClosure
+- dataset
+- semanticGroup
+- ancestorConcept
+- descendantConcept
+- depth
+```
+
+Only verified hierarchy semantics participate in the closure.
+
+Taxonomy/classification edges must not be silently mixed into skill/occupation hierarchy closure.
+
+The stored depth represents graph distance within the selected hierarchy semantic group.
+
+## 23. Matching-oriented interpretation boundary
+
+Higa matching later compares semantic profiles, not occupation labels.
+
+Foundation principle:
+
+```text
+Occupation gives context.
+Skills give evidence.
+Relations give proximity.
+Business rules give meaning.
+```
+
+Exact concept identity is the strongest evidence for an individual skill requirement.
+
+Non-exact concepts may later contribute through verified graph relationships and distance.
+
+The matching layer, not ESCO persistence, determines:
+- partial contribution;
+- missing requirements;
+- transferable capability;
+- relevant additional skills;
+- overskill signals;
+- final fit score.
+
+An overall requirement-fit score must not exceed 100%.
+
+Additional/overskill capability is reported separately rather than inflating requirement coverage above 100%.
+
+## 24. PostgreSQL runtime foundation
+
+The first backend runtime schema uses:
+
+```text
+EscoDataset
+EscoConcept
+EscoConceptVersion
+EscoLabel
+EscoText
+EscoRelationType
+EscoRelation
+EscoReference
+EscoOccupationSkill
+EscoHierarchyClosure
+```
+
+Canonical source tables:
+- preserve the frozen snapshot semantics;
+- retain URI identity;
+- retain relation direction;
+- remain dataset-aware.
+
+Derived tables:
+- `EscoOccupationSkill`;
+- `EscoHierarchyClosure`.
+
+Derived tables must be safely rebuildable from canonical graph state.
+
+## 25. Indexing principles
+
+The initial relational indexes optimize:
+- dataset/version lookup;
+- concept URI identity;
+- concept kind/family filtering;
+- localized label lookup;
+- outgoing graph traversal;
+- incoming graph traversal;
+- semantic-group traversal;
+- direct source-target edge lookup;
+- occupation→skill projection lookup;
+- skill→occupation reverse lookup;
+- ancestor/descendant closure traversal.
+
+Dedicated fuzzy/trigram/search-engine indexes remain deferred until real search benchmarks justify them.
+
+## 26. Dataset activation and import safety
+
+A future importer must use dataset lifecycle state:
+
+```text
+IMPORTING
+→ ACTIVE
+
+IMPORTING
+→ FAILED
+
+previous ACTIVE
+→ ARCHIVED only through an explicit activation transition
+```
+
+A new dataset must not become active before:
+- manifest/hash validation;
+- canonical row counts/integrity checks;
+- relation endpoint verification;
+- derived projection build;
+- final database audit.
+
+A failed import must not damage the currently active dataset.
+
