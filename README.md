@@ -12,10 +12,11 @@ Use documentation in this order:
 2. `ESCO_ARCHITECTURE.md` — shared ESCO knowledge, multilingual search/display, importer and consumer boundaries.
 3. `CANDIDATE_ARCHITECTURE.md` — Candidate / Resume / Intake / ESCO / verification / component boundaries.
 4. `UI_STANDARDS.md` — cross-project semantic UI roles and typography conventions.
-5. Repository-local `PROJECT_RULES.md` — rules specific to one implementation repository.
-6. Repository-local `CURRENT_TASK.md` — active temporary implementation scope.
-7. Repository-local `PROJECT_STATE.md` — implemented current state and known gaps.
-8. Repository-local domain and production documents.
+5. `FINANCIAL_POLICY.md` — shared pricing direction, module boundaries, AI usage limits and integration policy.
+6. Repository-local `PROJECT_RULES.md` — rules specific to one implementation repository.
+7. Repository-local `CURRENT_TASK.md` — active temporary implementation scope.
+8. Repository-local `PROJECT_STATE.md` — implemented current state and known gaps.
+9. Repository-local domain and production documents.
 
 A repository-local rule may refine a central rule for implementation details, but it must not contradict a central system invariant.
 
@@ -40,7 +41,8 @@ It should contain:
 - cross-project contracts;
 - cross-client semantic UI conventions;
 - Candidate / Resume / intake / verification architecture;
-- shared ESCO knowledge and multilingual semantic-reference architecture.
+- shared ESCO knowledge and multilingual semantic-reference architecture;
+- shared commercial/pricing principles and variable-cost automation boundaries.
 
 Do not use this repository for:
 - implementation-specific source code;
@@ -49,4 +51,4 @@ Do not use this repository for:
 - framework-specific styling or component rules;
 - duplicated copies of repository-local state.
 
-Last reviewed: 2026-10-05
+Last reviewed: 2026-10-06
