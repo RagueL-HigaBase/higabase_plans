@@ -136,3 +136,31 @@ Still to be decided:
 - enterprise/high-volume rules.
 
 These values should be based on real Higa cost benchmarks and early customer usage.
+
+
+## Local / self-hosted AI direction
+
+HigaBase should not be architecturally tied to one external AI provider.
+
+Preferred direction:
+- keep the Higa AI Core provider-agnostic;
+- support cloud providers and local/self-hosted inference behind the same application-level contract;
+- use local models where they provide sufficient quality, privacy, reliability or cost control;
+- keep stronger cloud models available for escalation when local confidence or benchmark quality is insufficient;
+- do not expose provider/model choice as part of the customer-facing billing model.
+
+Initial development benchmark:
+- use Ollama as the simplest local inference runtime;
+- start with `gpt-oss-20b` as one local benchmark candidate;
+- compare it against the selected cloud model on the same CV test set;
+- measure extraction accuracy, hallucinations, structured-output validity, ESCO mapping quality, latency and real operating cost.
+
+Initial local deployment may run on the development machine and does not require a custom AI microservice. Higa Express can call the local inference runtime over HTTP through an AI provider adapter.
+
+Possible production evolution:
+
+Higa Express -> Higa AI Core -> provider adapter -> local inference runtime / cloud provider
+
+If local inference proves useful at scale, the runtime can later move to a dedicated GPU host and use a production-oriented inference server such as vLLM without changing the higher-level Higa contracts.
+
+Principle: choose the minimum sufficient compute/model for the required quality level, not simply the cheapest model and not automatically the largest model.
