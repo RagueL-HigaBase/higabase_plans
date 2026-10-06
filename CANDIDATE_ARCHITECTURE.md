@@ -23,17 +23,20 @@ Conceptually:
 
 ```text
 Candidate
-├─ identity / contact
-├─ Resume
-├─ verification/provenance
-└─ references from optional component domains
+├─ stable identity
+├─ Candidate-owned profile/contact data
+└─ references from Resume and optional component domains
 ```
+
+Candidate does not own Organization-specific operational data. Organization relationship, access and transfer policy are separate concerns and must not shape the Candidate core data standard.
 
 Optional component data must reference Candidate by `candidateId`; Candidate must not grow component-specific columns.
 
 ## 2. Resume boundary
 
-Resume is a base Candidate layer.
+Resume is an independent professional/source dataset linked to Candidate.
+
+Resume data remains Resume data. Candidate Profile may use appropriate confirmed facts, but Resume is not flattened into Candidate and Candidate does not become a copy of a CV.
 
 It stores human/source professional facts such as:
 - employment experience;
@@ -56,6 +59,38 @@ EscoConcept reference
 ```
 
 Do not overwrite original Resume text with normalized labels.
+
+### 2.1 Resume Draft research contract
+
+Before freezing the production Resume schema, HigaBase uses a disposable `ResumeDraftV1` research contract.
+
+Initial blocks:
+- personal/header data present in the source CV;
+- contacts present in the source CV;
+- summary/about text;
+- languages and stated levels;
+- professional skills;
+- software/tools proficiency;
+- work history;
+- education;
+- certifications;
+- achievements;
+- additional information.
+
+The draft contract is intentionally allowed to change while heterogeneous CV samples are tested. It must not be treated as the final Candidate or Resume persistence model.
+
+First experimental vertical slice:
+
+```text
+original CV
+→ content extraction
+→ candidate.resume.parse
+→ strict ResumeDraftV1 validation
+→ draft persistence
+→ development/test JSON route
+```
+
+ESCO normalization, Organization permissions and production Candidate persistence are outside this first experiment.
 
 ## 3. Intake
 
