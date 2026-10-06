@@ -163,7 +163,29 @@ ESCO storage
 small localized result DTO
 ```
 
-Search primarily operates on indexed `EscoLabel` records.
+Canonical `EscoLabel` remains the source of truth for multilingual terminology, but high-volume interactive lookup should use a rebuildable search projection rather than coupling search implementation to canonical storage.
+
+```text
+EscoLabel
+    ↓ deterministic projection
+EscoSearchTerm
+    ↓ indexed lookup/ranking
+Search result
+```
+
+Conceptual `EscoSearchTerm` fields:
+
+```text
+datasetId
+conceptId
+language
+termType
+value
+normalizedValue
+priority
+```
+
+The projection may contain preferred and alternative labels and may later contain other source-supported searchable terms. It must be fully rebuildable from canonical ESCO state and must never become the semantic source of truth.
 
 Typical behavior: small minimum input length, client debounce, small result limit, language-scoped search, preferred display label with concept identity, and no graph/large relation payload in autocomplete.
 
@@ -219,7 +241,7 @@ Core rules:
 - extractor/raw snapshot access stays outside request-time paths;
 - benchmark real UI and AI workloads before adding a separate search engine.
 
-Cache, dedicated search engine or precomputed read models are evidence-driven later optimizations.
+The search projection and graph projections are approved rebuildable read models. External cache infrastructure and a dedicated search engine remain evidence-driven later optimizations.
 
 ## 12. Candidate and Vacancy references
 
@@ -508,6 +530,7 @@ EscoText
 EscoRelationType
 EscoRelation
 EscoReference
+EscoSearchTerm
 EscoOccupationSkill
 EscoHierarchyClosure
 ```
@@ -518,7 +541,8 @@ Canonical source tables:
 - retain relation direction;
 - remain dataset-aware.
 
-Derived tables:
+Derived/read-model tables:
+- `EscoSearchTerm`;
 - `EscoOccupationSkill`;
 - `EscoHierarchyClosure`.
 
@@ -539,7 +563,13 @@ The initial relational indexes optimize:
 - skill→occupation reverse lookup;
 - ancestor/descendant closure traversal.
 
-Dedicated fuzzy/trigram/search-engine indexes remain deferred until real search benchmarks justify them.
+For `EscoSearchTerm`, the first implementation should support:
+- language-scoped lookup;
+- term-type/priority-aware ranking;
+- normalized prefix lookup;
+- efficient small top-N result retrieval.
+
+PostgreSQL trigram indexing is the preferred first fuzzy-search option when benchmarked autocomplete requires typo/substring tolerance. A separate search engine remains deferred until PostgreSQL benchmarks demonstrate a real need.
 
 ## 26. Dataset activation and import safety
 
@@ -565,3 +595,451 @@ A new dataset must not become active before:
 
 A failed import must not damage the currently active dataset.
 
+
+## 27. Stable identity versus dataset version
+
+External Higa domains should reference stable `EscoConcept` identity, not a localized label and not a row whose identity disappears when another dataset version is imported.
+
+```text
+EscoConcept
+- id          compact Higa identity
+- uri         official ESCO URI, UNIQUE
+
+EscoConceptVersion
+- datasetId
+- conceptId
+- kind
+- sourceFamily
+- classId?
+- className
+- code?
+- status?
+- source/version metadata
+```
+
+This separates two concerns:
+
+```text
+"What concept is this?"
+→ EscoConcept
+
+"What did ESCO dataset 1.2.0 say about this concept?"
+→ EscoConceptVersion
+```
+
+Candidate/Vacancy mappings may additionally retain the dataset version used during normalization as provenance, but the durable semantic reference remains the stable concept.
+
+A future dataset import must never silently remap an existing URI to a different Higa concept identity.
+
+## 28. Internal identifier strategy
+
+Runtime graph joins should use compact integer identifiers rather than official URI strings.
+
+The URI remains canonical external identity, while internal IDs are implementation keys.
+
+```text
+external/canonical identity → ESCO URI
+runtime relational identity → compact integer conceptId
+```
+
+This is especially important for relation traversal and derived projections, where the same concept identifiers participate in large numbers of joins.
+
+Consumer APIs must not rely on the numeric value being globally portable outside the owning ESCO persistence boundary. The stable interoperability identifier is the ESCO URI.
+
+## 29. Search normalization
+
+Search normalization is a derived concern and must never modify canonical ESCO label values.
+
+```text
+EscoLabel.value
+→ original ESCO value
+
+EscoSearchTerm.normalizedValue
+→ search-oriented normalized representation
+```
+
+Normalization may include operations proven safe for lookup, such as:
+- Unicode normalization;
+- case folding;
+- whitespace normalization;
+- punctuation normalization where appropriate.
+
+Accent/diacritic-insensitive matching may be supported as a secondary search representation or database search operation when useful.
+
+The original label is always preserved and returned for display.
+
+Normalization rules must be deterministic and versioned with the projection/import logic so the search index can be rebuilt consistently.
+
+## 30. Search-language and display-language separation
+
+A search request has two language concerns:
+
+```text
+searchLanguage
+→ language used to find candidate terms
+
+displayLanguage
+→ language used to present the resulting concept
+```
+
+For normal interactive UI search they are usually the same selected client language.
+
+For AI/CV resolution they may differ.
+
+Example:
+
+```text
+CV source term language = lv
+recruiter UI language   = nl
+
+resolve using lv
+→ EscoConcept X
+→ display preferred label in nl
+```
+
+Search results therefore conceptually contain:
+- stable concept identity;
+- matched term;
+- matched language;
+- preferred display label;
+- display language;
+- concept kind.
+
+This allows diagnostics and AI provenance without forcing the UI to display the exact term that produced the match.
+
+## 31. Language fallback policy
+
+Language fallback must be explicit and ordered.
+
+Interactive UI default:
+
+```text
+1. selected client language
+2. English
+3. stop
+```
+
+A broad multilingual search must not run automatically for every keystroke.
+
+AI/source-document resolution may request broader language behavior when source-language detection is uncertain or when an extracted term is known to use a different language.
+
+Fallback must not change concept identity. It changes only which label is used for search or presentation.
+
+If no preferred display label exists in the requested language, the service may return a preferred English label while identifying the actual returned language.
+
+## 32. Search ranking contract
+
+Ranking belongs to the search/read layer, not to canonical ESCO.
+
+The first ranking model should prefer deterministic lexical evidence before fuzzy evidence.
+
+Conceptually:
+
+```text
+exact preferred
+> prefix preferred
+> exact alternative
+> prefix alternative
+> fuzzy preferred
+> fuzzy alternative
+```
+
+Term-type priority and lexical quality should be represented independently enough that ranking can evolve without changing canonical labels.
+
+The service should deduplicate results by concept so multiple matching labels do not flood autocomplete with the same semantic concept.
+
+For each returned concept, the strongest matched term is retained as match evidence.
+
+Final numeric weights remain benchmark-driven implementation details.
+
+## 33. PostgreSQL search strategy
+
+PostgreSQL is the initial search runtime.
+
+The architecture does not require Elasticsearch/OpenSearch, a vector database or a separate search service for the current ESCO scale.
+
+Recommended staged lookup:
+
+```text
+query
+→ deterministic normalization
+→ language + concept-kind scope
+→ exact/prefix candidates
+→ optional trigram fuzzy candidates
+→ rank
+→ deduplicate by concept
+→ top N
+→ resolve preferred display labels
+```
+
+Indexes should be designed around the actual access pattern rather than generic full-text indexing across all languages.
+
+A universal PostgreSQL full-text configuration is not assumed for multilingual ESCO because language-specific linguistic processing differs and does not map uniformly across all supported ESCO languages.
+
+Fuzzy/trigram behavior should be introduced and tuned from benchmark evidence.
+
+## 34. Graph access strategy
+
+Graph access and lexical search are separate runtime workloads.
+
+Graph traversal operates on concept identifiers and relation semantics; it does not require labels except when results are finally presented.
+
+```text
+Search workload:
+language + normalized term → concept
+
+Graph workload:
+concept + relation semantics → related concepts
+```
+
+Canonical relation indexes must support both directions:
+
+```text
+(datasetId, sourceConceptId, relationTypeId)
+(datasetId, targetConceptId, relationTypeId)
+```
+
+A direct source-target lookup should also be efficient where validation or deduplication requires it.
+
+High-frequency transitive hierarchy traversal should use the rebuildable hierarchy closure rather than repeatedly performing deep recursive traversal.
+
+## 35. Consumer-owned mapping rule
+
+A relationship between an Higa domain object and ESCO belongs to the consuming domain, never to ESCO.
+
+Forbidden:
+
+```text
+EscoConcept
+- candidateId
+- vacancyId
+```
+
+Correct direction:
+
+```text
+Candidate domain
+CandidateOccupationMapping
+- candidateExperienceId
+- sourceText
+- sourceLanguage
+- escoConceptId
+- datasetVersion/provenance?
+- mappingSource
+- confidence?
+- confirmation state?
+
+Vacancy domain
+VacancyOccupationMapping
+- vacancy requirement/source fact
+- sourceText
+- sourceLanguage
+- escoConceptId
+- datasetVersion/provenance?
+- mappingSource
+- confidence?
+- confirmation state?
+```
+
+Exact domain field names are not finalized here.
+
+The invariant is:
+
+```text
+Consumer knows ESCO.
+ESCO does not know Consumer.
+```
+
+Deleting or changing a Candidate/Vacancy mapping must never mutate canonical ESCO.
+
+## 36. Protocol independence
+
+ESCO Knowledge is a domain/service boundary, not a transport protocol.
+
+Its conceptual operations remain stable whether invoked through:
+- an in-process service;
+- HTTP/REST;
+- a future internal service protocol;
+- an AI tool adapter.
+
+```text
+Consumer
+   ↓
+transport adapter
+   ↓
+EscoKnowledge contract
+   ↓
+canonical/read models
+```
+
+Do not design ESCO persistence around React, REST, GraphQL, gRPC or a specific AI provider.
+
+Do not expose database tables directly as the public contract.
+
+A future extraction into a separate deployable service must be possible without changing the semantic meaning of Candidate/Vacancy ESCO mappings.
+
+## 37. Response-shape and payload discipline
+
+Different use cases require different ESCO views.
+
+Autocomplete should return a small result:
+
+```text
+concept identity
+kind
+display label
+display language
+matched term/language when useful
+```
+
+Concept detail may additionally request texts and metadata.
+
+Graph/matching operations request relations/projections without automatically loading multilingual texts.
+
+This avoids large object graphs and unnecessary multilingual payloads.
+
+Frontend clients must not receive all labels/texts for a concept unless a specific editing/inspection use case requires them.
+
+## 38. Cache boundary
+
+Caching is an optimization above stable knowledge semantics.
+
+Because an active ESCO dataset is effectively immutable during normal runtime, ESCO responses are highly cacheable.
+
+Potential cache layers include:
+- database buffer/cache behavior;
+- application-local bounded cache for hot lookups;
+- HTTP/client caching for stable concept detail;
+- external distributed cache only when deployment evidence requires it.
+
+Cache keys must include all dimensions that can change the result, especially:
+- active dataset/version;
+- operation;
+- query/concept;
+- search language;
+- display language;
+- concept kind/filter.
+
+Cache must never become the source of truth.
+
+## 39. Frontend performance contract
+
+Web and Native clients consume ESCO incrementally.
+
+They must not preload the complete ESCO label corpus.
+
+Autocomplete clients should:
+- wait for a small minimum useful query;
+- debounce input;
+- cancel/ignore stale requests;
+- request a small result limit;
+- cache recent query results where appropriate;
+- persist selected semantic identity rather than the entire search response.
+
+Exact timings and cache-library choices are client implementation decisions.
+
+Changing the selected UI language invalidates language-dependent presentation/search cache entries but does not invalidate selected concept identity.
+
+## 40. AI resolution contract
+
+AI operates against the same ESCO Knowledge layer as deterministic UI search.
+
+AI workflow:
+
+```text
+source text
+→ detect document/term language
+→ extract source occupation/skill term
+→ query ESCO Knowledge
+→ receive real candidate concepts
+→ optional model disambiguation
+→ validate selected concept
+→ create consumer-owned proposal/mapping
+```
+
+The model must never synthesize an ESCO URI or concept ID that was not returned/validated by ESCO Knowledge.
+
+AI resolution should preserve evidence:
+- original source term;
+- detected source language;
+- matched ESCO term/language;
+- selected concept;
+- confidence/ranking information where useful.
+
+## 41. Rebuildability invariant
+
+All performance-oriented ESCO projections must be disposable.
+
+```text
+Canonical ESCO state
+        ↓
+   deterministic build
+        ↓
+SearchTerm / OccupationSkill / HierarchyClosure
+```
+
+If a derived table is lost or its algorithm changes, Higa must be able to rebuild it without consulting Candidate, Vacancy or external business data.
+
+This rule prevents performance optimizations from becoming hidden sources of semantic truth.
+
+## 42. Initial benchmark gates
+
+Before adding infrastructure such as a dedicated search engine, distributed cache or vector database, benchmark the actual PostgreSQL implementation against representative workloads.
+
+At minimum benchmark:
+- occupation autocomplete by language;
+- skill autocomplete by language;
+- prefix and typo/fuzzy lookup where enabled;
+- preferred-label resolution;
+- outgoing/incoming direct relation traversal;
+- occupation→skills projection;
+- hierarchy closure lookup;
+- concurrent Web/Native autocomplete patterns;
+- AI batch resolution patterns.
+
+Performance targets should be set from the deployment environment and UX requirements rather than invented in central architecture.
+
+Architecture escalation happens only when measured evidence identifies a bottleneck.
+
+## 43. Final separation of responsibilities
+
+The resulting foundation is:
+
+```text
+                    FROZEN ESCO 1.2.0
+                           │
+                           ↓
+                    CANONICAL CORE
+       ┌───────────────────┼───────────────────┐
+       ↓                   ↓                   ↓
+ EscoConcept/Version    EscoLabel/Text     EscoRelation
+       │                   │                   │
+       │                   ↓                   ↓
+       │             EscoSearchTerm      Graph projections
+       │                   │                   │
+       └──────────────┬────┴─────────────┬─────┘
+                      ↓                  ↓
+                EscoKnowledge        Matching
+                      │
+          ┌───────────┼────────────┐
+          ↓           ↓            ↓
+        Web         Native         AI
+          │           │            │
+          └────── semantic concept ┘
+                      ↓
+             consumer-owned mapping
+          ┌───────────┴────────────┐
+          ↓                        ↓
+      Candidate                  Vacancy
+```
+
+Core invariants:
+- ESCO is independent;
+- concept identity is language-neutral;
+- canonical values are preserved;
+- search/read projections are rebuildable;
+- graph and lexical search are separate workloads;
+- consumers own mappings to ESCO;
+- transport protocols do not shape persistence;
+- optimization is benchmark-driven;
+- ESCO 1.2.0 remains the frozen baseline for this implementation phase.
