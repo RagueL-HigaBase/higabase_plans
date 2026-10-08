@@ -1,5 +1,7 @@
 # HigaBase Plans
 
+**MANDATORY RULES:** [AGENT_RULES.md](AGENT_RULES.md). Read before any changes.
+
 **START HERE:** [Documentation Index](DOCUMENTATION_INDEX.md) → [Project State](PROJECT_STATE.md) → [System Map](docs/architecture/SYSTEM_MAP.md) → [Execution Plan](docs/operations/NEXT_STEPS.md). See [ADR-0001](docs/decisions/ADR-0001-DOCUMENTATION-AUTHORITY.md) for central authority. Current implementation repositories remain on `main` only.
 
 ## Documentation hierarchy
