@@ -30,3 +30,7 @@ The first migration step is **copy without deletion**. A future review must enum
 ## Status vocabulary
 
 `PROPOSED` — not approved; `READY` — scoped and approved; `IN PROGRESS` — changing code; `VERIFY` — code exists but needed verification pending; `DONE` — owner-confirmed verified; `BLOCKED` — cannot proceed safely. Always label historical records with their date.
+
+## Mandatory execution rules
+
+The non-negotiable owner instructions are in [AGENT_RULES.md](AGENT_RULES.md). These supersede any permissive suggestion elsewhere: existing main only, exactly requested scope, no unsolicited implementation, owner approval before architectural changes. Suspected merge regressions are tracked in [PROJECT_STATE.md](PROJECT_STATE.md) and [docs/operations/NEXT_STEPS.md](docs/operations/NEXT_STEPS.md).
