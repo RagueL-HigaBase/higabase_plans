@@ -520,3 +520,25 @@ THE FRONTEND SHOWS THE NEXT ACTION
 
 This rule applies to both recruiter-facing Higa Systems and Candidate-facing clients.
 
+
+
+## 20. Candidate Core storage convention — approved foundation (2026-10-08)
+
+The owner approves independent, narrowly scoped physical tables in the shared Higa PostgreSQL convention. **Physical names use lowercase `hb_` (not mixed-case `HB_`)** to match existing database objects and migrations. Prisma models use `Candidate...` to distinguish this domain from `System...` and `Esco...`.
+
+Initial persistence:
+- `Candidate` → `hb_candidates`: identity `id`, `firstName`, `lastName`, timestamps; no organization owner or contacts in the same table.
+- `CandidateContact` → `hb_candidate_contacts`: separate 0..1 contact record per candidate with optional email/phone and timestamps. Neither email nor phone is globally unique; identity resolution is a separate protected workflow.
+
+Future independent tables (names are proposals until individual contracts are approved):
+- Candidate language, address, resume document/source, work experience, education, skills, certification, verification/screening;
+- Candidate–Organization relationship request/consent and access/visibility;
+- append-only Candidate audit/history with actor type, actor reference and historical identity snapshot as appropriate.
+
+Core tables do **not** include direct `organizationId`, `createdByUserId`, a JSON all-purpose profile, placeholder permissions or inferred ESCO capabilities. Creation actor and organization context must be captured in the later **transactional intake/audit flow**, before production create APIs become available.
+
+Indexes must serve actual queries: UUID primary key; unique candidate FK on 1:1 contact; avoid redundant indexes, broad speculative indexes and unbounded JSON blobs. Candidate list access will use an indexed organization relation and keyset pagination once its flow is approved; do not expose a global unscoped candidate list.
+
+**Gate:** Initial schema-only migration is not a live Candidate intake. No Candidate write/read API or seeded personal data may be enabled until minimal authorization, consent/request boundary and transactional audit are implemented. Global person names and CV facts must allow Unicode, unlike the existing business SystemUser ASCII-only rule.
+
+The owner has explicitly approved preparing this minimal, separate Candidate storage foundation for consumption by both web Recruitment and future React Native. Backend repository scope must record an isolated exception; this does not transfer candidate identity ownership to business SystemUser and does not approve future mobile auth flows.
