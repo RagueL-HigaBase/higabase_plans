@@ -1,35 +1,45 @@
-# HigaBase Documentation — Start Here
+# HigaBase — Documentation Index
 
-**Central documentation authority.** Reviewed 2026-10-08. Read this before changing any repository.
+Updated: 2026-10-08. **This is the first document every new agent must read.**
 
-## Reading order (mandatory for agents)
+## Mandatory reading order
 
-1. [PROJECT_STATE.md](PROJECT_STATE.md) — one cross-repository operational checkpoint, current/verified/pending/blocked work.
-2. [SYSTEM_ARCHITECTURE.md](SYSTEM_ARCHITECTURE.md) — binding platform-wide identity, organization, permission and lifecycle invariants.
-3. [CANDIDATE_ARCHITECTURE.md](CANDIDATE_ARCHITECTURE.md) — Candidate/Resume/consent/intake boundaries.
-4. [ESCO_ARCHITECTURE.md](ESCO_ARCHITECTURE.md) — frozen ESCO reference model, import and semantic resolution.
-5. [AI_CORE.md](AI_CORE.md) — provider-independent AI execution and provenance.
-6. [UI_STANDARDS.md](UI_STANDARDS.md) and [FINANCIAL_POLICY.md](FINANCIAL_POLICY.md) as relevant.
-7. [DOCUMENTATION_GOVERNANCE.md](DOCUMENTATION_GOVERNANCE.md) — document ownership, change procedure, snapshot limitations.
-8. Only then inspect the relevant implementation repository **main** branch, its runtime contracts/tests/schema, and its minimal local agent instructions.
+1. [Cross-repository project state](PROJECT_STATE.md): current status, evidence, gaps and blockers.
+2. [Architecture domain map](docs/architecture/SYSTEM_MAP.md): how the system fits together and which implementation owns each domain.
+3. [System architecture](SYSTEM_ARCHITECTURE.md): binding identity, organization, permissions and data-flow invariants.
+4. [Candidate architecture](CANDIDATE_ARCHITECTURE.md): global Candidate, Resume, consent, review and intake.
+5. [ESCO architecture](ESCO_ARCHITECTURE.md): frozen ESCO dataset, graph, search and normalization.
+6. [AI Core architecture](AI_CORE.md): provider-neutral contracts and data provenance.
+7. [Execution plan](docs/operations/NEXT_STEPS.md): next verified gates and deferred work.
+8. [Documentation governance](DOCUMENTATION_GOVERNANCE.md) and [ADR-0001](docs/decisions/ADR-0001-DOCUMENTATION-AUTHORITY.md).
+9. Consult [UI Standards](UI_STANDARDS.md) and [Financial Policy](FINANCIAL_POLICY.md) when relevant.
 
-## Actual repositories
+Then inspect the relevant implementation repository's **main** branch, current code, schema, tests, local run instructions and any still-active CURRENT_TASK. Do not change branches.
 
-- [HigaBase_Plans](https://github.com/RagueL-HigaBase/higabase_plans): central cross-system architecture and authoritative project checkpoint.
-- [higa_systems_express](https://github.com/RagueL-HigaBase/higa_systems_express): active Express/Prisma API.
-- [higa_systems_react](https://github.com/RagueL-HigaBase/higa_systems_react): active Phoenix React business web client.
-- [higa_systems_native](https://github.com/RagueL-HigaBase/higa_systems_native): early Candidate mobile shell.
-- [higa-esco-extractor](https://github.com/RagueL-HigaBase/higa-esco-extractor): ESCO source extraction.
-- [higa_systems](https://github.com/RagueL-HigaBase/higa_systems): older combined API/web System Core repository; **not** the current business client/server pair. Do not confuse it with HigaBase_Plans.
+## Repository responsibilities
 
-## Documentation consolidation
+| Repository | Role |
+|---|---|
+| [HigaBase_Plans](https://github.com/RagueL-HigaBase/higabase_plans) | Central documentation authority |
+| [higa_systems_express](https://github.com/RagueL-HigaBase/higa_systems_express) | Current business API, independent ESCO domain, approved Candidate schema foundation |
+| [higa_systems_react](https://github.com/RagueL-HigaBase/higa_systems_react) | Current Phoenix business frontend |
+| [higa_systems_native](https://github.com/RagueL-HigaBase/higa_systems_native) | Candidate mobile shell |
+| [higa-esco-extractor](https://github.com/RagueL-HigaBase/higa-esco-extractor) | Frozen ESCO source extraction |
+| [higa_systems](https://github.com/RagueL-HigaBase/higa_systems) | Older combined System Core; not the current React/Express implementation pair |
 
-Original React/Express markdown has been **copied, not removed**, to [docs/repository-snapshots/](docs/repository-snapshots/). These copies are **historical, immutable-style source snapshots**, not another current-state authority. The central documents above determine architecture; source code and tests on main determine observed implementation. Review snapshot evidence before deprecating originals. Do not turn copied CURRENT_TASK files into competing active tasks.
+## Archive and history
 
-## What not to assume
+- [Express source snapshots](docs/repository-snapshots/express/)
+- [React source snapshots](docs/repository-snapshots/react/)
+- [Legacy and other clients](docs/repository-snapshots/)
+- [Archive policy](docs/archive/README.md)
 
-- Implemented code ≠ deployed/database-applied ≠ owner-verified.
-- A benchmark or experimental dev CV preview ≠ production Candidate intake.
-- A Git branch containing ahead commits ≠ missing main functionality (squash merges are common).
-- The local PostgreSQL state is not accessible through the GitHub connector.
-- Never invent progress, close VERIFY tasks, or overwrite history without evidence.
+**Snapshots are historical evidence and are not maintained as current-state duplicates.** Original repository files have not been removed; the complete recursive Markdown inventory is still pending. Never claim that all files have been centralized until parity is checked.
+
+## Agent guardrails
+
+- **Only existing main**: never create a feature branch, switch away, or open PRs.
+- Do not automatically merge/delete older branches; postpone their final cleanup until Candidate+ESCO closure.
+- Proposed architecture ≠ implemented feature; green tests ≠ migrated local DB ≠ owner-reviewed UI.
+- Do not expose experimental CV parsing/preview as production Candidate API.
+- Canonical architecture is central; code/migrations/tests are evidence of actual implementation. Record discrepancies explicitly.
