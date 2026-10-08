@@ -4,8 +4,9 @@ Updated: 2026-10-08. **This is the first document every new agent must read.**
 
 ## Mandatory reading order
 
-1. [Cross-repository project state](PROJECT_STATE.md): current status, evidence, gaps and blockers.
-2. [Architecture domain map](docs/architecture/SYSTEM_MAP.md): how the system fits together and which implementation owns each domain.
+1. [Mandatory agent rules](AGENT_RULES.md): main-only, exact task scope and explicit architecture approval.
+2. [Cross-repository project state](PROJECT_STATE.md): current status, evidence, gaps and blockers.
+3. [Architecture domain map](docs/architecture/SYSTEM_MAP.md): how the system fits together and which implementation owns each domain.
 3. [System architecture](SYSTEM_ARCHITECTURE.md): binding identity, organization, permissions and data-flow invariants.
 4. [Candidate architecture](CANDIDATE_ARCHITECTURE.md): global Candidate, Resume, consent, review and intake.
 5. [ESCO architecture](ESCO_ARCHITECTURE.md): frozen ESCO dataset, graph, search and normalization.
