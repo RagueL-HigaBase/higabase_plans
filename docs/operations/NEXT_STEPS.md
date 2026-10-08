@@ -34,3 +34,7 @@ Source of truth for project-wide checkpoint: [PROJECT_STATE](../../PROJECT_STATE
 - Advanced permission matrices, automatic model routing, matching weights, mobile integration and speculative UI are not currently authorized.
 
 Each block updates PROJECT_STATE with the exact Git/main revision and measured tests. Status VERIFY is not DONE.
+
+## Deferred: full regression audit and SonarQube (OPEN)
+
+After finishing the currently approved Candidate + ESCO blocks, inspect the live web behavior **from Sign In onward**; compare React, Express and PostgreSQL state against central architecture and previously verified UI contracts. The owner reported possible regressions associated with historical branch merges. Treat suspected lost data as unverified until traced. Log each mismatch as an isolated defect with reproduction, expected/actual behavior, affected commit/files, impact and verification. Repair only an explicitly approved defect. Then run SonarQube and fix reported issues without changing intended behavior. Keep statuses VERIFY until owner confirms. Do not start this work implicitly as part of Candidate tasks.
