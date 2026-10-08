@@ -2,6 +2,8 @@
 
 Updated: 2026-10-08. **This is the first document every new agent must read.**
 
+**Current tasks:** [TASKS.md](TASKS.md). **Project documentation:** [React](projects/react/) · [Express](projects/express/).
+
 ## Mandatory reading order
 
 1. [Mandatory agent rules](AGENT_RULES.md): main-only, exact task scope and explicit architecture approval.
@@ -15,7 +17,7 @@ Updated: 2026-10-08. **This is the first document every new agent must read.**
 8. [Documentation governance](DOCUMENTATION_GOVERNANCE.md) and [ADR-0001](docs/decisions/ADR-0001-DOCUMENTATION-AUTHORITY.md).
 9. Consult [UI Standards](UI_STANDARDS.md) and [Financial Policy](FINANCIAL_POLICY.md) when relevant.
 
-Then inspect the relevant implementation repository's **main** branch, current code, schema, tests, local run instructions and any still-active CURRENT_TASK. Do not change branches.
+Then read the corresponding **central** `projects/react/` or `projects/express/` `PROJECT_RULES.md`, `CURRENT_TASK.md`, `PROJECT_STATE.md` and domain MD. Inspect implementation `main` code/schema/tests and any local uncommitted work; do not change branches.
 
 ## Repository responsibilities
 
@@ -27,6 +29,14 @@ Then inspect the relevant implementation repository's **main** branch, current c
 | [higa_systems_native](https://github.com/RagueL-HigaBase/higa_systems_native) | Candidate mobile shell |
 | [higa-esco-extractor](https://github.com/RagueL-HigaBase/higa-esco-extractor) | Frozen ESCO source extraction |
 | [higa_systems](https://github.com/RagueL-HigaBase/higa_systems) | Older combined System Core; not the current React/Express implementation pair |
+
+## Live project documentation
+
+- [Central task board](TASKS.md)
+- [React project](projects/react/README.md)
+- [Express project](projects/express/README.md)
+
+All 47 source MD were copied and blob-SHA-verified on 2026-10-08 before source cleanup. Current central project documents supersede repository-local copies; old snapshots remain historical.
 
 ## Archive and history
 

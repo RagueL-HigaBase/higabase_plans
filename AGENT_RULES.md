@@ -21,8 +21,8 @@ Effective 2026-10-08. Applies to agents working on all HigaBase repositories. Re
 - Do not silently reinterpret central rules. If implementation conflicts with architecture, mark BLOCKED and ask for the decision.
 
 ## 4. Mandatory agent startup
-1. Read central `DOCUMENTATION_INDEX.md`, `AGENT_RULES.md`, `PROJECT_STATE.md` and `docs/operations/NEXT_STEPS.md`.
-2. Read the applicable canonical architecture completely and the active repository's `main` documents/code.
+1. Read central `DOCUMENTATION_INDEX.md`, `AGENT_RULES.md`, `TASKS.md`, `PROJECT_STATE.md` and `docs/operations/NEXT_STEPS.md`.
+2. Read the applicable canonical architecture completely, the central `projects/<project>/` rules/task/state/domain documents and the active implementation repository's `main` code.
 3. Check `git status`, branch and relevant source/test reality; never overwrite dirty local changes.
 4. Confirm only the requested scope, identify affected files, avoid unrelated work.
 5. Work in minimal verifiable blocks; record exact tests, state and what was not checked.
@@ -46,7 +46,11 @@ Nothing in this document approves implementing future roadmap items automaticall
 
 ## 7. Mandatory MD synchronization on every implementation block
 - Before code changes, read applicable rules, task, state, and domain MD. A code change without inspecting these documents violates the working contract.
-- Every implementation block must update the relevant repository MD in the **same block**: `CURRENT_TASK.md` for in-progress/VERIFY work and the affected domain/state document where durable verified facts change. Do not silently leave stale MD or mark a block DONE before owner verification.
+- Every implementation block must update the relevant **central Plans project MD** in the **same block**: `projects/<project>/CURRENT_TASK.md` for in-progress/VERIFY work and the affected domain/state document where durable verified facts change. Do not silently leave stale MD or mark a block DONE before owner verification.
 - Cross-repository architecture decisions require prior owner approval and corresponding central canonical MD update before implementation. Update central state only when verified evidence changes; never invent or rewrite unrelated architecture.
 - Every completion report must state which MD paths were updated, exact verification evidence, and what remains unverified. If documentation cannot be updated, report BLOCKED rather than claiming completion.
 - One existing `main` only. No creating branches, PRs, merges, cherry-picks, history rewrites, bulk branch deletion or cleanup by agents without a separate explicit owner instruction and verification of unique work.
+
+## 8. Centralized project documentation
+
+Project documentation lives in `higabase_plans/projects/react/` and `higabase_plans/projects/express/`; source code repositories retain only README redirects. Start with `TASKS.md`. Update central project task files with every implementation block, without relying on removed local MD. Preserve historical central copies and keep implementation Git work on `main` only.

@@ -1,6 +1,6 @@
 # Current Execution Plan — 2026-10-08
 
-Source of truth for project-wide checkpoint: [PROJECT_STATE](../../PROJECT_STATE.md). This document defines ordering, not independent task approvals.
+Central live task queue: [TASKS](../../TASKS.md). Source of truth for project-wide checkpoint: [PROJECT_STATE](../../PROJECT_STATE.md). This document defines ordering, not independent task approvals.
 
 ## Step 0 — Documentation consolidation
 
@@ -38,3 +38,7 @@ Each block updates PROJECT_STATE with the exact Git/main revision and measured t
 ## Deferred: full regression audit and SonarQube (OPEN)
 
 After finishing the currently approved Candidate + ESCO blocks, inspect the live web behavior **from Sign In onward**; compare React, Express and PostgreSQL state against central architecture and previously verified UI contracts. The owner reported possible regressions associated with historical branch merges. Treat suspected lost data as unverified until traced. Log each mismatch as an isolated defect with reproduction, expected/actual behavior, affected commit/files, impact and verification. Repair only an explicitly approved defect. Then run SonarQube and fix reported issues without changing intended behavior. Keep statuses VERIFY until owner confirms. Do not start this work implicitly as part of Candidate tasks.
+
+## Centralized documentation checkpoint — 2026-10-08
+
+The 24 React and 23 Express Markdown files were copied into `projects/react/` and `projects/express/` with source blob-SHA parity; project MD are maintained centrally going forward. Track live priorities in [TASKS.md](../../TASKS.md). Semantic/link consolidation remains a separate documentation-only follow-up.
