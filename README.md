@@ -1,10 +1,6 @@
 # HigaBase Plans
-> **Agent entry point (2026-10-08):** Start with [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md), then [PROJECT_STATE.md](PROJECT_STATE.md) and [DOCUMENTATION_GOVERNANCE.md](DOCUMENTATION_GOVERNANCE.md). Implementation documentation is being consolidated into `docs/repository-snapshots/` as source evidence. These snapshots are not competing architectural authorities.
 
-
-Central architecture and planning repository for the HigaBase ecosystem.
-
-This repository owns cross-project architectural rules that must remain consistent across the web frontend, backend and future clients.
+**START HERE:** [Documentation Index](DOCUMENTATION_INDEX.md) → [Project State](PROJECT_STATE.md) → [System Map](docs/architecture/SYSTEM_MAP.md) → [Execution Plan](docs/operations/NEXT_STEPS.md). See [ADR-0001](docs/decisions/ADR-0001-DOCUMENTATION-AUTHORITY.md) for central authority. Current implementation repositories remain on `main` only.
 
 ## Documentation hierarchy
 
