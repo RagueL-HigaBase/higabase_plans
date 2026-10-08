@@ -43,3 +43,10 @@ Effective 2026-10-08. Applies to agents working on all HigaBase repositories. Re
 5. After Candidate + ESCO, inspect and clean historical branches with separate approval.
 
 Nothing in this document approves implementing future roadmap items automatically.
+
+## 7. Mandatory MD synchronization on every implementation block
+- Before code changes, read applicable rules, task, state, and domain MD. A code change without inspecting these documents violates the working contract.
+- Every implementation block must update the relevant repository MD in the **same block**: `CURRENT_TASK.md` for in-progress/VERIFY work and the affected domain/state document where durable verified facts change. Do not silently leave stale MD or mark a block DONE before owner verification.
+- Cross-repository architecture decisions require prior owner approval and corresponding central canonical MD update before implementation. Update central state only when verified evidence changes; never invent or rewrite unrelated architecture.
+- Every completion report must state which MD paths were updated, exact verification evidence, and what remains unverified. If documentation cannot be updated, report BLOCKED rather than claiming completion.
+- One existing `main` only. No creating branches, PRs, merges, cherry-picks, history rewrites, bulk branch deletion or cleanup by agents without a separate explicit owner instruction and verification of unique work.
