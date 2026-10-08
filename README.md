@@ -1,4 +1,6 @@
 # HigaBase Plans
+> **Agent entry point (2026-10-08):** Start with [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md), then [PROJECT_STATE.md](PROJECT_STATE.md) and [DOCUMENTATION_GOVERNANCE.md](DOCUMENTATION_GOVERNANCE.md). Implementation documentation is being consolidated into `docs/repository-snapshots/` as source evidence. These snapshots are not competing architectural authorities.
+
 
 Central architecture and planning repository for the HigaBase ecosystem.
 
