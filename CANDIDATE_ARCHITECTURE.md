@@ -1,7 +1,7 @@
 # Candidate Architecture
 
 Status: **FOUNDATION**
-Last reviewed: **2026-10-05**
+Last reviewed: **2026-10-08**
 
 This document expands the Candidate-specific architecture referenced by `SYSTEM_ARCHITECTURE.md`.
 
@@ -311,3 +311,212 @@ Not part of this foundation:
 - production ESCO matching algorithms.
 
 These should be decided from implementation evidence while preserving the invariants above.
+
+## 14. Candidate basic profile v1
+
+The first production Candidate implementation must start from a deliberately small profile.
+
+The goal is not to model the entire CV. The goal is to create the minimum stable Candidate core that can support intake, confirmation and later Resume/ESCO enrichment.
+
+Initial basic profile scope:
+
+```text
+Candidate
+├─ basic identity
+│  ├─ first name
+│  ├─ middle name? 
+│  └─ last name
+├─ contact
+│  ├─ email?
+│  └─ phone?
+└─ languages
+   ├─ language
+   └─ stated level?
+```
+
+Additional fields may be added only when a real Candidate flow requires them.
+
+The first implementation must not depend on final Experience, Occupation, Skill, matching, seniority or component schemas.
+
+### 14.1 Verification is state, not duplicate storage
+
+Do not create separate "verified profile" and "unverified profile" copies.
+
+The system keeps one canonical Candidate profile and separates:
+- source/draft information;
+- human confirmation state;
+- screening workflow/history.
+
+Conceptually:
+
+```text
+CV / input
+   ↓
+ResumeDraft / extracted source facts
+   ↓
+Candidate basic profile
+   ↓
+screening / confirmation
+   ↓
+same Candidate profile becomes screened
+```
+
+A verification session may be temporary/history data, but it must not become a second Candidate profile.
+
+For the first implementation, keep Candidate profile screening state minimal:
+
+```text
+UNSCREENED
+SCREENED
+```
+
+"In progress" belongs to the active screening/request workflow rather than requiring another permanent copy of the profile.
+
+## 15. Candidate may relate to many Organizations
+
+Candidate is global Candidate-domain identity.
+
+One Candidate may have active relationships with multiple Organizations.
+
+Conceptually:
+
+```text
+Candidate
+├─ relation → Organization A
+├─ relation → Organization B
+└─ relation → Organization C
+```
+
+The Candidate profile is not duplicated per Organization.
+
+Organization-specific access/relationship state is separate from global Candidate profile/screening state.
+
+A screened Candidate remains screened when another Organization requests a relationship, unless the Candidate profile itself later requires re-screening under an explicit future policy.
+
+## 16. CV intake with hidden identity resolution
+
+The recruiter-facing flow must remain simple and must not reveal whether the Candidate already exists in Higa.
+
+Recruiter action:
+
+```text
+Upload CV
+→ Add candidate
+→ system processes
+→ request sent
+```
+
+Behind the interface, the system may:
+1. normalize available email/phone;
+2. resolve whether they belong to an existing Candidate;
+3. create a new Candidate when no safe match exists;
+4. reuse an existing Candidate when identity resolution is safe;
+5. create a temporary Organization-relation request;
+6. choose the correct Candidate confirmation/screening flow;
+7. send the private email/link.
+
+The recruiter must not be asked to choose "existing vs new Candidate".
+
+The recruiter must not receive an account-existence signal through different success responses.
+
+Identity conflicts or ambiguous email/phone matches are backend exceptions and must not be exposed as an existence lookup surface.
+
+## 17. Candidate relation request and consent
+
+A Candidate-Organization relationship becomes active only after Candidate confirmation/consent.
+
+Before that, use a temporary request/workflow state rather than treating the Candidate as an active Organization relation.
+
+Conceptually:
+
+```text
+Organization uploads CV
+        ↓
+identity resolution
+        ↓
+temporary relation request
+        ↓
+Candidate receives private link
+        ↓
+Candidate confirms
+        ↓
+screening required?
+   ┌────┴────┐
+   │         │
+  no        yes
+   │         ↓
+   │     quick screening
+   │         │
+   └────┬────┘
+        ↓
+active Candidate ↔ Organization relation
+```
+
+If the Candidate already has a screened profile:
+- the Candidate receives a relationship-confirmation request;
+- no duplicate general screening is required;
+- confirmation can activate the Organization relation immediately.
+
+If the Candidate is not screened:
+- confirmation continues into the same simple screening flow;
+- the relation becomes ready only after the required screening is complete.
+
+Future Organization-specific questions, if introduced, are separate from the global Candidate screening state.
+
+## 18. Recruiter-facing derived states
+
+The frontend must present simple business states, not backend implementation states.
+
+Initial recruiter-facing Candidate intake states:
+
+```text
+Processing
+Waiting for candidate
+Needs screening
+Ready
+```
+
+Meaning:
+
+- `Processing` — CV/input is being parsed, normalized or identity-resolved.
+- `Waiting for candidate` — private confirmation request has been sent and Candidate action is pending.
+- `Needs screening` — general screening is still required and may be completed by the Candidate or recruiter.
+- `Ready` — Candidate relationship is active and the Candidate profile is screened/usable.
+
+These are presentation/read-model states. They do not require four matching database tables or four permanent domain entities.
+
+The backend may use more detailed internal states, but the normal recruiter UI should expose only the next useful action.
+
+## 19. Minimal interaction rule
+
+Candidate intake must be optimized around simple actions.
+
+Recruiter:
+
+```text
+UPLOAD → DONE
+```
+
+Candidate:
+
+```text
+CONFIRM → DONE
+```
+
+or, when required:
+
+```text
+CONFIRM → SCREEN → DONE
+```
+
+Do not introduce extra dialogs or steps merely to expose backend mechanics.
+
+The architectural rule is:
+
+```text
+COMPLEXITY LIVES UNDER THE HOOD
+THE FRONTEND SHOWS THE NEXT ACTION
+```
+
+This rule applies to both recruiter-facing Higa Systems and Candidate-facing clients.
+
