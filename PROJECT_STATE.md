@@ -54,3 +54,11 @@
 ## Completion protocol
 
 A block is **DONE** only after code, tests, required migrations, owner verification, and central docs agree. Update this state immediately after every approved verified block; move transient detail out of local CURRENT_TASK only after closing it.
+
+## Regression risk checkpoint — 2026-10-08 (OPEN / NOT VERIFIED)
+
+The owner reports that earlier branch merges or branch switching may have displaced UI behavior and data in parts of the system. This is a **reported risk**, not a proven inventory of lost records or a completed repair. React main previously required recovery of masked PIN, email verification, Candidate Prototype and Organization/Locations navigation. Full functional audit has **not** been performed.
+
+**Deferred audit after current approved Candidate + ESCO blocks:** start at Sign In, registration/verification/recovery, PIN/session, onboarding, Organization/Location, System Admin, Recruitment/Candidates and Candidate Prototype; trace route → UI → API → authorization → database, compare central expected contracts with observable main behavior, identify regression provenance where possible, record screenshots/tests/defects and fix only in separately approved narrow blocks. Audit actual data integrity without destructive repair. Follow with SonarQube scan/remediation and explicit closure criteria. Do not call this DONE until owner confirmation.
+
+**Nonnegotiable agent execution contract:** [AGENT_RULES.md](AGENT_RULES.md). Implement only the owner's scope; any architecture extension needs explicit approval. Main only, no new branches or PRs.
