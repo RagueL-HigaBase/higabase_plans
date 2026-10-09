@@ -696,3 +696,13 @@ A2 committed on Express `main`:
 This is research-only ingestion; real third-party CV use requires appropriate consent/legal basis. It does not persist original PDF/DOCX, does not create verified/screened state, does not deduplicate identity and must never be promoted to a production API as-is.
 
 Verification requested: owner `git pull` in Express and `npm run verify`. Do not claim verified unless actual local output confirms; no automated/local verification was run by assistant. Follow with explicit synthetic/sample CV API testing and inspect persisted data before Block B.
+
+## DEV-CANDIDATE-PIPELINE-B — experimental listing API (2026-10-09)
+
+Status: **VERIFY — owner local test and browser confirmation pending**.
+
+On Express `main`, `CandidateDevIntakeRepository.list()` reads up to 100 most recent explicitly linked experimental Candidates, including contact. `GET /api/dev/candidates` exposes those rows with session authentication, unlocked workspace, organization membership and local Origin checks; disabled outside development. No production scoped Candidate list, no organization relation, no permissions implementation, no new schema or migration, no source file preservation. Country remains empty because the minimal Candidate Core has no country. Route tests added for authenticated listing, unauthenticated and unavailable cases.
+
+Security boundary: this local development-only list is global across experimental records; do **not** deploy, expose externally, or repurpose as a production read API. It has no organization-specific consent/access scoping.
+
+Owner verification: `git pull`, `npm run verify`, `npm run db:status`, then restart Express. No local test execution was performed by the assistant. A successful owner browser row check is still required.
