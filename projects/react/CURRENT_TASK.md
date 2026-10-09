@@ -123,3 +123,23 @@ npm run verify
 npm run dev
 ```
 Check only one Dashboard, Operations order and expansion, all 12 operational submenu links (Candidates + 11 placeholders), and unchanged old menu below. Do not mark DONE until owner verifies.
+
+## APP-ADMIN-NAV-SPLIT — 2026-10-09
+
+Status: **VERIFY — owner local build and visual verification pending**.
+
+React `main` commit `50135c4733e3633e1043fbdeb7249b7c385fb1f4` implements the owner's narrow navigation request:
+- Rename legacy `Components` sidebar label to `App Administration` (provisional name chosen for its clear administrative purpose).
+- Existing Recruitment entry in that lower section becomes a single non-expandable link to its existing `/recruitment` page; remove its duplicate Candidates child **from this sidebar section only**.
+- Add equivalent non-expandable Transport and Housing links to `/transport` and `/housing`, backed by minimal authenticated workspace heading-only placeholders.
+- Keep the Operations hierarchy (Recruitment/Candidates/Vacancies/Requests/Placements; Transport/Fleet/Drivers/Routes/Schedules; Housing/Properties/Residents/Occupancy/Maintenance) unchanged and above the administrative area.
+- Leave other legacy Organization/Locations/System menu items and route definitions intact.
+- No Off Canvas, permissions, backend, DB, schema or existing functional page modifications. Naming and new pages currently English-only; localization remains outstanding, not a completed 28-language claim.
+
+Owner (React repo checkout):
+```powershell
+git pull
+npm run verify
+npm run dev
+```
+Check that App Administration entries do not expand, existing Recruitment administration page remains accessible, Transport and Housing show headings, Operations still expands and the duplicate Candidates sidebar item is gone. Do not mark DONE without owner acceptance.
