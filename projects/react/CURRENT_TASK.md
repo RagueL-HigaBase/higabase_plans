@@ -151,3 +151,7 @@ Status: **VERIFY** (owner browser/local build pending). React `main` commit `aba
 The three App Administration landing pages now show a module title and one short English description explicitly framing the page as an administration workspace. Recruitment uses its existing `/recruitment` page; Transport `/transport` and Housing `/housing` use the existing heading placeholder with an optional description prop. Operational pages, navigation labels, permissions, Off Canvas and backend are unchanged. The `App Administration` section label remains provisional, pending owner choice. New descriptions are English-only, and localization is pending; do not mark DONE.
 
 Owner React checkout: `git pull`, `npm run verify`, `npm run dev`; inspect three admin pages, verify Operations headings and routes remain unchanged.
+
+## APP-CONTROL-PANEL-LABEL — 2026-10-09
+
+Status: **VERIFY**. Owner approved sidebar section name **App Control Panel**. React `main` commit `824e5d7c2b977678731f49874f4c8ba794b4d25c` changes only the heading string in `src/components/navbars/navbar-vertical/WorkspaceNavbarVertical.tsx` from `App Administration` to `App Control Panel`. Navigation entries, routes, pages, permissions, backend and other UI untouched. Owner: `git pull`, `npm run verify`, visual check. Label is currently English-only; localization remains pending.
