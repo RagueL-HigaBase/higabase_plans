@@ -97,3 +97,29 @@ Status: **VERIFY — owner local check and rendered/semantic review pending**.
 React `main` received scoped translation completeness changes in `public/locales/*/auth.json`. The shared namespace includes Authentication, Location and Team invitation UI; all 28 locale files now parse as JSON and match the English 400-key baseline exactly (no missing/extra/blank string values; placeholder variable sets match). Existing strings were retained, and absent localized Location and invitation messages were added. The first source-level completeness check is complete, **not** full UI/native-language acceptance.
 
 Verification pending: owner `git pull --ff-only origin main`, `npm run verify`, browser inspection across 28 languages and native/semantic translation review as required. No backend/API/schema modifications. Detailed current audit: `higabase_states/pages/auth/TRANSLATIONS_AUDIT.md`. Do not mark DONE prematurely.
+
+## OPERATIONS-NAV-SKELETON — 2026-10-09
+
+Status: **VERIFY — owner local build and UI check pending**.
+
+Owner-approved navigation-only change on React main commit `8b68732dc7183f0191ef4a8cf1dda6f791c3da36`.
+
+- One visible top-level Dashboard link `/dashboard`.
+- Immediately below Dashboard, new `Operations` section with three expandable groups:
+  - Recruitment: Candidates (existing `/recruitment/candidates`), Vacancies, Requests, Placements.
+  - Transport: Fleet, Drivers, Routes, Schedules.
+  - Housing: Properties, Residents, Occupancy, Maintenance.
+- Added eleven protected route definitions backed by minimal heading-only placeholder for sections not yet implemented. This does NOT implement backend APIs or module business logic.
+- Old Components/Recruitment, Organization, Locations, and System sections remain below Operations. The existing Organization Dashboard **route** `/organization/dashboard` remains available, but its duplicate sidebar menu item is hidden to leave one visible Dashboard.
+- Existing Recruitment Candidates page unchanged. Legacy Recruitment sidebar link intentionally retained and therefore may repeat the Candidates destination until a separate cleanup decision.
+- No new permissions, schema, API endpoints, role or existing page behavior changes.
+- New menu labels are currently literal English strings; **28-language navigation localization still pending** and should not be claimed completed. No translation files changed.
+
+Owner update from React folder:
+```powershell
+git status -sb
+git pull
+npm run verify
+npm run dev
+```
+Check only one Dashboard, Operations order and expansion, all 12 operational submenu links (Candidates + 11 placeholders), and unchanged old menu below. Do not mark DONE until owner verifies.
