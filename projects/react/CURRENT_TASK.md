@@ -200,3 +200,17 @@ Status: **VERIFY — owner local React build and visual test pending**.
 On React `main`, `src/pages/recruitment/Candidates.tsx` replaces static `candidateRows=[]` with dev-only `GET /api/dev/candidates` via the standard credentialed `apiRequest`. The current Phoenix table columns, filters, search, sorting, and pagination remain unchanged; country is intentionally empty (not guessed). Error shown via existing translation key. Refresh the page after saving a new Candidate to reload the list; live refresh and Candidate Prototype navigation are outside Block B.
 
 Owner checks: `git pull`, `npm run verify`, restart React, open Operations → Recruitment → Candidates and verify the locally saved Endijs Runcis row. No React tests/build were executed by assistant.
+
+## DEV-CANDIDATE-PIPELINE-C — Candidate detail click and real data (2026-10-09)
+
+Status: **VERIFY — owner local checks/visual approval pending**.
+
+On React existing `main` only:
+- `src/pages/recruitment/Candidates.tsx`: Candidate name links to `/recruitment/candidates/:candidateId`;
+- `src/Routes.tsx`: authenticated workspace route;
+- `src/pages/recruitment/CandidateDetails.tsx`: working two-column dossier using real Candidate basic data, contacts and saved ResumeDraft fields (languages, summary, employment, education, skills, tools, certifications), fetched by authenticated `GET /api/dev/candidates/:id`.
+The system Candidate Prototype route/file and its mock visual charts remain untouched. No ESCO normalization, editing, verification, permissions, data migration or changes to original CV handling. This view is development-only; no production Candidate read model exists.
+
+Known constraints: other missing Candidate data stay absent; no portfolio/charts/verified facts are synthesized; the working detail page mirrors the Prototype's basic layout rather than embedding its static mock implementation. UI headings with no existing translation key in the shared namespace are temporary development labels, to be aligned in a later localized UI block.
+
+Owner: `git pull`, `npm run verify`, restart React; click Endijs Runcis in Recruitment Candidates; inspect contact, 8 work entries and 22 skills against PostgreSQL source. Keep VERIFY until browser confirmation.
