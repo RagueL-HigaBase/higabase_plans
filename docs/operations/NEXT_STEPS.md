@@ -42,3 +42,7 @@ After finishing the currently approved Candidate + ESCO blocks, inspect the live
 ## Centralized documentation checkpoint — 2026-10-08
 
 The 24 React and 23 Express Markdown files were copied into `projects/react/` and `projects/express/` with source blob-SHA parity; project MD are maintained centrally going forward. Track live priorities in [TASKS.md](../../TASKS.md). Semantic/link consolidation remains a separate documentation-only follow-up.
+
+## Next session — Candidate Dev Pipeline (checkpoint 2026-10-09)
+
+Read [the factual checkpoint](CANDIDATE_DEV_CHECKPOINT_2026_10_09.md) **before** acting on older Candidate steps above. The owner has a locally working development CV → AI → PostgreSQL → Recruitment table → Candidate Details vertical slice. Tomorrow's proposed, individually approval-gated order: (1) dev-only CV upload rate limit 5→30 per 15 minutes and React stale success-message fix; (2) optional, **explicitly owner-confirmed** experimental Reset deletion check; (3) diverse consented CV batch evaluation; (4) research AI extraction vs interpretation vs ESCO occupation/skills mapping. No production authorization, ESCO integration or visual redesign is implied.
