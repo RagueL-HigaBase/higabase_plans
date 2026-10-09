@@ -671,3 +671,11 @@ Owner approved an explicitly disposable local-development Candidate Pipeline to 
 Technical design for A1: append `CandidateDevIntake` as a strictly research-only link containing a UUID ID, required candidateId, required resumeDraftId, creation timestamp, uniqueness per resumeDraft, FK cascade upon Candidate/Draft removal. `Candidate` and `ResumeDraft` receive only inverse relations, no new business fields. Physical table `hb_candidate_dev_intakes`. This is not an Organization relationship, authorization policy, screening/consent state, Resume source model or production audit. It allows future tracked cleanup of specifically experimental rows rather than truncating business tables.
 
 Safety: schema-only; no write API, no enabled reset, no files written, no Candidate/Profile data changes, no cross-Organization reads. Test locally via Prisma generate, verify, db deploy and db status *only after* reviewing migration. No real candidate data upload/creation authorized by A1. Next A2 requires an explicit limited-development API/actor-access and transaction design, with tests, before any writes.
+
+## DEV-CANDIDATE-PIPELINE-A1 — source landed / VERIFY (2026-10-09)
+
+Express `main` commits: `6addfeff0a8f1a7c6247e65a18a77d0d541e0ea5` (schema), `bb1f6111057f2727567ff08a95dfd0719dbf907e` (migration). Added `CandidateDevIntake` / `hb_candidate_dev_intakes` with unique ResumeDraft FK and Candidate FK; Candidate Core unchanged apart from inverse relation. The owner-reported local status **before this change** was 15 migrations applied and database up-to-date. After this commit there are 16 migration folders in source; the new migration is **not yet confirmed applied locally**.
+
+Status: **VERIFY**. Source changes only; local `npm run db:generate`, `npm run verify`, `npm run db:deploy`, `npm run db:status` not executed by agent. Existing 15 migrations, ESCO, user/organization records, React and business authorization unaffected. This does not add an intake API, link rows, candidates, drafts, reset endpoint or Candidate-Organization relation. The next implementation block A2 must be separately scoped after owner verifies A1.
+
+Owner in `higa_systems_express`: `git pull` → `npm run db:generate` → `npm run verify` → `npm run db:deploy` → `npm run db:status`. Stop and report errors; do not reset or drop the database.
