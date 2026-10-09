@@ -661,3 +661,13 @@ Status: **VERIFY — owner local DB migration pending**. Owner approved strict s
 Implemented: `Candidate` → `hb_candidates`, `CandidateContact` → `hb_candidate_contacts`, append-only migration `20261008192000_candidate_core_foundation`. No candidate API and no exposure through Recruitment yet. No organization relation or event log yet: therefore no audited Candidate creation should be permitted.
 
 Acceptance: owner runs `npm run db:generate`, `npm run verify`, applies controlled migration (`npm run db:deploy` or approved Prisma equivalent), and runs `npm run db:status`. The CI may test schema/build but does not confirm the owner's DB. Later block must add actor/organization-scoped transactional audit, consent request and access guards before opening create/list/detail API. Preserve AI-BENCHMARK-1 existing state.
+
+## DEV-CANDIDATE-PIPELINE-A1 — experimental link foundation (2026-10-09)
+
+Status: **IN PROGRESS → VERIFY after source commit; owner local migration/build pending**.
+
+Owner approved an explicitly disposable local-development Candidate Pipeline to iterate over 5–15 CV documents. The owner reported `npm run db:status` green with 15 migrations on local PostgreSQL `higa_systems`. This authorizes a *narrow first block*: prepare an isolated relational experiment link between the approved Candidate Core and existing ResumeDraft research entity, without activating Candidate creation, list, detail, reset endpoints or changing the production contract.
+
+Technical design for A1: append `CandidateDevIntake` as a strictly research-only link containing a UUID ID, required candidateId, required resumeDraftId, creation timestamp, uniqueness per resumeDraft, FK cascade upon Candidate/Draft removal. `Candidate` and `ResumeDraft` receive only inverse relations, no new business fields. Physical table `hb_candidate_dev_intakes`. This is not an Organization relationship, authorization policy, screening/consent state, Resume source model or production audit. It allows future tracked cleanup of specifically experimental rows rather than truncating business tables.
+
+Safety: schema-only; no write API, no enabled reset, no files written, no Candidate/Profile data changes, no cross-Organization reads. Test locally via Prisma generate, verify, db deploy and db status *only after* reviewing migration. No real candidate data upload/creation authorized by A1. Next A2 requires an explicit limited-development API/actor-access and transaction design, with tests, before any writes.
