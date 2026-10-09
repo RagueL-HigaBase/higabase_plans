@@ -35,3 +35,7 @@ Authority: [AGENT_RULES.md](AGENT_RULES.md), [PROJECT_STATE.md](PROJECT_STATE.md
 - `docs/repository-snapshots/` is older historical evidence only.
 - Source repos should contain code plus a small README redirect. Newly updated implementation documentation belongs **only in Plans**, in its respective project folder. Change reports must cite the exact central MD path.
 - If GitHub main and user local worktree differ, do not claim this board proves the local state; inspect it first.
+
+## Candidate development checkpoint — 2026-10-09
+
+**[End-of-day evidence and next-session plan](docs/operations/CANDIDATE_DEV_CHECKPOINT_2026_10_09.md)** is the current factual checkpoint for the experimental Candidate pipeline (supersedes the **stale candidate-only task statuses above**, not the unrelated work queue). Owner-verified: development CV parsing → Candidate/Contact/ResumeDraft transaction → Recruitment Candidates list → candidate detail; Express 35 files/150 tests, 16 DB migrations up to date, React browser presentation verified and local verify reported green. Reset command found four candidates and safely cancelled; **actual deletion not tested**. Next proposed work: dev-only CV rate limit 30/15min and stale Preview banner fix, then owner-decided controlled Reset and CV batch audit. **Proposals are not implementation approval.** Existing `main` only.
