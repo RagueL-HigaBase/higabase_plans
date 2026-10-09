@@ -178,3 +178,17 @@ npm run verify
 npm run dev
 ```
 Check header Add Candidate from Dashboard/Transport/Housing without page navigation; check same panel from Candidates page, ~33% width on desktop, backdrop/close behavior, CV PDF/DOCX preview, invalid file/error and loading-state close lock. Send verify output and visual observation to close block.
+
+## DEV-CANDIDATE-SAVE-UI-1 — temporary local save action (2026-10-09)
+
+Status: **VERIFY — owner React local build/browser test pending**.
+
+Owner approved a temporary `Save Test Candidate` button rather than manual browser-console code. On React `main`:
+- `src/api/resume-preview.ts` adds `saveTestCandidate(file)` calling the existing Express `POST /api/dev/candidates/intake` as PDF/DOCX raw body with encoded file name.
+- `src/components/candidate/AddCandidatePanelProvider.tsx` adds a development-only button alongside existing Preview, blocks duplicate repeated clicks after successful save, displays returned candidateId, and resets save state upon changing/closing the file. Existing Preview stays non-persistent.
+- `public/locales/*/auth.json` adds the two new visible strings for all 28 locales.
+- No React route, Candidates table, Candidate Prototype, styling rules, backend API/schema or production UI changes.
+
+IMPORTANT: This operation actually creates a candidate, contact, draft and link in local PostgreSQL. Use only consented/synthetic documents, do not repeat the same document until duplicates/reset are handled. Backend A2 is verified at test/build level (34 suites / 144 tests) but real DB insertion has not been manually checked. Frontend local verify and browser save are outstanding.
+
+Owner: `git pull` in higa_systems_react, `npm run verify`, run dev React and Express, use Add Candidate → choose one test CV → Save Test Candidate, inspect candidateId and backend persistence. Keep VERIFY until owner reports local success. Only existing main, no branches or PR.
