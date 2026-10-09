@@ -714,3 +714,18 @@ Status: **VERIFY — owner local checks pending**.
 On Express existing `main` only: `CandidateDevIntakeRepository.findDetail(id)` reads one experimental Candidate via the CandidateDevIntake link, with CandidateContact and ResumeDraftV1 validated from JSONB. `GET /api/dev/candidates/:id` requires dev mode, authenticated/unlocked workspace, at least one organization membership, permitted Origin and valid UUID; it returns 404 if not found. No organization consent scope exists; **never enable as production API**. No database migration or data mutation in this block. Read/missing/auth tests added.
 
 Owner: `git pull`, `npm run verify`, `npm run db:status`, restart backend. This source-level implementation is NOT locally verified by agent.
+
+## DEV-CANDIDATE-PIPELINE-D — guarded experimental reset (2026-10-09)
+
+Status: **VERIFY — local owner typecheck, tests and reset behavior pending**.
+
+Owner approved a development-only reset/repeat workflow, without React changes. Express `main` commit `70f5ee185e807269dc13f49a19657385f9f939c5` introduces:
+- `npm run dev:candidates:reset` → `tsx src/candidate-dev/reset-cli.ts`;
+- `reset-safety.ts` requiring non-production execution and `postgres://` / `postgresql://` URL on localhost/127.0.0.1/::1 to database `higa_systems`;
+- interactive TTY-only confirmation `RESET N` after displaying test intake count; no silent automated reset;
+- a Prisma transaction selecting exclusively `hb_candidate_dev_intakes` rows, deleting their Candidate records (with FK-cascaded contacts and links) and their associated ResumeDraft rows; unexpected counts abort and roll back;
+- unit tests for allowed/disallowed targets.
+
+No schema/migration modifications; no system users, organizations, locations, ESCO, other unlinked Candidate or unlinked research ResumeDraft records intentionally targeted. This is destructive **only to linked experimental records** and cannot be undone after commit. Do not run it before reviewing current experimental Candidate records. Strong local guard is not a replacement for proper production RBAC/consent/security.
+
+Owner checks in `higa_systems_express`: `git pull`, `npm run verify`, `npm run db:status`. Run `npm run dev:candidates:reset` only when deliberately ready to erase all linked test Candidates; otherwise cancel at confirmation. Confirm with browser reload that table empties if reset was approved. No local tests or DB reset were run by agent; keep VERIFY until owner confirmation.
