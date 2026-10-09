@@ -679,3 +679,20 @@ Express `main` commits: `6addfeff0a8f1a7c6247e65a18a77d0d541e0ea5` (schema), `bb
 Status: **VERIFY**. Source changes only; local `npm run db:generate`, `npm run verify`, `npm run db:deploy`, `npm run db:status` not executed by agent. Existing 15 migrations, ESCO, user/organization records, React and business authorization unaffected. This does not add an intake API, link rows, candidates, drafts, reset endpoint or Candidate-Organization relation. The next implementation block A2 must be separately scoped after owner verifies A1.
 
 Owner in `higa_systems_express`: `git pull` → `npm run db:generate` → `npm run verify` → `npm run db:deploy` → `npm run db:status`. Stop and report errors; do not reset or drop the database.
+
+## DEV-CANDIDATE-PIPELINE-A2 — experimental write (2026-10-09)
+
+Status: **VERIFY — owner local build/tests and manual API validation pending**.
+
+Owner explicitly agreed to proceed after A1. A1 owner evidence: 16/16 migrations applied, database up to date, 34 test files/143 tests, TypeScript and build green. This evidence applies to A1 only.
+
+A2 committed on Express `main`:
+- `src/resume-draft/candidate-dev-intake-repository.ts`: one Prisma transaction creates Candidate, optional CandidateContact fields, full ResumeDraftV1 JSONB and CandidateDevIntake link;
+- `src/resume-draft/routes.ts`: adds `POST /api/dev/candidates/intake` to the same PDF/DOCX/authentication/session/organization-workspace/Origin/rate-limit checks as the preview route; requires first and last name and returns candidateId/resumeDraftId only;
+- `src/dependencies.ts`: wires the repository only with OpenAI parsing outside production;
+- `tests/resume-draft/file-preview.test.ts`: adds dev intake authenticated happy-path test (further negative cases and DB integration still required).
+- Preview endpoint remains non-persistent. No React changes, no new migration beyond A1, no ESCO/Permissions/Organization relationship changes.
+
+This is research-only ingestion; real third-party CV use requires appropriate consent/legal basis. It does not persist original PDF/DOCX, does not create verified/screened state, does not deduplicate identity and must never be promoted to a production API as-is.
+
+Verification requested: owner `git pull` in Express and `npm run verify`. Do not claim verified unless actual local output confirms; no automated/local verification was run by assistant. Follow with explicit synthetic/sample CV API testing and inspect persisted data before Block B.
