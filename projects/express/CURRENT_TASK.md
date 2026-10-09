@@ -706,3 +706,11 @@ On Express `main`, `CandidateDevIntakeRepository.list()` reads up to 100 most re
 Security boundary: this local development-only list is global across experimental records; do **not** deploy, expose externally, or repurpose as a production read API. It has no organization-specific consent/access scoping.
 
 Owner verification: `git pull`, `npm run verify`, `npm run db:status`, then restart Express. No local test execution was performed by the assistant. A successful owner browser row check is still required.
+
+## DEV-CANDIDATE-PIPELINE-C — experimental detail API (2026-10-09)
+
+Status: **VERIFY — owner local checks pending**.
+
+On Express existing `main` only: `CandidateDevIntakeRepository.findDetail(id)` reads one experimental Candidate via the CandidateDevIntake link, with CandidateContact and ResumeDraftV1 validated from JSONB. `GET /api/dev/candidates/:id` requires dev mode, authenticated/unlocked workspace, at least one organization membership, permitted Origin and valid UUID; it returns 404 if not found. No organization consent scope exists; **never enable as production API**. No database migration or data mutation in this block. Read/missing/auth tests added.
+
+Owner: `git pull`, `npm run verify`, `npm run db:status`, restart backend. This source-level implementation is NOT locally verified by agent.
