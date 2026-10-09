@@ -214,3 +214,7 @@ The system Candidate Prototype route/file and its mock visual charts remain unto
 Known constraints: other missing Candidate data stay absent; no portfolio/charts/verified facts are synthesized; the working detail page mirrors the Prototype's basic layout rather than embedding its static mock implementation. UI headings with no existing translation key in the shared namespace are temporary development labels, to be aligned in a later localized UI block.
 
 Owner: `git pull`, `npm run verify`, restart React; click Endijs Runcis in Recruitment Candidates; inspect contact, 8 work entries and 22 skills against PostgreSQL source. Keep VERIFY until browser confirmation.
+
+## End-of-day reconciliation — 2026-10-09
+
+[Cross-project evidence and next steps](../../docs/operations/CANDIDATE_DEV_CHECKPOINT_2026_10_09.md). Owner reported React `npm run verify` green for Candidates list/detail and supplied screenshots showing loaded Candidate records and live two-column dossier pages based on saved CVs. Earlier *owner visual verification pending* statements in the Candidate-only A/B/C entries are superseded by this browser evidence; the development listing and detail work, while broader React regression and production acceptance remain open. Observed defects: 429 rate limit after five CV requests per 15min (backend), stale green Preview banner alongside red error (React); raw `candidateDevSaved` locale key observed earlier (recheck if it persists). Fixes proposed but **not implemented**. Design and prototype unchanged by this documentation checkpoint.
