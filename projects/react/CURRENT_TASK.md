@@ -143,3 +143,11 @@ npm run verify
 npm run dev
 ```
 Check that App Administration entries do not expand, existing Recruitment administration page remains accessible, Transport and Housing show headings, Operations still expands and the duplicate Candidates sidebar item is gone. Do not mark DONE without owner acceptance.
+
+## ADMIN-APP-PAGE-DESCRIPTIONS — 2026-10-09
+
+Status: **VERIFY** (owner browser/local build pending). React `main` commit `aba18c08bfc3fd268eee1fb761aabe40cda9ea00`.
+
+The three App Administration landing pages now show a module title and one short English description explicitly framing the page as an administration workspace. Recruitment uses its existing `/recruitment` page; Transport `/transport` and Housing `/housing` use the existing heading placeholder with an optional description prop. Operational pages, navigation labels, permissions, Off Canvas and backend are unchanged. The `App Administration` section label remains provisional, pending owner choice. New descriptions are English-only, and localization is pending; do not mark DONE.
+
+Owner React checkout: `git pull`, `npm run verify`, `npm run dev`; inspect three admin pages, verify Operations headings and routes remain unchanged.
