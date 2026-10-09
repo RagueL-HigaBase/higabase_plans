@@ -89,3 +89,11 @@ Status: **VERIFY — owner browser check pending**.
 Owner reported Google Password Manager leaked-password warning on four-digit session PIN. React `main` commit `af9d51c98052f3cfb568a71741005d6912ea8b56` changed only `src/components/modules/auth/PinForm.tsx`: four PIN controls use `type="text"` and `autoComplete="off"` rather than `type="password"` / `one-time-code`; existing Chrome/WebKit `WebkitTextSecurity: 'disc'` retains dot masking. No backend, API, PIN validation, submit flow or shared Button changes.
 
 Check locally: `npm run verify`; confirm PIN masking, keyboard input/focus, setup and unlock, and that Chrome Password Manager no longer shows a breached-password warning. Browser behavior is not guaranteed across all engines; if a non-WebKit browser reveals digits, report and revisit masking separately with approval. Do not mark DONE before owner confirmation.
+
+## LANGUAGE-PARITY-1 — shared 28-locale auth.json namespace (2026-10-09)
+
+Status: **VERIFY — owner local check and rendered/semantic review pending**.
+
+React `main` received scoped translation completeness changes in `public/locales/*/auth.json`. The shared namespace includes Authentication, Location and Team invitation UI; all 28 locale files now parse as JSON and match the English 400-key baseline exactly (no missing/extra/blank string values; placeholder variable sets match). Existing strings were retained, and absent localized Location and invitation messages were added. The first source-level completeness check is complete, **not** full UI/native-language acceptance.
+
+Verification pending: owner `git pull --ff-only origin main`, `npm run verify`, browser inspection across 28 languages and native/semantic translation review as required. No backend/API/schema modifications. Detailed current audit: `higabase_states/pages/auth/TRANSLATIONS_AUDIT.md`. Do not mark DONE prematurely.
