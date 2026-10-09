@@ -155,3 +155,26 @@ Owner React checkout: `git pull`, `npm run verify`, `npm run dev`; inspect three
 ## APP-CONTROL-PANEL-LABEL — 2026-10-09
 
 Status: **VERIFY**. Owner approved sidebar section name **App Control Panel**. React `main` commit `824e5d7c2b977678731f49874f4c8ba794b4d25c` changes only the heading string in `src/components/navbars/navbar-vertical/WorkspaceNavbarVertical.tsx` from `App Administration` to `App Control Panel`. Navigation entries, routes, pages, permissions, backend and other UI untouched. Owner: `git pull`, `npm run verify`, visual check. Label is currently English-only; localization remains pending.
+
+## ADD-CANDIDATE-OFFCANVAS — 2026-10-09
+
+Status: **VERIFY — local typecheck/build, visual and functional browser testing pending**.
+
+React `main` commits `d0ecf55f66118e3fb176483e0b8bad940d8e66ac`, `5c7443aa8cea79577c7adc6df19b91ee3299b095`.
+
+- Top navbar Add Candidate previously navigated to `/recruitment/candidates?add=1`, causing unwanted page change. It now opens shared Add Candidate panel without navigating.
+- Candidates-page Add Candidate button opens exactly the same shared panel.
+- Existing React Bootstrap (Phoenix theme) `Modal` changed to right-side `Offcanvas` (placement=end), 33vw width with small viewport minimum constrained to screen width. Close/disabled controls and original dev-only CV preview flow retained.
+- Shared `AddCandidatePanelProvider` is mounted within `WorkspaceLayout`; source Candidates page no longer owns duplicate upload/modal state. Existing functional candidate list and routes left untouched.
+- CV preview remains DEV-only, shows parsed identity/contact preview, does not persist candidate records. No Push/Create persistence action added. No backend, API, database schema, permissions or navigation section changes.
+- Legacy `?add=1` query trigger removed from Candidates (not needed after shared panel); external bookmarks using it will no longer open the panel. Reconsider only if owner requests compatibility.
+- No new translations necessary for the panel: existing `candidate*` keys reused.
+- Source changes pushed without running the owner's local build, browser or tests. Never treat source-only review as DONE.
+
+Owner update React checkout:
+```powershell
+git pull
+npm run verify
+npm run dev
+```
+Check header Add Candidate from Dashboard/Transport/Housing without page navigation; check same panel from Candidates page, ~33% width on desktop, backdrop/close behavior, CV PDF/DOCX preview, invalid file/error and loading-state close lock. Send verify output and visual observation to close block.
