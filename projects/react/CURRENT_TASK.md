@@ -192,3 +192,11 @@ Owner approved a temporary `Save Test Candidate` button rather than manual brows
 IMPORTANT: This operation actually creates a candidate, contact, draft and link in local PostgreSQL. Use only consented/synthetic documents, do not repeat the same document until duplicates/reset are handled. Backend A2 is verified at test/build level (34 suites / 144 tests) but real DB insertion has not been manually checked. Frontend local verify and browser save are outstanding.
 
 Owner: `git pull` in higa_systems_react, `npm run verify`, run dev React and Express, use Add Candidate → choose one test CV → Save Test Candidate, inspect candidateId and backend persistence. Keep VERIFY until owner reports local success. Only existing main, no branches or PR.
+
+## DEV-CANDIDATE-PIPELINE-B — Recruitment table data (2026-10-09)
+
+Status: **VERIFY — owner local React build and visual test pending**.
+
+On React `main`, `src/pages/recruitment/Candidates.tsx` replaces static `candidateRows=[]` with dev-only `GET /api/dev/candidates` via the standard credentialed `apiRequest`. The current Phoenix table columns, filters, search, sorting, and pagination remain unchanged; country is intentionally empty (not guessed). Error shown via existing translation key. Refresh the page after saving a new Candidate to reload the list; live refresh and Candidate Prototype navigation are outside Block B.
+
+Owner checks: `git pull`, `npm run verify`, restart React, open Operations → Recruitment → Candidates and verify the locally saved Endijs Runcis row. No React tests/build were executed by assistant.
