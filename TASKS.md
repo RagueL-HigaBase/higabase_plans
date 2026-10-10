@@ -55,3 +55,8 @@ Authority: [AGENT_RULES.md](AGENT_RULES.md), [PROJECT_STATE.md](PROJECT_STATE.md
 ## ESCO Timeline TS strict access hotfix — 2026-10-10
 
 Status **VERIFY (owner rerun required)**. Fixed 16 owner-reported TS strict/noUncheckedIndexedAccess errors (4 in `src/candidate-dev/esco-research.ts`, 12 in `tests/candidate-dev/esco-research.test.ts`): runtime guards for indexed work-period records; explicit non-null assertions only for known fixture entries in tests. No ESCO model or graph changes, migrations, new AI logic, or frontend change. Owner to `git pull` Express main and `npm run verify`; no claim of green until owner confirms.
+
+
+## 2026-10-10 CV intake and AI–ESCO research
+
+2026-10-10: Dev CV one-step UX + cost disclosure committed in React main. Save Test Candidate is one action after choosing CV; Preview removed; drawer closes when the existing server POST finishes. THIS IS NOT asynchronous backend/background processing. Candidate sidebar currently says `AI cost: Not recorded` (no fake $0.00). Research finding: AI provider supports only resume.parse, no AI-ESCO selection yet; next block to implement typed AI↔ESCO per-work-period selection and accurate per-operation usage/cost. Owner React verify and browser checks pending.
