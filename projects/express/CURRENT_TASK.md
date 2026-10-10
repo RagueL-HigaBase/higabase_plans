@@ -881,3 +881,14 @@ With explicit owner approval, Block A now selects the first ranked **terminal** 
 ### Block A strict TypeScript repair (2026-10-10)
 
 **VERIFY — owner re-run pending.** Owner's post-correction local `npm run verify` failed at TypeScript compilation with five errors: potentially undefined primary leaf, two potentially undefined parent labels, parent hit literal widening, and unchecked mock-call access in the test. Fixed on existing Express `main` in `src/esco/bridge/leaf-occupation-retrieval.ts` and `tests/esco-leaf-occupation-retrieval.test.ts`: explicit best-leaf guard, guarded `flatMap` parent label conversion with `LeafOccupationHit[]` return annotation, and optional mock-call access. No API, DB, migration, CV/Uno or policy changes. Prior green verify no longer applies to this revision. Owner must pull and run `npm run verify`; after green, run existing read-only `esco-retrieval-check.tmp.ts` for real PostgreSQL semantics. Do not mark DONE pending owner evidence.
+
+
+### Block A — owner real PostgreSQL retrieval verification (2026-10-10)
+
+**VERIFY (runtime graph traversal confirmed; full updated npm verification not evidenced in this report).** Owner executed `npx tsx .\\esco-retrieval-check.tmp.ts` against the local ACTIVE ESCO dataset after Block A correction and provided complete read-only output. Observed:
+- DEPTH=0: `pharmacy assistant` -> 3231 only; `warehouse worker` and `warehouse order picker` -> leaf 3372 only; `ambassador` and `diplomat` -> leaf 1172 only; `embassy counsellor` -> 2846 only; `forklift operator` -> 3708 only; `recruiter` -> NO MATCH.
+- DEPTH=1: leaf 3372 + immediate parent `warehouse worker` 3196 for both warehouse queries; 1172 + immediate parent `diplomat` 1258 for ambassador/diplomat; 2846 + 1258 for embassy counsellor; no parent for pharmacy assistant/forklift operator; `recruiter` remains NO MATCH.
+- DEPTH=2: no further ancestors on the tested concepts, and results identical to DEPTH=1.
+- Known caveats: existing prefix/alternative-label retrieval chooses ambassador as first leaf even for `diplomat`; no result for `recruiter`; first lexical leaf is **not** evidence of best CV occupation. No CV/Uno integration was performed. The owner's earlier green 181-test verification preceded the strict-TS repair, so require explicit post-repair `npm run verify` confirmation before marking whole Block A DONE.
+
+The PostgreSQL read-only graph semantics of the updated implementation are now observed working. No data/migration changes. Await owner approval for Block B.
