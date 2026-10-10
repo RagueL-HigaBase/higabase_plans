@@ -749,3 +749,8 @@ Status **VERIFY — owner's npm run verify/browser check pending**. Replaced glo
 ## ESCO Timeline TS strict access hotfix — 2026-10-10
 
 Status **VERIFY (owner rerun required)**. Fixed 16 owner-reported TS strict/noUncheckedIndexedAccess errors (4 in `src/candidate-dev/esco-research.ts`, 12 in `tests/candidate-dev/esco-research.test.ts`): runtime guards for indexed work-period records; explicit non-null assertions only for known fixture entries in tests. No ESCO model or graph changes, migrations, new AI logic, or frontend change. Owner to `git pull` Express main and `npm run verify`; no claim of green until owner confirms.
+
+
+## 2026-10-10 CV intake and AI–ESCO research
+
+AI-to-ESCO integration discovery (2026-10-10): Existing `AiRuntime` and OpenAI Responses Provider handle only `candidate.resume.parse@1`; current candidate ESCO research uses synchronous lexical ESCO search and graph relations, with no Uno/AI classification task. `AiRuntime` exposes provider/model/input-output tokens/duration, but `ResumeDraftService.previewFile` returns only draft; dev intake persists only draft and Candidate. Historic per-CV billable cost therefore cannot be shown accurately. Benchmark pricing is model-specific ESTIMATE, not an invoice. Proposed next implementation: bounded per-WorkExperience AI selection from REAL ESCO candidate IDs via a new typed provider task, experiment read-only, rate limits and cost control; separate operation usage persistence needed for defensible per-candidate cost. No AI integration coded in this step.
