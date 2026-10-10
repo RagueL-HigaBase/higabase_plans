@@ -51,3 +51,7 @@ Authority: [AGENT_RULES.md](AGENT_RULES.md), [PROJECT_STATE.md](PROJECT_STATE.md
 ## Candidate ESCO Timeline prototype (2026-10-10)
 
 **VERIFY**. Work Experience is the read-only research unit, with period-scoped ESCO Occupations, evidence-linked Direct Skills, and separately collapsed graph Related Skills. Unassigned whole-CV ESCO skill matches remain separate, preserving provenance; CV-wide AI Skills and Tools remain unchanged. No Canonical ESCO/Candidate changes, DB migrations, persistence, confirmation, AI rerun or new semantic model. New research mapper tests plus revised detail route test. Owner should pull React and Express main, run both npm run verify, restart dev services, view CV examples, and report results. Historical frontend/global list superseded in the experiment, not in the canonical architecture.
+
+## ESCO Timeline TS strict access hotfix — 2026-10-10
+
+Status **VERIFY (owner rerun required)**. Fixed 16 owner-reported TS strict/noUncheckedIndexedAccess errors (4 in `src/candidate-dev/esco-research.ts`, 12 in `tests/candidate-dev/esco-research.test.ts`): runtime guards for indexed work-period records; explicit non-null assertions only for known fixture entries in tests. No ESCO model or graph changes, migrations, new AI logic, or frontend change. Owner to `git pull` Express main and `npm run verify`; no claim of green until owner confirms.
