@@ -1544,3 +1544,10 @@ Representative benchmark queries should include:
 Only after this baseline is measured should fuzzy indexing/ranking be added.
 
 This provides a stable comparison point for every later optimization.
+
+
+## 61. Candidate occupation retrieval policy — lower-level hierarchy (2026-10-10, Block A VERIFY)
+
+The owner-approved occupation matching direction keeps the complete frozen ESCO 1.2.0 canonical graph unchanged. For the experimental Candidate retrieval path, the starting pool is the most specific occupation nodes: active ESCO `occupation` concepts without `OCCUPATION_HIERARCHY` descendants. Broader occupation nodes are navigation/fallback context, never equal-priority matches. Configuration `ESCO_OCCUPATION_MAX_PARENT_DEPTH` defaults to **1** and bounds permitted upward occupation-hierarchy transitions; zero disables upward fallback, two is reserved for deliberate later experiments. Depth is measured in actual graph relations, not digits in codes. Generic classification/taxonomy nodes are never occupation results.
+
+**Block A implementation boundary:** a standalone leaf-first lexical retrieval helper backed by existing search and hierarchy closure; its prefix hits and parent fallbacks are not professional validation. It is not wired into Candidate AI/Uno selection; no production matching, matching percentages, skill confirmation or React navigation changed. Essential/optional ESCO skills remain internal evidence, not candidate-confirmed competencies. Later integration requires separate owner approval, CV evidence and regressions tests. No ESCO import, schema, migration or snapshot changes.
