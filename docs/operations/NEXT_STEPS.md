@@ -46,3 +46,7 @@ The 24 React and 23 Express Markdown files were copied into `projects/react/` an
 ## Next session — Candidate Dev Pipeline (checkpoint 2026-10-09)
 
 Read [the factual checkpoint](CANDIDATE_DEV_CHECKPOINT_2026_10_09.md) **before** acting on older Candidate steps above. The owner has a locally working development CV → AI → PostgreSQL → Recruitment table → Candidate Details vertical slice. Tomorrow's proposed, individually approval-gated order: (1) dev-only CV upload rate limit 5→30 per 15 minutes and React stale success-message fix; (2) optional, **explicitly owner-confirmed** experimental Reset deletion check; (3) diverse consented CV batch evaluation; (4) research AI extraction vs interpretation vs ESCO occupation/skills mapping. No production authorization, ESCO integration or visual redesign is implied.
+
+## Progress — 2026-10-10 (VERIFY)
+
+Dev-CV-Hardening-1 implementation committed to Express and React **main**; owner verification outstanding. The first source audit found `src/esco/knowledge.ts` / `routes.ts`, runtime/provider-neutral AI tasks, `src/ai/benchmark/resume-cli.ts` and `openai-benchmark-pricing.ts` already implemented; cost estimates need usage and configured model pricing. This is **not** evidence that the active CV intake currently invokes ESCO. Avoid reimplementation or speculative architecture work. Next owner checks: pull/verify each repo, browser retest; optional Reset only by explicit owner confirmation, then diverse CV assessment.
