@@ -235,3 +235,8 @@ Status **VERIFY — owner's npm run verify/browser check pending**. Candidate De
 ## 2026-10-10 CV intake and AI–ESCO research
 
 CV intake UX experimental change (2026-10-10): DEV Add Candidate now selects one PDF/DOCX then one Save Test Candidate action; Preview button and intermediate success panel removed. Offcanvas closes on successful existing synchronous POST; errors remain visible, in-flight request still blocks closing. This is NOT a background queue: users cannot immediately continue during parse yet. Candidate sidebar displays `AI cost: Not recorded`, because historical per-candidate usage/billing is not persisted. Owner verify pending.
+
+
+## AI ↔ ESCO Research V1 (2026-10-10)
+
+2026-10-10 AI↔ESCO explicit research — STATUS VERIFY (owner local tests/browser pending). Candidate Details has Run AI ↔ ESCO research button, explicit POST; while running shows loading and maintains existing lexical result; on success displays per-work-period AI-selected ESCO Occupations and AI Proposed Skills, with full Related graph skills still collapsed. Response is ephemeral client state, lost on reload. Errors shown without erasing prior results. Old Candidate GET remains no-cost lexical preview. AI cost line unchanged ('Not recorded'). No upload workflow changes in this block. Run npm run verify, test actual saved CV.
