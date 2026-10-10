@@ -1566,3 +1566,8 @@ The owner approved connecting the existing leaf-first read-only retrieval to dev
 ### Leaf-only SQL gate (2026-10-10, VERIFY)
 
 Owner's strict retrieval contract: **Only terminal ESCO occupation concepts are searchable and supplied to Uno**. Exclude ancestors with any positive-depth `OCCUPATION_HIERARCHY` descendant in the active ESCO dataset at SQL query time, *before* result ranking and LIMIT; do not use non-leaf concepts as query candidates. The official ESCO graph is consulted separately only to resolve the actual immediate parent of an already selected terminal occupation, at default maximum `DEPTH=1`; no ancestor-based rediscovery or global catalog handoff to AI. Existing generic `EscoKnowledge.search` remains backward compatible unless `leafOnly: true` is explicitly requested. Implementation in Express main pending owner verification; ESCO 1.2.0 unchanged.
+
+
+### Simple Pipeline — approved owner decision (2026-10-10, VERIFY)
+
+Dev-only Candidate CV occupation research now follows: **one CV work period → SQL Leaf-only occupation candidate search (preferred/alternative labels and official EN descriptions) → one Uno allowlisted choice of 0–3 Leaf IDs → optional true graph parent +1 suggestion**. No separate Uno interpreter, AI skill selector before Intake acceptance, fallback word generator or handcrafted occupation-score ranking in the active experimental path. Upper occupations are never retrieval or Uno selection candidates; graph is used for post-selection direct parents only. Skills linked to accepted occupation(s) and independently candidate-added skills are the intended subsequent Intake stage; no acceptance workflow or UI is implemented in this block. ESCO 1.2.0 remains frozen, tests and real-CV speed/accuracy VERIFY pending.
