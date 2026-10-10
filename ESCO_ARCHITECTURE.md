@@ -1561,3 +1561,8 @@ Instead of returning the parent only when no leaf is found, the read-only protot
 ### Experimental Candidate CV → ESCO integration — Block B (2026-10-10, VERIFY)
 
 The owner approved connecting the existing leaf-first read-only retrieval to dev-only Candidate CV → Uno research on Express `main`. Work-period phrases query ESCO leaves first; global occupation DESCRIPTION FTS no longer feeds the Candidate experiment. Uno's allowed occupation selection is restricted to the retrieved leaves, with at most one chosen leaf per period; only after selection are its actual graph ancestors at configured depth (default one) appended as **unconfirmed proposals** for later Intake. Existing direct skill proposals and related ESCO occupation skills are preserved and remain unconfirmed. This does not change canonical ESCO data, schema, migrations, AI Core persistence ownership, React or production Candidate mapping. No quality claim without real-CV regression; leave VERIFY.
+
+
+### Leaf-only SQL gate (2026-10-10, VERIFY)
+
+Owner's strict retrieval contract: **Only terminal ESCO occupation concepts are searchable and supplied to Uno**. Exclude ancestors with any positive-depth `OCCUPATION_HIERARCHY` descendant in the active ESCO dataset at SQL query time, *before* result ranking and LIMIT; do not use non-leaf concepts as query candidates. The official ESCO graph is consulted separately only to resolve the actual immediate parent of an already selected terminal occupation, at default maximum `DEPTH=1`; no ancestor-based rediscovery or global catalog handoff to AI. Existing generic `EscoKnowledge.search` remains backward compatible unless `leafOnly: true` is explicitly requested. Implementation in Express main pending owner verification; ESCO 1.2.0 unchanged.
