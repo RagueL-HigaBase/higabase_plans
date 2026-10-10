@@ -904,3 +904,8 @@ The PostgreSQL read-only graph semantics of the updated implementation are now o
 ### Block B — test injection correction (2026-10-10)
 
 **VERIFY, owner local retest pending.** Post-integration owner `npm run verify` failed in `tests/candidate-dev/esco-ai-research.test.ts` at three constructor call sites (TS2554: three arguments supplied, new `CandidateEscoAiResearchService` requires four). Updated all three test fixtures on Express `main` to inject a mocked read-only leaf retrieval; first fixture supplies one allowlisted leaf occupation and others return no leaf, retaining existing skill/no-active-dataset assertions. No application contract, DB, migration, React, ESCO snapshot or AI provider changes in this repair. Owner to pull `main` and run `npm run verify`; do not mark DONE before checks.
+
+
+### Block B — whitelist-before-limit regression fix (2026-10-10)
+
+**VERIFY.** Owner's local test run: 180/181 passed, one failure in `tests/candidate-dev/esco-ai-research.test.ts` where mocked Uno returned `[999999, 42]`. The Block B integration sliced the first model ID before checking the server-side allowlist, causing a valid second ID to be dropped. Corrected the existing Express `main` selection loop to deduplicate, **filter allowlisted IDs first**, then take one. The invalid ID cannot become an occupation; valid `42` is retained. No change to parent expansion, database, migration, ESCO source or React. Owner to `git pull --ff-only origin main` and `npm run verify`. Not verified locally by agent.
