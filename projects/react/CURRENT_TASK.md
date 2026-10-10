@@ -230,3 +230,8 @@ Status **VERIFY — owner local/browser checks pending**. React main CandidateDe
 ## CANDIDATE-ESCO-TIMELINE-1 — per-work-period prototype (2026-10-10)
 
 Status **VERIFY — owner's npm run verify/browser check pending**. Candidate Details now renders each `workHistory` item as its own responsive row: left original title/employer/dates/description; right this row's proposed ESCO occupations, direct skills and a collapsed Related Skills details block. CV-wide AI Skills/Tools displayed separately below, along with collapsed ESCO unassigned direct matches; Education remains; Certifications removed only from this experimental view, not deleted or migrated. Contacts/languages remain existing side panel (fixed-panel UX deferred). No ESCO or final Candidate UI architecture changes; colors temporary; no assertions of verified competency. Check mobile/desktop layout and all saved CVs locally.
+
+
+## 2026-10-10 CV intake and AI–ESCO research
+
+CV intake UX experimental change (2026-10-10): DEV Add Candidate now selects one PDF/DOCX then one Save Test Candidate action; Preview button and intermediate success panel removed. Offcanvas closes on successful existing synchronous POST; errors remain visible, in-flight request still blocks closing. This is NOT a background queue: users cannot immediately continue during parse yet. Candidate sidebar displays `AI cost: Not recorded`, because historical per-candidate usage/billing is not persisted. Owner verify pending.
