@@ -926,3 +926,8 @@ Updated files: `src/candidate-dev/esco-ai-research.ts`, `src/esco/knowledge.ts` 
 
 
 **Simple pipeline refinement (same block, 2026-10-10):** Removed eager graph parent lookup during occupation candidate gathering. `CandidateEscoAiResearchService` now invokes `EscoKnowledge.search({leafOnly:true})` directly (up to 8 label hits per title segment), combines it with leaf-filtered description hits, makes only one Uno selection call per period, then invokes `EscoLeafOccupationRetrieval.parentsOfLeaf(id)` only for allowlisted selected Leaf IDs. Updated tests accordingly. All writes on Express main; owner `npm run verify` still required. No post-acceptance persistence is claimed.
+
+
+### SIMPLE PIPELINE OpenAI provider runtime fix (2026-10-10)
+
+**VERIFY — owner regression and runtime check pending.** Owner started API on localhost:3000 and real `/api/dev/candidates/:id/esco-classify` failed with `AI_PROVIDER_FAILED`, root cause `Unsupported OpenAI AI task: candidate.esco.select@2`. The simplified experimental service had upgraded its task from v1 to v2 but `src/ai/openai-responses-provider.ts` only routed v1. Fixed provider dispatch to accept v2, with dedicated concise instructions for zero-to-three Leaf IDs and existing JSON schema, preserving v1 and existing resume parser. Added provider unit test in `tests/ai/openai-responses-provider.test.ts`. Express main updated only. Owner must pull, run `npm run verify`, restart API and retry existing CV research. No AI/API success claimed until runtime check.
