@@ -54,3 +54,8 @@ Dev-CV-Hardening-1 implementation committed to Express and React **main**; owner
 ## Immediate verification: ESCO timeline research (2026-10-10)
 
 Pull `main` in Express and React, run `npm run verify` in both and inspect saved Candidate Details. Check chronology (including undated source periods), per-row source/ESCO occupations/direct skills, collapsed ESSENTIAL/OPTIONAL graph relations, unassigned CV-wide matched skills, missing ESCO candidate empty states and existing AI Skills/Tools. Report mistakes before implementing any semantic matching, AI per-work-experience proposal generation or confirmation colors. This is a disposable read-only experiment, not production architecture. Central CURRENT_TASK and TASKS are authoritative tracking.
+
+
+## 2026-10-10 CV intake and AI–ESCO research
+
+2026-10-10 NEXT: (1) React main git pull/npm run verify; verify dev upload select file + Save closes on successful server response, and invalid requests show errors. (2) AI↔ESCO classification remains NOT IMPLEMENTED; inspect provider/task contract to implement bounded AI proposals against real ESCO IDs per work-history item, without altering ESCO canonical tables. (3) Before financial cost display, capture actual token usage/model and price version per ingestion operation; past intakes cannot be priced as actual billable operations. Async upload/background state transition requires server-side durable job design, not merely closing dialog early.
