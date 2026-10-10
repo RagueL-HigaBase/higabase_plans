@@ -60,3 +60,8 @@ Status **VERIFY (owner rerun required)**. Fixed 16 owner-reported TS strict/noUn
 ## 2026-10-10 CV intake and AI–ESCO research
 
 2026-10-10: Dev CV one-step UX + cost disclosure committed in React main. Save Test Candidate is one action after choosing CV; Preview removed; drawer closes when the existing server POST finishes. THIS IS NOT asynchronous backend/background processing. Candidate sidebar currently says `AI cost: Not recorded` (no fake $0.00). Research finding: AI provider supports only resume.parse, no AI-ESCO selection yet; next block to implement typed AI↔ESCO per-work-period selection and accurate per-operation usage/cost. Owner React verify and browser checks pending.
+
+
+## AI ↔ ESCO Research V1 (2026-10-10)
+
+2026-10-10 AI ↔ ESCO experiment IMPLEMENTED IN MAIN, VERIFY pending local checks. OpenAI provider supports two new bounded tasks; dev-only authenticated POST classification on existing saved ResumeDraftV1; per-work experience whitelist of ESCO Occupation IDs + select relevant Skill IDs from actual graph edges. No persistence, no new tables, no ESCO architectural change, no intake confirmations, no cost changes. UI explicit run button prevents repeated paid calls on page GET; on success per-work time blocks show AI selections. Known limitations: English lexical query candidate recall, high potential latency with up to 8 periods, AI may choose none, maximum 3 experimental requests per 15 min, OpenAI-only, no durable job. Verify and inspect CV locally before any further changes.
