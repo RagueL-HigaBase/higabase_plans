@@ -50,3 +50,7 @@ Read [the factual checkpoint](CANDIDATE_DEV_CHECKPOINT_2026_10_09.md) **before**
 ## Progress — 2026-10-10 (VERIFY)
 
 Dev-CV-Hardening-1 implementation committed to Express and React **main**; owner verification outstanding. The first source audit found `src/esco/knowledge.ts` / `routes.ts`, runtime/provider-neutral AI tasks, `src/ai/benchmark/resume-cli.ts` and `openai-benchmark-pricing.ts` already implemented; cost estimates need usage and configured model pricing. This is **not** evidence that the active CV intake currently invokes ESCO. Avoid reimplementation or speculative architecture work. Next owner checks: pull/verify each repo, browser retest; optional Reset only by explicit owner confirmation, then diverse CV assessment.
+
+## Immediate verification: ESCO timeline research (2026-10-10)
+
+Pull `main` in Express and React, run `npm run verify` in both and inspect saved Candidate Details. Check chronology (including undated source periods), per-row source/ESCO occupations/direct skills, collapsed ESSENTIAL/OPTIONAL graph relations, unassigned CV-wide matched skills, missing ESCO candidate empty states and existing AI Skills/Tools. Report mistakes before implementing any semantic matching, AI per-work-experience proposal generation or confirmation colors. This is a disposable read-only experiment, not production architecture. Central CURRENT_TASK and TASKS are authoritative tracking.
