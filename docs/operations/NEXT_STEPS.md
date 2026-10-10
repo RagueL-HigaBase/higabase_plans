@@ -59,3 +59,8 @@ Pull `main` in Express and React, run `npm run verify` in both and inspect saved
 ## 2026-10-10 CV intake and AI–ESCO research
 
 2026-10-10 NEXT: (1) React main git pull/npm run verify; verify dev upload select file + Save closes on successful server response, and invalid requests show errors. (2) AI↔ESCO classification remains NOT IMPLEMENTED; inspect provider/task contract to implement bounded AI proposals against real ESCO IDs per work-history item, without altering ESCO canonical tables. (3) Before financial cost display, capture actual token usage/model and price version per ingestion operation; past intakes cannot be priced as actual billable operations. Async upload/background state transition requires server-side durable job design, not merely closing dialog early.
+
+
+## AI ↔ ESCO Research V1 (2026-10-10)
+
+2026-10-10 AI ESCO research checkpoint: pull Express and React main; run npm run verify in both. Reload saved Candidate Details, click 'Run AI ↔ ESCO research' once, wait for response, inspect per-period ESCO Occupations and AI Proposed Skills; Related Skills expand separately. Check no unnecessary requests on GET, access enforcement, invalid IDs rejected, no DB writes. Review first CV result and errors before tuning candidate recall or semantic mapping. Costs remain Not recorded and untouched. React upload is still synchronous save-and-close on response; async queue is future work. Do not change canonical ESCO schema.
