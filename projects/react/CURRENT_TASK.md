@@ -222,3 +222,7 @@ Owner: `git pull`, `npm run verify`, restart React; click Endijs Runcis in Recru
 ## DEV-CV-HARDENING-1 — stale Preview success correction (2026-10-10)
 
 Status: **VERIFY — owner local/browser check pending**. React `main` commit `16cf8ffc61b243417a1754252e5fc0b7b05d1e91` clears a previously successful Preview before starting `Save Test Candidate`, so any following API failure cannot leave the old green preview next to the new red error. No style, route, locale, Candidate detail, API contract or production change. Owner must `git pull`, `npm run verify`, restart React, test successful Preview then failed Save (or an API error); verify previous green preview is gone. No agent-run local verification.
+
+## CANDIDATE-ESCO-RESEARCH-1 — three visual blocks (2026-10-10)
+
+Status **VERIFY — owner local/browser checks pending**. React main CandidateDetails displays existing AI Skills/Tools unchanged, then independent ESCO Occupations and ESCO Skills blocks sourced from dev-only Candidate detail `esco` response. Phoenix badges temporarily distinguish Occupation, Direct Skill, and Occupation-Related ESSENTIAL/OPTIONAL; URI opens official concept, tooltips show raw source title/relation. Empty state says no exact proposals. No frontend benchmark, CV comparison scoring, verification/intake, persistence, CSS framework change or migration. Owner to `git pull`, `npm run verify`, reload and inspect several candidate pages. If results are sparse, treat as evidence of strict exact-label search, not evidence that candidate lacks skills.
