@@ -2044,3 +2044,11 @@ AI-CORE
 ```
 
 The detailed cross-project AI architecture is maintained in `AI_CORE.md`.
+
+## Architecture decision — Separate CV draft control from HIGA Knowledge review (2026-10-11)
+
+Candidate CV processing is not global catalog governance. AI extraction and ESCO mapping produce candidate-scoped, visible **draft** proposals; authorized candidate/recruiter review operates on that draft without requiring SYSTEM_OWNER catalog approval. Manual edits take precedence: re-running AI must generate a separate candidate draft revision for diff/selective acceptance, never silently overwrite edited or confirmed information. Restoration to an earlier retained revision requires appropriate authorization, provenance and audit, to be designed before shipping.
+
+Unknown CV terminology is stored as source/unresolved candidate data, not invented official ESCO Skills. Proposed shared HIGA occupations, equipment, credentials and HIGA→ESCO Skill links are a separate curated workflow; only SYSTEM_OWNER can approve/reject the latter under the currently verified rehearsal-only backend boundary. Candidate data must not be deleted or altered solely because a shared Knowledge proposal is rejected. Future deduplication/triage of unknown terms can aggregate cases rather than send each CV into a human approval queue. No automatic shared-catalog publishing.
+
+Status: approved behavioral architecture; candidate CV revision storage, merge/rollback UI, automatic unknown-term clustering and production catalog review are **not implemented** by this decision.
