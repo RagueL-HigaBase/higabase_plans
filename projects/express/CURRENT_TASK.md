@@ -1486,3 +1486,8 @@ Owner ran `npm run verify`: Prisma validation passed; TypeScript TS2532 failed o
 ## Cross-repo ESCO named-document removal (2026-10-11)
 
 Deleted 7 obsolete ESCO-specific documentation artifacts from central `higabase_plans/main`: `ESCO_ARCHITECTURE.md`, two copies of `docs/ESCO.md`, and four ESCO Knowledge Graph/Importer docs across snapshots/current project docs. `higabase_states/main` removed `pages/esco-ai/README.md`. React 28 locale JSON files cleaned and native-language replacements validated. Active Express 115-file text scan and PostgreSQL schema/object checks previously passed. Historical decommission records in CURRENT_TASK remain intentionally retained as audit trail, not runtime dependencies. Standalone `higa-esco-extractor` remains: no GitHub repo deletion action exposed, and repository-level deletion has not occurred. **Do not claim organization-wide zero-ESCO until standalone repository and historical documentation text policy are resolved.**
+
+
+## Candidate Experience Knowledge — DESIGN ONLY (2026-10-11)
+
+Owner requested visual sample from uploaded CV and initial graph architecture, without DB/code changes. Canonical working draft: `projects/express/docs/planning/CANDIDATE_EXPERIENCE_KNOWLEDGE_CONCEPT.md` (commit `d03f4e7`). Work Experience timeframes link to reusable Responsibilities, Skills, Knowledge, Tools & Technologies concepts; Qualifications and Education separated at candidate profile level; semantic reuse, evidence-grounding, concise translated tooltip definitions. Future screening and manual/AI matching are explicitly out of scope now. Example Feel Flex BV Feb 2021–Nov 2025; sample only; no remote test candidate queried or modified. Implementation **NOT STARTED**, DB schema/API unchanged.
