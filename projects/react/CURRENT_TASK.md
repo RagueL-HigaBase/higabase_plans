@@ -375,3 +375,19 @@ Owner-requested narrow prototype UI change on React `main`: `src/pages/system/Ca
 - Do not mark DONE without owner `npm run verify` and browser visual approval.
 
 React commits: `8211c1fa363511bd3d991f49b5801bd8e9885c2d`, `fd58042a1d5d811586bf0d2a7862e3109b7cab03`.
+
+
+## CANDIDATE-PROFILE-CRM-DONUT — 2026-10-11
+
+Status: **VERIFY — owner local build and visual inspection pending**.
+
+Owner requested the Phoenix CRM Dashboard donut chart shown at `/dashboard/crm` in the existing Candidate Resume profile overview. Inspected canonical reference `phoenix-react-reference/src/components/charts/e-charts/ContactsBySourceChart.tsx` and `src/components/modules/crm/ContactsBySource.tsx`.
+
+React `main` commits `d89bb406538f0854f8faca9faaf46182f2fd9825` and `2a37fc792942c06b931a53b57f3e4781c2593435`:
+- Switched `CandidateOccupationProfileChart` to Phoenix CRM pie radius 55%-90%, 3px body-background separators, theme palette and dark/light treatment; removed custom gradient sectors and custom fixed hex palette.
+- Used Phoenix `100px` central `bg-primary-subtle` circle with total in `text-primary-dark`, and 245px chart height.
+- Preserved candidate-specific 5-category values, existing category buttons, chart click-to-filter behavior and the rest of Resume; chart total is derived from candidate mock concepts, **not** copied Phoenix demo value 560.
+- No new CSS, dependencies, backend/API, schema, or other routes. Existing chart uses ECharts CanvasRenderer already present; it is **not** React Canvas UI.
+- The category-icon background uses a CSS `color-mix()` tint of the matching theme color; this is a local style expression rather than an imported standalone Phoenix legend component. Full rendered parity is not yet verified.
+
+Owner: run `npm run verify` on updated React main; visually check light/dark, five sectors, center circle and clicking chart sectors/category buttons. Mark DONE only after owner confirms.
