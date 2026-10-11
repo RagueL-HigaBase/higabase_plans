@@ -1416,3 +1416,8 @@ Status **VERIFY**. Express `main` commits `f017744`, `8fd3fd4` remove the ESCO-b
 ## ESCO DECOMMISSION — Block 6 leftover integration test cleanup (2026-10-11)
 
 Owner reported Prisma schema VALID then TypeScript **3 errors in 2 integration test files** importing already-deleted `HigaSkillLinkReviewer` and `createHigaReviewRoutes`. Express main commits `7584a3f` and `c82d7e9` delete respectively `tests/higa-knowledge/review-http.integration.test.ts` and `tests/higa-knowledge/skill-link-reviewer.integration.test.ts`, both exclusively exercising retired ESCO SkillLink moderation. No application, schema or database changes. Status **VERIFY**; owner must `git pull` and rerun `npm run verify`; no green test or build result asserted.
+
+
+## ESCO DECOMMISSION — Block 7, delete retired Candidate ESCO research (2026-10-11)
+
+Status **VERIFY**, pending owner local test/build run. In Express main removed `src/candidate-dev/esco-research.ts` (`1e65328`), `src/candidate-dev/esco-ai-research.ts` (`3418b04`) and their exclusive unit tests `tests/candidate-dev/esco-ai-research.test.ts` (`c19671d`), `tests/candidate-dev/esco-research.test.ts` (`7a5af6d`). These classes were already disconnected from Candidate HTTP and dependency injection in prior blocks. Normal ResumeDraftV1 parse/persistence, auth, and Candidate Intake remain unchanged. More ESCO implementation remains in `src/esco`, provider ESCO tasks, HIGA skill proposal workflow, Prisma/schema and external repositories; this block does not imply complete deletion. No DB changes. Owner: `git pull` and `npm run verify`, report any new failed imports. Do not claim tests passed before owner report.
