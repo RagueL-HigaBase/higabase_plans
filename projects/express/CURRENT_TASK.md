@@ -1381,3 +1381,8 @@ Owner ran Express `npm run verify` and reported **220 passed / 1 failed / 7 skip
 ## ESCO DECOMMISSION — Block 2, unregister public ESCO runtime API (2026-10-11)
 
 Status **VERIFY — owner local tests pending**. Express main `src/app.ts` commit `5c2774f` removes `createEscoRoutes` import, AppDependencies `esco` contract and `/api/esco` route registration. Express main `src/dependencies.ts` commit `ad0e78e` removes `PrismaEscoKnowledge`/`EscoLeafOccupationRetrieval` runtime initialization and description lookup. All other Candidate/Resume/Auth/Organization routes remain wired. No Prisma migration, table DROP or other database write. Remaining `src/esco/*`, AI provider ESCO task cases, HIGA Knowledge resolver/review code, config, scripts, tests and React references require dependency audit before deletion. Existing tests that construct an AppDependencies esco fixture may need updating. Do not declare clean build until owner runs `git pull && npm run verify`; keep status VERIFY.
+
+
+## ESCO DECOMMISSION — Block 2 startup wiring correction (2026-10-11)
+
+Owner `npm run verify` reported Prisma schema VALID but TypeScript failed with two errors in `src/main.ts:23`: stale `esco: deps.esco` after removing `AppDependencies.esco` and `createDependencies().esco`. Express main commit `ea90397` removes this obsolete property from `createApp` bootstrap. Production startup wiring change only; no DB/schema changes. Status **VERIFY**; owner must rerun `git pull` and `npm run verify` to identify any further ESCO references. Tests/build not claimed passed.
