@@ -1187,3 +1187,5 @@ npm run knowledge:skill:ai-check
 Remove-Item Env:HIGA_KNOWLEDGE_RUN_AI_CHECK
 ```
 Requires existing `.env` fields AI_PROVIDER=openai, OPENAI_API_KEY and OPENAI_MODEL; **never paste the API key in chat**. Run only if owner wants an actual paid provider call. Keep block in VERIFY pending real test results. No Prisma migrations needed.
+
+**Owner live OpenAI relevance check PASS (2026-10-11):** `npm run knowledge:skill:ai-check` connected to verified `higa_systems_rehearsal`, fetched real ESCO Skill ID 3908 (`manage musical staff`), proposed `PROPOSED` for synthetic Technical director description with exact evidence `manages musical staff` and explanatory rationale; for unrelated VCA Basis credential returned zero proposals. CLI completed normally, then owner removed `HIGA_KNOWLEDGE_RUN_AI_CHECK` flag. Confirms real provider→AiRuntime→evidence gate for these two cases, without DB writes. Not yet a broad semantic-quality benchmark. **This live test VERIFY gate PASSED.** Next proposed work: broader controlled relevance evaluation including negative cases; no autoapproval/persistence without separate approval.
