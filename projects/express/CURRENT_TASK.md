@@ -1128,3 +1128,8 @@ Owner explicitly approved implementation in Express main. **Narrow initial read-
 - Owner VERIFY gate: `git pull`, `npm run db:generate`, `npm run verify`; report any TS/build issues. Existing rehearsal DB can later support non-mutating realistic search tests. No schema or Prisma migrate deploy needed. **Status VERIFY, not DONE.**
 
 Next scope requires owner approval: semantic/description-based enrichment, actual safe HIGA concept creation, approved-link persistence, public API. Current resolver does not do these.
+
+
+## VERIFY — Block 4 real-data read-only rehearsal check (2026-10-11)
+
+Owner reported existing Block 4 code gate green and approved continuation. Express main added `src/higa-knowledge/resolver-check-cli.ts` and `npm run knowledge:resolver:check`, commits `af32232` / `bb80bd9`. It uses existing `DATABASE_URL`, checks PostgreSQL `current_database()` is exactly `higa_systems_rehearsal` or `higa_knowledge_test`, and performs Resolver reads inside `SET TRANSACTION READ ONLY` PostgreSQL transaction. Reports ESCO/HIGA results for Staffing coordinator, Floor shot blaster and VCA Basis; output includes label language, status and capped skill-count. No fixtures, inserts, updates, migration or schema changes. Missing HIGA seeds in rehearsal may yield empty HIGA hits: this is a finding, not a test failure. CLI is a read-only diagnostic, not an automated semantic accuracy test. Owner VERIFY gate: `git pull`, `npm run verify`, confirm DATABASE_URL is rehearsal with `npm run db:status`, then `npm run knowledge:resolver:check`. Report output before deciding search quality fixes or seed install. No assistant-side execution claimed. **Status VERIFY.**
