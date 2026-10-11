@@ -391,3 +391,7 @@ React `main` commits `d89bb406538f0854f8faca9faaf46182f2fd9825` and `2a37fc79294
 - The category-icon background uses a CSS `color-mix()` tint of the matching theme color; this is a local style expression rather than an imported standalone Phoenix legend component. Full rendered parity is not yet verified.
 
 Owner: run `npm run verify` on updated React main; visually check light/dark, five sectors, center circle and clicking chart sectors/category buttons. Mark DONE only after owner confirms.
+
+
+### CANDIDATE-WORK-EXPERIENCE-PHOENIX — build regression fix (2026-10-11)
+Owner ran `npm run verify` and reported TypeScript TS2307 for `dayjs` and `dayjs/plugin/customParseFormat` in `CandidateDossierPrototype.tsx`. Root cause: original Phoenix date parsing import was copied without an installed `dayjs` dependency. React main commit `adefa150413043c9cdd522aa5f2c521c99991395` removes the undeclared imports/plugin and renders the existing static demo date directly (24 / Mar, 2024). No dependencies, CSS, backend, or routes changed. **VERIFY** pending owner's renewed `npm run verify`; no green build has been claimed.
