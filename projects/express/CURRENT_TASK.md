@@ -1287,3 +1287,19 @@ E) Define scoped authorization, consent, source retention/deletion, privacy, aud
 F) First incremental implementation gate should be explicit architecture + permission/ownership contract, followed by separately approved minimal schema and API. No frontend/version buttons until backend guards and tests are verified.
 
 Status: AUDIT COMPLETE / DESIGN PROPOSED. No claim of implemented versioning or source retention.
+
+## DIRECTION AND CROSS-REPO AUDIT — switch Candidate Parser focus to higa_systems (2026-10-11)
+
+Owner clarified entire HigaBase is early-stage; current objective is a working end-to-end CV Parser and Candidate dossier across Express and React on **development main database higa_systems**, not continuing rehearsal-only HIGA Knowledge moderation or building resume revision history. Flow intent: recruiter/candidate uploads CV once → AI parses and ESCO normalizes → saved Candidate shown as UNSCREENED → later link-based interactive questionnaire to candidate → confirmed SCREENED. No repeat CV parsing required. User requests examine existing UI/backend before changes. **No database switch, schema change or production access was executed by this audit**. Previous rehearsal-only HIGA Skill Link review/write guards remain intact and must not be bypassed by switching DATABASE_URL; they are a separate domain.
+
+Source inspection:
+- React `src/components/candidate/AddCandidatePanelProvider.tsx` uploads through `saveTestCandidate` in `src/api/resume-preview.ts` to `POST /api/dev/candidates/intake` (PDF/DOCX <=8 MiB), currently gated by import.meta.env.DEV.
+- Express `src/resume-draft/routes.ts` exposes intake/list/detail exclusively when developmentRoutes enabled; session unlocked+workspace membership required for these dev endpoints, but no candidate-specific authorization/consent. `CandidateDevIntakeRepository.save` creates Candidate, Contact, ResumeDraft JSON and DevIntake atomically. Original CV file not durably stored.
+- React `src/pages/recruitment/Candidates.tsx` GETs `/api/dev/candidates`; `CandidateDetails.tsx` GETs `/api/dev/candidates/:id`, displays saved ResumeDraft, per-work-history ESCO research, provides separate paid-on-demand `/esco-classify` button, and hardcodes `UNSCREENED` badge (NOT DB status).
+- React `src/pages/system/CandidateDossierPrototype.tsx` is a separate static mock with demonstration candidate data and badges, NOT live Candidate dossier.
+- Current ESCO results for Candidate detail are computed research proposals and not final persisted candidate qualification/skill decisions. HIGA Knowledge global approval workflow unrelated to candidate screening.
+- Resume versions/rollback previously discussed remain deferred per owner.
+
+Proposed next **small** implementation block, awaiting precise approval: keep current React Candidate list/detail and backend intake pathway; first establish higa_systems main dev DB migration/model parity and check local config (without exposing secrets), then move current intake endpoint to a named, explicitly development-only workflow if needed; evaluate real upload → persisted candidate → GET dossier and ESCO from frontend on higa_systems, document actual gaps with owner outputs. DO NOT silently enable unscoped production candidate APIs or remove existing database guardrails. No screening status persistence, questionnaire links, schema/migrations, permissions, or CV source artifact implemented by this review. Owner should confirm proposed safe scope of first write on higa_systems before code/database modification.
+
+Status: CROSS-REPO AUDIT COMPLETE; next implementation scope must be approved.
