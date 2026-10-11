@@ -1085,3 +1085,14 @@ Express changes:
 - **Owner gate:** `git pull`, `npm run db:generate`, `npm run verify`, `npm run db:status`; after backup and history check, `npx prisma migrate deploy`, `npm run knowledge:install` twice (expect `installed=0 existing=3 total=3` on current database), and inspect SQL counts by language, including old rejected records; ensure unchanged concept IDs/status and no duplicate terms. No assistant-side execution of local DB or npm claimed. **Status VERIFY, not DONE.**
 
 Next independent block should address localized lookup and EN fallback, with explicit source language in responses. No automatic mass-translations or HIGA Skills.
+
+
+## VERIFY — HIGA concept → official ESCO Skill links (2026-10-11)
+
+Owner approved a bounded skill-link foundation; latest proposed numeric caps interpreted as **OCCUPATION 10, EQUIPMENT 5, CREDENTIAL 5**, pending practical owner acceptance. Skills themselves remain **ESCO-only**; HIGA Skills are forbidden. No automatic AI matching and no assignment of skills to a person implied by these links.
+
+- Express Prisma `HigaKnowledgeSkillLink` mapped to `hb_higa_knowledge_skill_links`: stable HIGA concept FK, canonical ESCO concept FK (integer), `PROPOSED`/`APPROVED`/`REJECTED` status, mandatory written reason, unique pair and indexes. Existing Higa/ESCO records are untouched; migration creates empty link table only.
+- Migration `20261011140000_higa_knowledge_esco_skill_links` PostgreSQL trigger validates allowed HIGA kind and non-rejected concept; validates that referenced ESCO concept has a `SKILL` version in an `ACTIVE` dataset; counts both PROPOSED and APPROVED against cap (REJECTED excluded); uses parent row `FOR UPDATE` to serialize concurrent inserts and prevent overflow. Status changes and UPDATEs are validated. A source concept is not evidence of an individual's demonstrated skills.
+- New contract tests inspect migration clauses to guard presence of caps, active ESCO type verification, uniqueness and locking. These are **static checks**, not live PostgreSQL integration tests.
+- No resolver, semantic search, AI matching, new HIGA concepts, frontend, Candidate or ESCO data changes; existing 28-language ESCO infrastructure untouched.
+- **Owner VERIFY gate:** `git pull`, `npm run db:generate`, `npm run verify`, `npm run db:status`; review pending migration and backup local DB; apply `npx prisma migrate deploy` only if clean and approved; repeat `npm run db:status`. For database behavior verification on disposable DB, create a test HIGA concept and use real IDs from active ESCO SKILL, add up to 10 or 5 proposed links, verify overflow rejected, same pair rejected, ESCO occupation ID rejected, REJECTED links excluded, and concurrent inserts cannot exceed caps. No assistant-side local execution claimed. **Status VERIFY.**
