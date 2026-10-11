@@ -359,3 +359,19 @@ Owner rejected bespoke experience layout/button, requesting fidelity to original
 ## Exact stock Phoenix EventItem inserted, no custom experience component (2026-10-11)
 
 Owner explicitly ordered inserting an original template component unchanged first, then directing which candidate values go to which fields. React `main` commit `dba041c` replaces the custom `CandidateWorkExperience` accordion mock UI inside `src/pages/system/CandidateDossierPrototype.tsx` with direct rendering of existing `src/components/list-items/EventItem.tsx` using unchanged original `src/data/eventsData.ts` `events` samples. **Original EventItem source, styles and dataset are untouched**. This is an authentic existing Phoenix event-list item from this project's template, not an asserted match to the user screenshot of the Stock Details event card; exact Stock Details original TSX has not been identified in this repository. The current demo intentionally displays stock Phoenix event titles, not mapped candidate employment fields, pending the owner's mapping instructions. Profile overview and sidebar unchanged. No backend/API/DB modifications. **VERIFY pending**: owner `git pull && npm run verify`, view local `/system/candidate-prototype/resume` and identify desired field positions. If the owner means a different Phoenix component from the screenshot, request its actual source file rather than recreating it.
+
+
+## CANDIDATE-WORK-EXPERIENCE-PHOENIX — 2026-10-11
+
+Status: **VERIFY — owner local build and visual check pending**.
+
+Owner-requested narrow prototype UI change on React `main`: `src/pages/system/CandidateDossierPrototype.tsx` replaces the three demo `EventItem` records in Work Experience with one card using the original Phoenix `UpcomingEventCard` JSX/classes and Stock Details demo content. Reference: `phoenix-react-reference/src/components/cards/UpcomingEventCard.tsx` and `src/data/stock/stockDetails.ts`.
+
+- Keeps existing Work Experience heading and Candidate Resume route; no backend, storage, API, navigation or CSS changes.
+- Deliberately **does not** include Phoenix `EventOffcanvas`, the title click handler or any Canvas/offcanvas overlay, per owner request.
+- The three original event/film demo records are no longer rendered in Work Experience.
+- Phoenix reference avatar binaries were not available through the GitHub connector; three initial-based placeholders are used inside the Phoenix avatar-group area. This is **not pixel-identical** to the original reference and remains open for owner acceptance/replacement by original image assets. No additional CSS was created.
+- This is stock demo data, **not** real candidate job experience. Interested/Going retain the Phoenix visual buttons without backend actions.
+- Do not mark DONE without owner `npm run verify` and browser visual approval.
+
+React commits: `8211c1fa363511bd3d991f49b5801bd8e9885c2d`, `fd58042a1d5d811586bf0d2a7862e3109b7cab03`.
