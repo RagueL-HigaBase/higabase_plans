@@ -292,3 +292,10 @@ React main commit `9bec4fe`: CandidateDetails AI research section now distinguis
 
 ## VERIFY — Retire ESCO UI from Candidate Details (2026-10-11)
 Owner explicitly stopped ESCO Matcher experiments due to repeated irrelevant skill proposals and instructed Candidate flow to rely solely on AI Interpreter. React main commit `f8735dc`: removed CandidateDetails ESCO badge, action button, classification API call, occupations, skill proposals, and SQL diagnostics; shows work history and CV-wide AI Skills/Tools already persisted in ResumeDraftV1. No invented per-period skill attribution, taxonomy/graph writes, translations or descriptions yet. AI Skills remain CV-wide. Does not remove shared ESCO source modules or database. Owner must run `npm run verify` and inspect existing candidate. Status VERIFY.
+
+
+## ARCHITECTURE RECONCILIATION — Candidate Details / Interpreter-first (2026-10-11)
+
+Status: **DISCUSSION / DESIGN** for next functionality; existing UI removal **VERIFY**. React `f8735dc` removes active CandidateDetails ESCO research button, classification calls, ESCO badges and SQL diagnostics, leaving work history and persisted CV-wide AI Skills / AI Tools. Do not reinstate the old UI or depict CV-wide skills as per-job verified facts. Express `799d239` returns stored Candidate draft without synchronous ESCO lookup; legacy experimental endpoint remains outside active UI. Owner local `npm run verify` and browser regression confirmation pending.
+
+Next proposed UX is evidence-oriented per-work-period Activity / Skill review, then explicit HIGA Knowledge mapping/proposal statuses. No new frontend API, UI design, catalog records, migration or autoapproval implemented by this documentation checkpoint. Preserve original CV source, corrections and distinct candidate vs global Knowledge approval. Candidate/vacancy shared concept identity is a future contract, not a current React feature.
