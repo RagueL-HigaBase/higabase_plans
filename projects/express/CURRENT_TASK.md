@@ -1264,3 +1264,26 @@ Owner reran `npx vitest run tests/higa-knowledge/review-http.integration.test.ts
 Owner approved candidate CV draft frontend visibility, manual correction, AI reprocess into a separate proposed revision (not silent overwrite), selective acceptance/comparison and restore/rollback of retained revisions. Candidate draft workflow must operate independently from global HIGA Knowledge approvals. Unknown CV terms remain source data until matching/curation; never mint unofficial HIGA Skills. SYSTEM_OWNER moderation governs only global HIGA catalog/relation changes; do not create one approval per CV. Canonical decisions recorded in `CANDIDATE_ARCHITECTURE.md` and `SYSTEM_ARCHITECTURE.md`. These are prospective requirements, not claims that versioning, undo, or frontend controls exist.
 
 NEXT PROPOSED BLOCK (not implemented): audit existing ResumeDraftV1, candidate-dev API, storage and UI to map what currently persists, who may edit it and where candidate draft revisions would fit. Specify minimal version/diff/restore and authorization contract before any DB schema or React changes. No code/migrations authorized by this documentation-only step.
+
+## AUDIT COMPLETE — Candidate Resume Versioning Foundation (2026-10-11)
+
+Scope: read-only inspection of Express main `src/resume-draft/contract.ts`, `service.ts`, `repository.ts`, `candidate-dev-intake-repository.ts`, `routes.ts`, and Prisma `ResumeDraft`, `Candidate`, `CandidateContact`, `CandidateDevIntake` models. No source code or migration changes; no local tests claimed.
+
+OBSERVED:
+- `ResumeDraftV1` structured Zod contract contains personal, contacts, summary, languages, skills, tools, workHistory, education, certifications, achievements; `RESUME_DRAFT_CONTRACT_VERSION='1'` denotes schema contract, **not** edit revision number.
+- `ResumeDraftService.previewFile` parses uploaded PDF/DOCX into a transient draft without persisting source/file or parsed draft.
+- Development `POST /dev/candidates/intake` parses uploaded file, `CandidateDevIntakeRepository.save` transaction creates a **new** Candidate, CandidateContact, ResumeDraft JSON payload, and CandidateDevIntake join; it does not update or rebuild an existing Candidate. Original uploaded PDF/DOCX bytes are not persisted along this pathway.
+- `GET /dev/candidates/:id` returns stored draft and calculated ESCO suggestions; explicit `POST /dev/candidates/:id/esco-classify` performs separate AI classification. The computed ESCO matches are not, by themselves, persisted verified candidate skills.
+- `PrismaResumeDraftRepository` supports create/findById only. `hb_resume_drafts` stores version of contract plus JSON payload and timestamps; `hb_candidate_dev_intakes` links existing candidate to one `ResumeDraft` row per intake. Neither model has revision number, parent revision, active version pointer, author/origin, acceptance status, field-level overrides, version diff or restore operation.
+- Dev candidate list/detail access requires authenticated unlocked workspace session and local frontend origin filtering, but currently has no per-candidate organization ownership/consent/authorization check. Production Candidate APIs remain unapproved in canonical Candidate architecture.
+- There is no safe replace/reprocess/compare/restore Candidate CV API or retained original source artifact in the inspected code.
+
+MINIMAL PROPOSED DESIGN — NOT YET APPROVED FOR IMPLEMENTATION:
+A) Preserve immutable source-file identifier (actual file stored separately under approved privacy/retention policy) and source-extracted evidence.
+B) Store immutable candidate-scoped draft revisions with sequential revision number, origin (AI/manual), source/parent revision, author identity/role, created timestamp, review/acceptance state; keep approved/current revision pointer distinct.
+C) AI reprocess creates proposed revision, never overwrites accepted or manually edited fields; compare normalized field/array changes and allow selective manual acceptance.
+D) Restore produces a new revision referencing an earlier retained revision rather than mutating history; protect concurrent changes with optimistic revision checks.
+E) Define scoped authorization, consent, source retention/deletion, privacy, audit and exact API semantics **before** schema/migrations. Candidate drafts must be independent from shared HIGA Knowledge review.
+F) First incremental implementation gate should be explicit architecture + permission/ownership contract, followed by separately approved minimal schema and API. No frontend/version buttons until backend guards and tests are verified.
+
+Status: AUDIT COMPLETE / DESIGN PROPOSED. No claim of implemented versioning or source retention.
