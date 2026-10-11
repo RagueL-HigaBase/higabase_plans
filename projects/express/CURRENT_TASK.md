@@ -1386,3 +1386,8 @@ Status **VERIFY — owner local tests pending**. Express main `src/app.ts` commi
 ## ESCO DECOMMISSION — Block 2 startup wiring correction (2026-10-11)
 
 Owner `npm run verify` reported Prisma schema VALID but TypeScript failed with two errors in `src/main.ts:23`: stale `esco: deps.esco` after removing `AppDependencies.esco` and `createDependencies().esco`. Express main commit `ea90397` removes this obsolete property from `createApp` bootstrap. Production startup wiring change only; no DB/schema changes. Status **VERIFY**; owner must rerun `git pull` and `npm run verify` to identify any further ESCO references. Tests/build not claimed passed.
+
+
+## ESCO DECOMMISSION — Block 3, remove obsolete configuration / CLI entrypoints (2026-10-11)
+
+Status **VERIFY — no owner test result yet for this block**. Express main commit `4ab6bcd` removes three `ESCO_OCCUPATION_*` environment validation settings no longer consumed after public ESCO API runtime disconnection. Express main commit `34ab1c2` removes only ESCO-specific npm commands (`esco:import`, `esco:benchmark:semantic`, `esco:benchmark:evidence`, `knowledge:resolver:esco-check`). Independent AI resume parsing, general Knowledge scripts, database, Prisma, user/auth and Candidate Intake commands remain. No source-module deletion or migrations in this block. Source `src/esco/*`, ESCO-linked HIGA Knowledge resolver/reviewer, provider cases, fixtures and Prisma definitions **remain and must be investigated before deletion**. Owner: pull Express `main` and run `npm run verify`. No passing tests claimed. This is a reversible code surface reduction, not full ESCO removal.
