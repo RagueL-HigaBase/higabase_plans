@@ -1189,3 +1189,19 @@ Remove-Item Env:HIGA_KNOWLEDGE_RUN_AI_CHECK
 Requires existing `.env` fields AI_PROVIDER=openai, OPENAI_API_KEY and OPENAI_MODEL; **never paste the API key in chat**. Run only if owner wants an actual paid provider call. Keep block in VERIFY pending real test results. No Prisma migrations needed.
 
 **Owner live OpenAI relevance check PASS (2026-10-11):** `npm run knowledge:skill:ai-check` connected to verified `higa_systems_rehearsal`, fetched real ESCO Skill ID 3908 (`manage musical staff`), proposed `PROPOSED` for synthetic Technical director description with exact evidence `manages musical staff` and explanatory rationale; for unrelated VCA Basis credential returned zero proposals. CLI completed normally, then owner removed `HIGA_KNOWLEDGE_RUN_AI_CHECK` flag. Confirms real provider→AiRuntime→evidence gate for these two cases, without DB writes. Not yet a broad semantic-quality benchmark. **This live test VERIFY gate PASSED.** Next proposed work: broader controlled relevance evaluation including negative cases; no autoapproval/persistence without separate approval.
+
+
+## VERIFY — Higa Skill relevance six-scenario live AI matrix (2026-10-11)
+
+Owner approved expanding the already-passing real provider test with contrasting Occupation/Equipment/Credential cases. Express main added `src/higa-knowledge/skill-relevance-matrix-cli.ts` and script `npm run knowledge:skill:ai-matrix`; no schema migration, API, candidate associations or DB modifications. A single explicitly opted-in run makes up to SIX paid OpenAI calls; `HIGA_KNOWLEDGE_RUN_AI_CHECK=1` and configured OpenAI credentials required.
+
+Safety: first verifies actual `current_database()` in allowed rehearsal/test list with server-enforced READ ONLY transaction; retrieves real active official ESCO Skills by exact English term and validates distinct MAG/TIG Concept IDs, disconnects DB prior to AI calls. No fake ESCO IDs; if the terms `perform metal active gas welding` or `perform tungsten inert gas welding` are missing, command will fail clearly before AI charges; term-resolution tuning requires evidence from the local ESCO dataset, not guessed ID. Six scenario checks: positive theatre, equipment inventory without operator evidence, MAG 135 vs TIG 141 two-way, VCA Basis vs VCA VOL without welding-competence inference. Logs PASS/FAIL individually and exits nonzero for incorrect selections or external provider errors; model selection and quoted evidence visible for manual audit. These are synthetic benchmark cases, not evidence of statistical relevance accuracy, not human-reviewed approval, and not persistent PROPOSED rows.
+
+Owner VERIFY PowerShell (verify `DATABASE_URL` remains rehearsal and never paste API keys):
+```powershell
+git pull
+npm run verify
+$env:HIGA_KNOWLEDGE_RUN_AI_CHECK="1"
+try { npm run knowledge:skill:ai-matrix } finally { Remove-Item Env:HIGA_KNOWLEDGE_RUN_AI_CHECK -ErrorAction SilentlyContinue }
+```
+Status VERIFY pending owner result. Do not start proposal DB writes or change official ESCO from test outcome alone.
