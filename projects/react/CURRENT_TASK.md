@@ -299,3 +299,8 @@ Owner explicitly stopped ESCO Matcher experiments due to repeated irrelevant ski
 Status: **DISCUSSION / DESIGN** for next functionality; existing UI removal **VERIFY**. React `f8735dc` removes active CandidateDetails ESCO research button, classification calls, ESCO badges and SQL diagnostics, leaving work history and persisted CV-wide AI Skills / AI Tools. Do not reinstate the old UI or depict CV-wide skills as per-job verified facts. Express `799d239` returns stored Candidate draft without synchronous ESCO lookup; legacy experimental endpoint remains outside active UI. Owner local `npm run verify` and browser regression confirmation pending.
 
 Next proposed UX is evidence-oriented per-work-period Activity / Skill review, then explicit HIGA Knowledge mapping/proposal statuses. No new frontend API, UI design, catalog records, migration or autoapproval implemented by this documentation checkpoint. Preserve original CV source, corrections and distinct candidate vs global Knowledge approval. Candidate/vacancy shared concept identity is a future contract, not a current React feature.
+
+
+## ESCO DECOMMISSION — front-end cleanup, VERIFY (2026-10-11)
+
+Main `8befbcb` deletes unused `src/components/candidate/EscoConceptBadge.tsx` (legacy `/api/esco/concepts/:id/description` UI); main `851eb52` removes leftover ESCO copy from CandidateDetails. `npm run verify` on owner's local React not yet confirmed after these commits. Additional content audit pending. Backend migration is a separate destructive step and must not be deployed without restorable backup.
