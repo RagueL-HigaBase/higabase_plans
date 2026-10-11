@@ -1411,3 +1411,8 @@ Owner reported prior block green. This next block removes three disconnected ESC
 ## ESCO DECOMMISSION — Block 6, remove obsolete HIGA ESCO SkillLink moderation API (2026-10-11)
 
 Status **VERIFY**. Express `main` commits `f017744`, `8fd3fd4` remove the ESCO-bound `higaReview` route registration and reviewer dependency from app/dependencies; commits `f6d68f9`, `9f86c10` delete the now-unused `review-routes.ts` and `skill-link-reviewer.ts`; commits `9c4b3ca`, `7b2e2a6` delete tests for these retired ESCO SkillLink endpoints. This removes only the ESCO-specific reviewer workflow, **not** the future HIGA Knowledge PROPOSED catalog governance (which still requires its own approved design). No Prisma or database operation. Owner must pull and run `npm run verify`, and report failures; not marked PASS. Remaining ESCO-linked `skill-proposal-workflow.ts`, Prisma SkillLink model and source/schema/tests require subsequent removal. Do not treat this block as completed full ESCO decommission.
+
+
+## ESCO DECOMMISSION — Block 6 leftover integration test cleanup (2026-10-11)
+
+Owner reported Prisma schema VALID then TypeScript **3 errors in 2 integration test files** importing already-deleted `HigaSkillLinkReviewer` and `createHigaReviewRoutes`. Express main commits `7584a3f` and `c82d7e9` delete respectively `tests/higa-knowledge/review-http.integration.test.ts` and `tests/higa-knowledge/skill-link-reviewer.integration.test.ts`, both exclusively exercising retired ESCO SkillLink moderation. No application, schema or database changes. Status **VERIFY**; owner must `git pull` and rerun `npm run verify`; no green test or build result asserted.
