@@ -1376,3 +1376,8 @@ Status: **VERIFY, code committed directly to Express main, tests not executed**.
 ## ESCO DECOMMISSION — Block 1 failing test expectation fix (2026-10-11)
 
 Owner ran Express `npm run verify` and reported **220 passed / 1 failed / 7 skipped**. Only failed case: `tests/resume-draft/file-preview.test.ts` Candidate details still expected obsolete `esco` in GET payload and invocation of `proposeCandidateEsco`. Express main commit `c38a18b` updates that test to assert `{ candidate }` from the saved draft, removes unused ESCO mock and call assertion; no production changes. Status **VERIFY** until owner pulls and reruns `npm run verify`; no claim of local tests passed. Other ESCO removal stages and DB safety gates remain outstanding.
+
+
+## ESCO DECOMMISSION — Block 2, unregister public ESCO runtime API (2026-10-11)
+
+Status **VERIFY — owner local tests pending**. Express main `src/app.ts` commit `5c2774f` removes `createEscoRoutes` import, AppDependencies `esco` contract and `/api/esco` route registration. Express main `src/dependencies.ts` commit `ad0e78e` removes `PrismaEscoKnowledge`/`EscoLeafOccupationRetrieval` runtime initialization and description lookup. All other Candidate/Resume/Auth/Organization routes remain wired. No Prisma migration, table DROP or other database write. Remaining `src/esco/*`, AI provider ESCO task cases, HIGA Knowledge resolver/review code, config, scripts, tests and React references require dependency audit before deletion. Existing tests that construct an AppDependencies esco fixture may need updating. Do not declare clean build until owner runs `git pull && npm run verify`; keep status VERIFY.
