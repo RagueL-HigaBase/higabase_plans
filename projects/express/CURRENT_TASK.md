@@ -1205,3 +1205,5 @@ $env:HIGA_KNOWLEDGE_RUN_AI_CHECK="1"
 try { npm run knowledge:skill:ai-matrix } finally { Remove-Item Env:HIGA_KNOWLEDGE_RUN_AI_CHECK -ErrorAction SilentlyContinue }
 ```
 Status VERIFY pending owner result. Do not start proposal DB writes or change official ESCO from test outcome alone.
+
+**Owner live six-scenario AI matrix PASS (2026-10-11):** `npm run knowledge:skill:ai-matrix` on `higa_systems_rehearsal` returned PASS 6/6. theatre-positive selected ESCO Skill 3908; equipment-not-competence selected none; mag-not-tig selected 9547 (not TIG), tig-not-mag selected 13484 (not MAG); vca-basis-no-assumption and vca-vol-no-assumption selected none. Positive cases returned verbatim evidence and read-only proposals. Opt-in flag removed in PowerShell finally. This closes six-scenario semantic smoke test only; not a representative evaluation of relevance on arbitrary real catalog entries. No changes to data or approved links. Next proposed block: controlled draft PROPOSED persistence with approval gate only after explicit owner authorization and additional safeguards. **Matrix gate DONE, persistence NOT STARTED.**
