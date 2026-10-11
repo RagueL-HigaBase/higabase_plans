@@ -1258,3 +1258,9 @@ Owner ran `review-http.integration.test.ts`; failed before HTTP calls with `Exis
 
 ## VERIFIED — HIGA Review HTTP real session PostgreSQL rollback (2026-10-11)
 Owner reran `npx vitest run tests/higa-knowledge/review-http.integration.test.ts` with HIGA_KNOWLEDGE_RUN_DB_TESTS=1 after fixture fix ac6043a. PASS: 1 test, 276ms. Verified real persisted rehearsal SYSTEM_OWNER identity/session via PrismaSessionRepository and HTTP cookie, GET pending, POST APPROVED and REJECTED, repeated decision conflict, forced transaction rollback and zero residual temporary fixtures/test token. Test uses transactional disposable/modified session and does not persist actual moderation decisions. Review HTTP E2E verification DONE; production writes remain deliberately prohibited and no React UI implemented.
+
+## DECISION RECORDED — Candidate draft vs HIGA Knowledge (2026-10-11)
+
+Owner approved candidate CV draft frontend visibility, manual correction, AI reprocess into a separate proposed revision (not silent overwrite), selective acceptance/comparison and restore/rollback of retained revisions. Candidate draft workflow must operate independently from global HIGA Knowledge approvals. Unknown CV terms remain source data until matching/curation; never mint unofficial HIGA Skills. SYSTEM_OWNER moderation governs only global HIGA catalog/relation changes; do not create one approval per CV. Canonical decisions recorded in `CANDIDATE_ARCHITECTURE.md` and `SYSTEM_ARCHITECTURE.md`. These are prospective requirements, not claims that versioning, undo, or frontend controls exist.
+
+NEXT PROPOSED BLOCK (not implemented): audit existing ResumeDraftV1, candidate-dev API, storage and UI to map what currently persists, who may edit it and where candidate draft revisions would fit. Specify minimal version/diff/restore and authorization contract before any DB schema or React changes. No code/migrations authorized by this documentation-only step.
