@@ -1170,3 +1170,20 @@ Owner confirmed `npm run verify` green for the prior HIGA proposal evidence gate
 Architecture: reuses the existing `AiRuntime` and OpenAI Responses adapter (no second AI infrastructure). Callers explicitly supply kind, title, source description, and an allowlisted set of **already retrieved official ESCO Skill IDs** (max 25). The model may select zero or more candidates with verbatim source quote and rationale; `AiRuntime` strictly parses output and `validateSkillProposals` independently enforces allowlist, evidence presence, no duplicates, abstention, 10/5/5 caps. Returns ephemeral `status: PROPOSED` suggestions only; no DB write, no autoapproval, no Candidate skills, no HIGA Skills or new migrations. It does not perform candidate retrieval or autonomous model calls; callers must supply curated candidates. Prompt grounding is a guardrail, not a substitute for human review or actual semantic accuracy benchmarks. **Provider support for this task is currently OpenAI only; existing Ollama adapter explicitly rejects unrecognized task names.** No web API route / production wiring yet. This is a code integration seam, not a completed end-to-end deployment.
 
 Owner VERIFY: `git pull`, `npm run verify`, report result. Tests are mocked, no external AI request or local DB query executed by assistant. Further real AI benchmark (rehearsal, explicitly opted-in) should be separately scoped. **Status VERIFY.**
+
+
+## VERIFY — opt-in HIGA real AI relevance rehearsal diagnostic (2026-10-11)
+
+Owner reported `npm run verify` green for `higa.skill.relevance@1` AiRuntime/OpenAI adapter. Adapter unit-test gate accepted, but **no real provider request has been confirmed yet**.
+
+Express main introduced `src/higa-knowledge/skill-relevance-ai-check-cli.ts` and `npm run knowledge:skill:ai-check` (commits `0326f49`, `2d6f655`, `fd6c219`). The CLI requires explicit `HIGA_KNOWLEDGE_RUN_AI_CHECK=1`, connects only to `higa_systems_rehearsal` or `higa_knowledge_test` (verified by PostgreSQL `current_database()`), retrieves actual active ESCO Skill `manage musical staff` via `PrismaEscoKnowledge` inside read-only transaction, disconnects DB, then only with `AI_PROVIDER=openai`, `OPENAI_API_KEY` and `OPENAI_MODEL` calls existing AI runtime for two synthetic review cases: positive theatre occupation duties and unrelated safety credential. The external model incurs API cost and may fail or choose no results; no automatic concept creation, persistent link writes, or production DB access. On negative-case skill proposal, CLI throws an explicit semantic-safety warning; passing does not prove broad relevance accuracy.
+
+Owner VERIFY commands in PowerShell, after confirming DATABASE_URL rehearsal:
+```powershell
+git pull
+npm run verify
+$env:HIGA_KNOWLEDGE_RUN_AI_CHECK="1"
+npm run knowledge:skill:ai-check
+Remove-Item Env:HIGA_KNOWLEDGE_RUN_AI_CHECK
+```
+Requires existing `.env` fields AI_PROVIDER=openai, OPENAI_API_KEY and OPENAI_MODEL; **never paste the API key in chat**. Run only if owner wants an actual paid provider call. Keep block in VERIFY pending real test results. No Prisma migrations needed.
