@@ -1481,3 +1481,8 @@ Owner reports `npm run dev` fails on `src/platform/prisma-system-owner-bootstrap
 ## Language seed TypeScript test correction (2026-10-11)
 
 Owner ran `npm run verify`: Prisma validation passed; TypeScript TS2532 failed only at `tests/languages/seed-system-languages.test.ts:14` because array indexing `upsert.mock.calls[0][0]` is possibly undefined. Express main `6b48b4c` replaces that access with Vitest `expect(upsert).toHaveBeenNthCalledWith(1, ...)`, preserving the assertion while avoiding unsafe indexing. Runtime seeding implementation unchanged. **VERIFY**: owner rerun `git pull && npm run verify`; `npm run dev` was entered but its startup result was not included in the supplied log, so startup remains unconfirmed.
+
+
+## Cross-repo ESCO named-document removal (2026-10-11)
+
+Deleted 7 obsolete ESCO-specific documentation artifacts from central `higabase_plans/main`: `ESCO_ARCHITECTURE.md`, two copies of `docs/ESCO.md`, and four ESCO Knowledge Graph/Importer docs across snapshots/current project docs. `higabase_states/main` removed `pages/esco-ai/README.md`. React 28 locale JSON files cleaned and native-language replacements validated. Active Express 115-file text scan and PostgreSQL schema/object checks previously passed. Historical decommission records in CURRENT_TASK remain intentionally retained as audit trail, not runtime dependencies. Standalone `higa-esco-extractor` remains: no GitHub repo deletion action exposed, and repository-level deletion has not occurred. **Do not claim organization-wide zero-ESCO until standalone repository and historical documentation text policy are resolved.**
