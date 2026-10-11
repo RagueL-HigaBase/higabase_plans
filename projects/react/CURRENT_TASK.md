@@ -314,3 +314,8 @@ GitHub recursive `main` trees scanned for 13 HIGA repositories (excluding `phoen
 ## ESCO residual removal — locales CLOSED / React VERIFY (2026-10-11)
 
 All 28 `public/locales/{lang}/auth.json` files were updated on React `main`: stale ESCO copy in candidate CV and occupation master descriptions replaced with HIGA-native wording, restored in each native language. All 28 JSON payloads were parsed and scanned for whole-word `ESCO` and each returned **zero**. `EscoConceptBadge.tsx` was previously deleted. Local React `npm run verify` is still **pending owner**; no green build claimed. The standalone `higa-esco-extractor` is a separate repo and remains untouched; removing its repository is a separate account-level destructive operation.
+
+
+## Candidate Details — work history readability (2026-10-11)
+
+Owner demonstrated the dev candidate dossier from uploaded CV. Issue 1: `src/pages/recruitment/CandidateDetails.tsx` rendered each `job.description` as one unbroken paragraph, making multiple CV responsibilities unreadable. React `main` commit `4d3ceae` renders existing work-history description as a visually separated bulleted list, splitting at newline or sentence boundary; source text remains unchanged. This is **presentation-only** and does NOT turn sentences into canonical HIGA responsibilities, nor assign experience-scoped skills or update parser/DB. Issue 2: the CV parser's earlier-employment entries (PTC CEO and Elkor supervisor without dates/detail) and education extraction completeness require separate investigation of source CV ambiguity versus parsing loss. **VERIFY**: owner `git pull && npm run verify`, inspect Candidate Details page; no green verification supplied yet. Future HIGA concept badge architecture stays DESIGN DRAFT.
