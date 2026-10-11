@@ -371,3 +371,14 @@ DOMAIN RULES DECIDE
 HUMAN CONFIRMS WHERE REQUIRED
 CANONICAL DATA REMAINS PROVIDER-INDEPENDENT
 ```
+
+
+## 20. Candidate interpreter-first direction — owner decision, 2026-10-11
+
+**Current active Candidate CV path:** source CV → provider-neutral `candidate.resume.parse@1` → strict `ResumeDraftV1` validation → saved dev Candidate draft → React work history and CV-wide AI Skills / AI Tools. The active Candidate read/UI no longer invokes ESCO SQL search, ESCO matcher, ESCO ranking, or occupation-skill lookup. This supersedes the ESCO-normalization step in the earlier implementation sequence **for active Candidate intake research only**; historical reference architecture remains available but is not a required Candidate processing stage.
+
+**Intended next direction (design, NOT implemented):** interpret source-grounded activities and skill/tool evidence separately for each work period; normalize skill meanings through a HIGA-owned Knowledge catalog for future CV and vacancy use. Reuse an existing reviewed concept where appropriate. For genuinely new meanings, prepare a proposed canonical name, ~150–200 character description and localized names/descriptions; proposals never auto-publish. Distinguish CV fact, AI extraction, candidate-scoped mapping proposal and shared-catalog approval. Preserve original wording, source evidence, manual edits, review authority and provider-neutral contracts.
+
+**SQL boundary:** discontinue SQL-based ESCO search as a mandatory matching/selection dependency in Candidate interpretation; this does **not** mean removing PostgreSQL/Prisma used for storage, auth and business data. ESCO 1.2.0 source tables, migrations, historical endpoints and importer remain untouched pending a separate explicit retirement decision. HIGA Knowledge may use database persistence for canonical concepts and proposals; the database must not select skills by noisy lexical SQL candidate expansion in the active Candidate flow.
+
+**Not implemented / pending approval:** per-work-period skill ownership, Knowledge concept schema and deduplication policy, multilingual translation workflow, proposed-concept write authorization, vacancy integration, production intake contracts, and retirement of legacy ESCO modules. No database migrations or code changes are authorized by this documentation update. Verification of React `f8735dc` and Express `799d239` remains VERIFY until owner `npm run verify` and browser checks.
