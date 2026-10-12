@@ -550,3 +550,20 @@ Status **VERIFY**. Owner found active `btn-phoenix-secondary` appears gray and m
 
 ### Candidate Prototype V2 active nav surface correction — 2026-10-12
 Status **VERIFY**. Owner confirmed `bg-body` still looked like the light gray page. React main commit `6ce77596ffb2b9684ffe6f58c95b3b7db2e608e6` changes active Dashboard/Resume background utility to Phoenix `bg-body-emphasis` (white card surface in light mode) while retaining existing border, text, inactive button class and route-driven selection. No new CSS; visual/browser validation pending. Run `git pull`, `npm run verify`, `npm run dev`.
+
+
+## CANDIDATE-MVP-DETAIL-SHELL — 2026-10-12
+
+Status: **VERIFY / PARTIAL CLEANUP** — owner `npm run verify`, local PostgreSQL/API and browser acceptance pending. This is a development-only integration, **not production Candidate API**.
+
+Owner approved replacing the old recruitment Candidate Details display with the previously approved Prototype V2 visual shell, binding only first name, last name, email and phone, and removing the legacy Control Panel menu without disturbing the preserved mock prototype.
+
+React `main` commits:
+- `5766b4bce262584405763f5fb450602b956504e0`: `CandidatePrototypeV2` optionally takes a Candidate profile and renders actual names/contacts, neutral initials avatar for data-bound mode, and no unpersisted WhatsApp row. Standalone `/system/candidate-prototype-v2` remains mocked.
+- `d8e07221c61d2f2535e9289974ab0d62bdb23fe8`: old `CandidateDetails.tsx` content replaced with a small authenticated-route view that reads `candidateId` and fetches existing `/api/dev/candidates/:id`, preserving loading/error fallback and `import.meta.env.DEV` safeguard.
+- `48e0fe2a3de41aa70479268234ac36b85a90cb4c`: `/recruitment/candidates/:candidateId` now has nested Dashboard (empty) and Resume (V2 page) child routes, with index redirect to `resume`.
+- `ec5fdaf2abc18a530c187e0407fd7949ff1a341f`: hides legacy **Control Panel** navbar group, removing its visual links/config and unused notification hook. Existing system routes, including Organizations, deliberately remain available by direct URL; do not conflate navbar removal with authorization removal.
+
+**Known unfinished items:** The Resume V2 donut, tags, event card and cover image are still Phoenix/mock values, not related to the stored ResumeDraft. Organization/system admin pages/routes and preserved `/system/candidate-prototype` were not deleted. The existing candidate-dev intake repository stores `Candidate`, `CandidateContact`, `ResumeDraft` JSON and `CandidateDevIntake` experimental links. The current API detail response additionally returns draft and createdAt; view intentionally consumes only four fields. There is no confirmed WhatsApp DB field or production organization-scoped Candidate endpoint. No direct DB connection in this session, so schema/code prove available fields, not actual local database row contents. Data-binding is read-only.
+
+**Next verification gates:** owner `git pull`, `npm run verify`, `npm run dev`; open `/recruitment/candidates/:candidateId` and `/resume`, check loading, unknown ID, name/email/phone and zero fake WhatsApp, navigation, check standalone Prototype V2 is unchanged, confirm system routes by URL where needed. Inventory old Candidate UI dependencies before any physical deletion, and resolve safe access path to System Organizations before declaring Control Panel cleanup complete. No DB migrations/deletion/production APIs approved.
