@@ -421,3 +421,12 @@ Owner-requested Phoenix Stock Dashboard sidebar-card navigation adapted as a per
 - Routes: `/system/candidate-prototype-v2/dashboard` (empty), `/system/candidate-prototype-v2/resume` (empty); index redirects to dashboard. This is **client-side route navigation** with a browser URL change and route outlet, not a full page network reload.
 - Existing candidate-prototype (v1) pages and API unchanged. No CSS, backend, storage or candidate data.
 - Visual matching at 25% width, active state and browser route navigation not yet verified by owner. Do not mark DONE before acceptance.
+
+
+## CANDIDATE-PROTOTYPE-V2-NAV-COMPARISON — 2026-10-12
+
+Status: **VERIFY** — owner local build and visual review pending.
+
+Owner requested *both* compact Phoenix sidebar candidates displayed for comparison under Social Profile, **without active navigation links**. On React main commit `da37671593e0b0314e2fcee6549c77e2ffc7b16e`, `src/pages/system/CandidatePrototypeV2.tsx` replaces the oversized Stock cards with two independent, inert displays: (1) Phoenix `vertical-tab` (as used by existing `CandidateDossierPrototype`) and (2) Phoenix `navbar-nav` style. Both show Dashboard and Resume, with the first item styled active for visual comparison. No NavLink, href, onClick, state, or navigation action is attached to these displays. Existing nested Dashboard/Resume routes remain defined, but the comparison controls do not open them. Right-hand `Outlet`, left profile card, and 25/75 grid remain unchanged. No CSS, libraries or backend changes.
+
+Verification pending: owner `git pull`, `npm run verify`, `npm run dev`, compare both visual variants. Do not mark DONE before owner review.
