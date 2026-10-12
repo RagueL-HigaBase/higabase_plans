@@ -546,3 +546,7 @@ Status: **VERIFY**. Owner clarified that the earlier spacing request concerned o
 
 ### Candidate Prototype V2 persistent white active navigation — 2026-10-12
 Status **VERIFY**. Owner found active `btn-phoenix-secondary` appears gray and may become visually transparent on blur. React main commit `03455217ab688da206b71a880d0b4cc8abcd6b61` changes only active NavLink class in `CandidatePrototypeV2.tsx` to standard Phoenix/Bootstrap `bg-body border border-translucent text-body-emphasis`, keeping `btn btn-sm` and inactive `btn-subtle-secondary`. This is a route-driven, persistent background class rather than focus/hover styling. No custom CSS, route changes, or layout modifications. Owner must check light/dark and active after clicking outside: `git pull`, `npm run verify`, `npm run dev`.
+
+
+### Candidate Prototype V2 active nav surface correction — 2026-10-12
+Status **VERIFY**. Owner confirmed `bg-body` still looked like the light gray page. React main commit `6ce77596ffb2b9684ffe6f58c95b3b7db2e608e6` changes active Dashboard/Resume background utility to Phoenix `bg-body-emphasis` (white card surface in light mode) while retaining existing border, text, inactive button class and route-driven selection. No new CSS; visual/browser validation pending. Run `git pull`, `npm run verify`, `npm run dev`.
