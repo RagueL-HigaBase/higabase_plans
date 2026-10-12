@@ -476,3 +476,16 @@ React main commits `1321a2023d8bb106d99c6eab2d800729e956c9fe`, `91a526e6c9b1cba7
 
 ### CANDIDATE-PROTOTYPE-V2-RESUME-INTERACTIVE-PROFILE — column order correction (2026-10-12)
 Owner reported wrong order in left half of Resume profile. React main commit `5d5c797cfca3d54fedf3e085257a00a38432e569` swaps the two existing `Col xs={12} md={6}` blocks in `src/pages/system/CandidatePrototypeV2Resume.tsx`: **knowledge list left; donut chart right**. No data, selection logic, badges, CSS, other routes, or backend changes. Status **VERIFY**; owner local `npm run verify` and visual check still pending.
+
+
+## CANDIDATE-PROTOTYPE-V2-PROFILE-LAYOUT-ADJUSTMENT — 2026-10-12
+
+Status: **VERIFY** — owner build/browser acceptance pending.
+
+Owner reported excessive white Resume card height, redundant "Knowledge groups / Total count" subheader, and category headings expanding the right-side badge panel on All. React main commit `2c0c6a645b49cde32fabe904de1503de5a83e11b` updates `src/pages/system/CandidatePrototypeV2Resume.tsx` only:
+- Removed `min-vh-100` from the white `Card`: it now follows content height.
+- Moved the existing `System profile` + `Knowledge groups across work experience` title and divider into the list column, above the first Responsibilities row. Removed the separate `Knowledge groups / Total count` strip. The donut remains in the adjacent right column.
+- Right half retains its title but renders a **flat** wrapped list of existing Phoenix tag badges with no category headings for any selection, including All. The badge area has a fixed 245px scrollable viewport using existing Bootstrap/Phoenix `overflow-auto scrollbar` utilities so selecting All does not increase card height.
+- Preserved shared mock data, chart/list selection, All reset and badge filtering. No new CSS files or classes, APIs, dependencies or backend changes.
+
+Pending owner `git pull`, `npm run verify`, `npm run dev` and browser review. Not DONE.
