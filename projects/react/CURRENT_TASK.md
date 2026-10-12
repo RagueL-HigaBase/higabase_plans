@@ -571,3 +571,7 @@ React `main` commits:
 
 ### Control Panel restoration — 2026-10-12
 Status: **VERIFY**. Owner corrected scope: remove only legacy **Candidate Prototype** entry and eventually its retired content, **not** the entire Control Panel. React main commit `b0d72640efe9a437c73fdf22fd4aad8afc68f32d` restores System-owner Control Panel navigation and its existing Overview, Organizations, Users, Requests and Typography entries, including the pending action indicator, excluding only legacy `/system/candidate-prototype` menu link. Existing system routes remain untouched; Prototype V2 is preserved. Physical deletion of legacy prototype implementation is deferred pending reference audit and build verification; this commit does not claim deletion. The earlier full-menu removal was a scope mistake and is superseded. Owner checks `git pull`, `npm run verify`, `npm run dev`.
+
+
+### Candidate V2 TypeScript TS2339 fix — 2026-10-12
+Owner `npm run verify` reported `CandidatePrototypeV2.tsx:65` TS2339 (`candidate.phone` on `never`). Cause: mock-only WhatsApp row guarded by `!candidate` still contained an unreachable `candidate ? candidate.phone` expression. React main commit `d728433080d93c49155fb32da26b7cc487074f5c` renders the static mock WhatsApp number only inside that mock-only branch. Real candidate WhatsApp remains absent; identity/phone/email mapping and other views unchanged. Status **VERIFY** pending owner rerun `git pull`, `npm run verify`, `npm run dev`.
