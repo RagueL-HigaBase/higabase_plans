@@ -430,3 +430,16 @@ Status: **VERIFY** — owner local build and visual review pending.
 Owner requested *both* compact Phoenix sidebar candidates displayed for comparison under Social Profile, **without active navigation links**. On React main commit `da37671593e0b0314e2fcee6549c77e2ffc7b16e`, `src/pages/system/CandidatePrototypeV2.tsx` replaces the oversized Stock cards with two independent, inert displays: (1) Phoenix `vertical-tab` (as used by existing `CandidateDossierPrototype`) and (2) Phoenix `navbar-nav` style. Both show Dashboard and Resume, with the first item styled active for visual comparison. No NavLink, href, onClick, state, or navigation action is attached to these displays. Existing nested Dashboard/Resume routes remain defined, but the comparison controls do not open them. Right-hand `Outlet`, left profile card, and 25/75 grid remain unchanged. No CSS, libraries or backend changes.
 
 Verification pending: owner `git pull`, `npm run verify`, `npm run dev`, compare both visual variants. Do not mark DONE before owner review.
+
+
+## CANDIDATE-PROTOTYPE-V2-SUBTLE-NAV — 2026-10-12
+
+Status: **VERIFY** — owner local build and browser check pending.
+
+Owner approved replacing the two inert prototype navigation comparisons with a single compact Phoenix Subtle Buttons variant, with working links. React main commit `90e590790a313b86a9a4f5b2100f8394c3e304b8` updates only `src/pages/system/CandidatePrototypeV2.tsx`:
+- Two `NavLink` controls styled with existing Phoenix `btn btn-sm` plus active `btn-subtle-primary` / inactive `btn-subtle-secondary`, with Feather icons.
+- Dashboard navigates to `/system/candidate-prototype-v2/dashboard`; Resume to `/system/candidate-prototype-v2/resume` through existing nested routes and `Outlet`.
+- Removes both no-link visual comparison sections. Persistent left profile card, 25/75 layout and intentionally empty right-hand child pages are preserved.
+- No new CSS/dependencies, backend, candidate model, or other page changes.
+
+Owner verification: `git pull`, `npm run verify`, `npm run dev`; inspect size/appearance, active state, URLs and persistent left panel. Do not mark DONE without owner verification.
