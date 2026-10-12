@@ -463,3 +463,12 @@ Owner-approved Resume white frame split into equal outer columns using Phoenix/B
 React main commits `8289254c333a1ab872926b04beef19816fb3f9c0`, `ced372eaa85355433c6ba8cc00f816e6e9f47b6f`. New page `src/pages/system/CandidatePrototypeV2Resume.tsx` uses existing ECharts, Phoenix theme colors, original CRM demo sectors totaling 560, original Project Management Issue type mock rows (257). `src/Routes.tsx` points the Resume child route to this page. No invented copy, custom CSS, dependency, backend, real Candidate data, or Dashboard changes. The two source datasets intentionally represent separate demos, not synchronized metrics.
 
 Owner visual check should specifically inspect space constraints from nesting 50/50 columns inside the 75% page column, light/dark, and correct ring/list positioning. Owner commands: `git pull`, `npm run verify`, `npm run dev`. This is **not verified DONE**.
+
+
+## CANDIDATE-PROTOTYPE-V2-RESUME-INTERACTIVE-PROFILE — 2026-10-12
+
+Status: **VERIFY**, pending owner-local `npm run verify` and rendered browser inspection.
+
+Owner-approved extension of Resume mock UI: two-column 50/50 frame retained. In the left half, Phoenix-styled System profile heading, description and divider precede the CRM-derived donut and Project Management-derived rows. The rows now represent mock professional categories from existing `CandidateDossierPrototype` (Responsibilities, Skills, Knowledge, Tools & Technologies, Qualifications), not demo issue types. A right-hand half displays original candidate-prototype category tags as Phoenix `Badge variant="tag"`. Clicking a chart sector or the visually unchanged, keyboard-accessible text row sets the shared selected category; the right badges filter accordingly. Clicking All restores all groups. The donut total and list counts derive from the same 5-group mock dataset (107); no fabricated Phoenix 560/257 figures. List text remains plain Phoenix text, not button styling. No API, persistence, backend, custom CSS or new dependency.
+
+React main commits `1321a2023d8bb106d99c6eab2d800729e956c9fe`, `91a526e6c9b1cba796526101d90a3489790a8464`. File: `src/pages/system/CandidatePrototypeV2Resume.tsx`. Outstanding: owner runs `git pull`, `npm run verify`, `npm run dev`; checks responsive layout, graph↔list color mapping, mouse/keyboard selection, All reset and badge filtering. Do not mark DONE without verification.
