@@ -489,3 +489,7 @@ Owner reported excessive white Resume card height, redundant "Knowledge groups /
 - Preserved shared mock data, chart/list selection, All reset and badge filtering. No new CSS files or classes, APIs, dependencies or backend changes.
 
 Pending owner `git pull`, `npm run verify`, `npm run dev` and browser review. Not DONE.
+
+
+### Resume V2 right heading divider — 2026-10-12
+Status: **VERIFY**. Owner requested the missing Phoenix divider below the right `System profile` heading/description. React main commit `f52b4202c72745ab09ff8245e4903185820f4572` adds the same existing `hr bg-body-secondary mb-2 mt-3` used on the left, adjusting only the preceding paragraph bottom margin. No badge, chart, layout, data, CSS or API changes. Owner `git pull`, `npm run verify`, `npm run dev` and visual check pending.
