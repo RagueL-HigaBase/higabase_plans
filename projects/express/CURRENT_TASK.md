@@ -1491,3 +1491,22 @@ Deleted 7 obsolete ESCO-specific documentation artifacts from central `higabase_
 ## Candidate Experience Knowledge — DESIGN ONLY (2026-10-11)
 
 Owner requested visual sample from uploaded CV and initial graph architecture, without DB/code changes. Canonical working draft: `projects/express/docs/planning/CANDIDATE_EXPERIENCE_KNOWLEDGE_CONCEPT.md` (commit `d03f4e7`). Work Experience timeframes link to reusable Responsibilities, Skills, Knowledge, Tools & Technologies concepts; Qualifications and Education separated at candidate profile level; semantic reuse, evidence-grounding, concise translated tooltip definitions. Future screening and manual/AI matching are explicitly out of scope now. Example Feel Flex BV Feb 2021–Nov 2025; sample only; no remote test candidate queried or modified. Implementation **NOT STARTED**, DB schema/API unchanged.
+
+
+## Owner decision — Higa native graph / blockwise CV processing (2026-10-12)
+
+Status: **ARCHITECTURE DECISION / DESIGN — NOT IMPLEMENTED**.
+
+Owner explicitly rejects ESCO as a runtime dependency or future normalization source. New canonical direction:
+1. Upload CV and preserve its original file/source plus a source-faithful, versioned JSON extraction. Never overwrite original wording or source evidence.
+2. Process each logical CV block independently through the AI API; persist versioned normalized block results and validation outcomes separately from source JSON.
+3. Normalize and validate email and phone using deterministic backend validation (AI suggestions alone are not sufficient). Preserve original values and error/ambiguity states.
+4. For each extracted responsibility, skill, knowledge, tool/technology, or qualification, resolve meaning against the Higa-owned concept catalog, including existing synonyms/translations and concept type. Reuse stable IDs when equivalent; otherwise create a Higa concept with a concurrency-safe uniqueness policy and DRAFT/review status, never silently claim a candidate's capability beyond CV evidence.
+5. Store short concept definitions and multilingual preferred labels/definitions for the 28 configured system languages, generated asynchronously with provenance, completion status, quality checks, retries and versioning. Preserve an authoritative source-language definition and never let translations change concept identity.
+6. Link candidate/experience evidence to concept IDs independently of concept catalog records. Render real chart and badge counts from one derived read model after facts and links are ready. Qualifications and formal education remain distinct.
+
+Existing `ResumeDraftV1`, `AiRuntime`, `HigaKnowledgeResolver`, and Prisma HigaKnowledgeConcept/Label/Text are research foundations, **not** a complete blockwise pipeline or graph. No Higa Knowledge graph relations, robust semantic concept creation, 28-language localization jobs or candidate-experience links are implemented yet.
+
+Decommission clarification: central previous ESCO retirement notes record active Express/DB cleanup, while historical snapshot/docs and a standalone extractor repository can still mention ESCO. Those mentions are legacy records and must not be used to restore ESCO; remove or rewrite outdated *normative* references in an independently reviewed documentation sweep, without silently rewriting historical audit evidence or deleting repositories.
+
+No backend code, DB schema or API changed by this decision entry. The next implementation must be planned and owner-approved block by block.
