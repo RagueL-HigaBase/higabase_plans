@@ -542,3 +542,7 @@ Status: **VERIFY** — owner visual/build check pending. Owner requested white r
 
 ### Candidate Prototype V2 restore inner Phoenix padding — 2026-10-12
 Status: **VERIFY**. Owner clarified that the earlier spacing request concerned only gaps **between** white blocks, not padding inside them. React main commits `619ec6bfc8cb18f118d428f08db5199e5c4df458`, `ab9495c973f3b400177cbb0ed1d54f4002af4995` restore default `<Card.Body>` padding in `CandidatePrototypeV2.tsx` and `CandidatePrototypeV2Resume.tsx`. Outer layout `g-3` and card separation `mb-3` remain as requested. No CSS, navigation, content or chart changes. Pending owner `git pull`, `npm run verify`, `npm run dev` and visual acceptance.
+
+
+### Candidate Prototype V2 persistent white active navigation — 2026-10-12
+Status **VERIFY**. Owner found active `btn-phoenix-secondary` appears gray and may become visually transparent on blur. React main commit `03455217ab688da206b71a880d0b4cc8abcd6b61` changes only active NavLink class in `CandidatePrototypeV2.tsx` to standard Phoenix/Bootstrap `bg-body border border-translucent text-body-emphasis`, keeping `btn btn-sm` and inactive `btn-subtle-secondary`. This is a route-driven, persistent background class rather than focus/hover styling. No custom CSS, route changes, or layout modifications. Owner must check light/dark and active after clicking outside: `git pull`, `npm run verify`, `npm run dev`.
