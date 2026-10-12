@@ -408,3 +408,16 @@ Left column: `Col xl={3}` (25% at xl+) contains the Phoenix Social Settings `Soc
 Image references are the original Phoenix demo's public static artwork URLs (`generic/59.png` and `team/20.webp`) rather than copied binaries; browser loading/cover availability must be checked by owner. The card is a static read-only mock, **not a full copy of working CoverUpload/AvatarUpload controls**; upload interactions are not authorized by this block. The layout/classes follow SocialProfileCard; confirm visual fit at the narrower 25% column.
 
 React commits: `7c4d917710e99c52d309935fbfc4c03571ca2853`, `763cdccc0ee99c5b87b6dee0285efc9824519f5a`. Owner: `git pull --ff-only origin main`, `npm run verify`, open `/system/candidate-prototype-v2`. Do not mark DONE until verified.
+
+
+## CANDIDATE-PROTOTYPE-V2-STOCK-NAV — 2026-10-12
+
+Status: **VERIFY** (owner local `npm run verify` and browser inspection pending).
+
+Owner-requested Phoenix Stock Dashboard sidebar-card navigation adapted as a persistent left-column navigation below existing Social Profile card. Reference: `phoenix-react-reference/src/components/modules/stock/TopStocks.tsx` with `Nav.Link as={Card}` + `company-card`, and `src/components/cards/TopStocksSidebarCard.tsx`. React main commits `6f3cc455007a5ba4c1638cc6a26338ed5c7acba3`, `51a404a8c530499e9bf4724b01bed1a8f85508ce`.
+
+- Exactly two sidebar cards: Dashboard and Resume, icon + text; no stock prices/numbers. Styling uses existing Phoenix stock card classes and react-bootstrap primitives.
+- Layout stays left 25% / right 75% at XL+. The left profile and navigation remain mounted in parent layout, while the right Outlet renders distinct React Router child pages rather than React Tab panes.
+- Routes: `/system/candidate-prototype-v2/dashboard` (empty), `/system/candidate-prototype-v2/resume` (empty); index redirects to dashboard. This is **client-side route navigation** with a browser URL change and route outlet, not a full page network reload.
+- Existing candidate-prototype (v1) pages and API unchanged. No CSS, backend, storage or candidate data.
+- Visual matching at 25% width, active state and browser route navigation not yet verified by owner. Do not mark DONE before acceptance.
