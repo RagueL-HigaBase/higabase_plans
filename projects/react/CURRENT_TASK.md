@@ -534,3 +534,7 @@ Status: **VERIFY**, owner build/visual check pending. React main commit `c5243b0
 
 ## CANDIDATE-PROTOTYPE-V2-LOCAL-SPACING — 2026-10-12
 Status: **VERIFY**, owner local build and visual review pending. Owner approved tightening spacing only in Candidate Prototype V2, without global CSS or Phoenix architecture changes. React `main` commits `cd4b77f6a82fb1554ffd417a92bdd9ef2bb5436c` and `6abcced13a3c6f6c3267456ba760f23d0f6b6d3b`: `CandidatePrototypeV2.tsx` outer Row `g-6` -> `g-3`, left profile `Card.Body` -> `p-3`; `CandidatePrototypeV2Resume.tsx` two card body paddings -> `p-3`, card vertical separation `mb-4` -> `mb-3`. Internal diagram, content, typography, badges and interactions unchanged; no new CSS, dependencies or backend. Owner verifies with `git pull`, `npm run verify`, `npm run dev`; do not mark DONE before acceptance.
+
+
+### Candidate Prototype V2 active navigation color — 2026-10-12
+Status: **VERIFY** — owner visual/build check pending. Owner requested white rather than blue active Dashboard/Resume navigation background. React main commit `ec4feecf31a1bb67df561772f3b7c5c4ff4c5258` updates only `src/pages/system/CandidatePrototypeV2.tsx`: active class `btn-subtle-primary` -> Phoenix `btn-phoenix-secondary`; inactive remains `btn-subtle-secondary`. Routing, icons, text, layout, CSS files, and backend unchanged. Owner: `git pull`, `npm run verify`, `npm run dev`; verify actual Phoenix active color and legibility in light/dark modes.
