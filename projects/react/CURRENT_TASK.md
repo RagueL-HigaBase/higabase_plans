@@ -519,3 +519,10 @@ Status: **VERIFY** — owner local build and browser check pending.
 Owner selected only the *expanded detail table row presentation* from `phoenix-react-reference/src/components/cards/DealCard.tsx` on Phoenix CRM Deals, adapted to three contact fields: Email, Phone, WhatsApp. React `main` commit `9254b244936743ad4abb8332869395f6fa90c8db` adds a separate Phoenix `Card` beneath the stock event card in `src/pages/system/CandidatePrototypeV2Resume.tsx`. Each row reuses the reference `Table borderless size="sm"`, `td` layout, Feather 16px tertiary icon, semibold tertiary label, colon, and semibold emphasis value. Values are already-existing Candidate Dossier prototype mock contact data (`onpoll12@email.com` and `+11 123 456 7890`). No actual links or communication actions, API, persistence, new CSS, or dependencies. Existing Resume blocks remain unchanged.
 
 Owner checks `git pull`, `npm run verify`, `npm run dev`; verify the three rows and intended location. Not DONE until confirmed.
+
+
+## CANDIDATE-PROTOTYPE-V2-CONTACT-LOCATION — 2026-10-12
+
+Status: **VERIFY**, pending owner local build and visual acceptance.
+
+Owner clarified that the Email, Phone, WhatsApp rows from Phoenix CRM Deals must appear in the persistent left Social Profile card, below a single divider, **without adding an address**. React main commits `354c9140c5cfd94b2c5d1c1788b8d84ce898318c` and `f343e7a40147647ca8428a7a11ab392219705e2e`: added the existing 3-row `Table borderless size="sm"` with unchanged mock values below Followers/Following in `src/pages/system/CandidatePrototypeV2.tsx`, and removed the former standalone bottom contact Card from `src/pages/system/CandidatePrototypeV2Resume.tsx`. Left profile remains shared across Dashboard and Resume; no address, backend, CSS or dependencies added. Other Resume cards unchanged. Owner checks `git pull`, `npm run verify`, `npm run dev`; confirm fit at 25% width and both routes. Not DONE until verification.
