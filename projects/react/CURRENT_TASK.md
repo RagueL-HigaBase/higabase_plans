@@ -395,3 +395,16 @@ Owner: run `npm run verify` on updated React main; visually check light/dark, fi
 
 ### CANDIDATE-WORK-EXPERIENCE-PHOENIX — build regression fix (2026-10-11)
 Owner ran `npm run verify` and reported TypeScript TS2307 for `dayjs` and `dayjs/plugin/customParseFormat` in `CandidateDossierPrototype.tsx`. Root cause: original Phoenix date parsing import was copied without an installed `dayjs` dependency. React main commit `adefa150413043c9cdd522aa5f2c521c99991395` removes the undeclared imports/plugin and renders the existing static demo date directly (24 / Mar, 2024). No dependencies, CSS, backend, or routes changed. **VERIFY** pending owner's renewed `npm run verify`; no green build has been claimed.
+
+
+## CANDIDATE-PROTOTYPE-V2-PHOENIX-SOCIAL — 2026-10-12
+
+Status: **VERIFY** — user local build, asset loading, and browser parity pending.
+
+Owner-approved new, separate prototype surface, built block-by-block. React `main` adds `/system/candidate-prototype-v2` with `WorkspaceLayout` and `AuthGate`. The existing `/system/candidate-prototype/resume` was not changed.
+
+Left column: `Col xl={3}` (25% at xl+) contains the Phoenix Social Settings `SocialProfileCard` mock card composition from `phoenix-react-reference/src/components/cards/SocialProfileCard.tsx`: original Ansolo Lazinatov, u/hansolo, 1297 Followers and 3971 Following, cover and avatar. Right `Col xl={9}` (75%) is intentionally empty. Smaller breakpoints use Phoenix/Bootstrap 12-column stacking. No new CSS, backend, API, schema, invented UI copy, or candidate data.
+
+Image references are the original Phoenix demo's public static artwork URLs (`generic/59.png` and `team/20.webp`) rather than copied binaries; browser loading/cover availability must be checked by owner. The card is a static read-only mock, **not a full copy of working CoverUpload/AvatarUpload controls**; upload interactions are not authorized by this block. The layout/classes follow SocialProfileCard; confirm visual fit at the narrower 25% column.
+
+React commits: `7c4d917710e99c52d309935fbfc4c03571ca2853`, `763cdccc0ee99c5b87b6dee0285efc9824519f5a`. Owner: `git pull --ff-only origin main`, `npm run verify`, open `/system/candidate-prototype-v2`. Do not mark DONE until verified.
