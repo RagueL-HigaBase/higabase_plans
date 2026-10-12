@@ -497,3 +497,7 @@ Status: **VERIFY**. Owner requested the missing Phoenix divider below the right 
 
 ### Resume V2 excess bottom spacing correction — 2026-10-12
 Status: **VERIFY**. Owner screenshot showed excessive empty space below the chart and badges. Root cause in code: right badge scroll viewport had forced `height: 245` after its heading, making the right column taller regardless of content. React main commit `c11c1a4b00b6b98161c128eda2f4c3b2c44425d9` replaces forced height with `maxHeight: 180` using the existing Phoenix/Bootstrap scroll container. The right panel now sizes to content up to the cap and scrolls beyond it; chart, two-column layout, interactions, and badges unchanged. Owner `git pull`, `npm run verify`, `npm run dev`, and visual check still pending.
+
+
+### Resume V2 alignment / divider spacing — 2026-10-12
+Status **VERIFY**. Owner screenshot/DevTools reported a 16px top gutter on nested `Col md={6}` and inconsistent paragraph-to-divider distance. React main commit `2e6ab0d61627df1b19a238f4b6af5cb27c8d9c8d` changes nested `Row` from `g-3 align-items-center` to `gx-3 gy-0 align-items-start` (no vertical gutter, top-aligned), reduces both header divider top margins from `mt-3` to `mt-1`, and slightly increases the six selectable list-row spaces from `mb-1` to `mb-2`. Donut retains explicit 245px height; no changes to values, selection, badges, backend, dependencies or CSS. Owner runs `git pull`, `npm run verify`, `npm run dev` and inspects at actual viewport; not yet visually verified.
