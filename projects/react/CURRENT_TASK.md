@@ -501,3 +501,12 @@ Status: **VERIFY**. Owner screenshot showed excessive empty space below the char
 
 ### Resume V2 alignment / divider spacing — 2026-10-12
 Status **VERIFY**. Owner screenshot/DevTools reported a 16px top gutter on nested `Col md={6}` and inconsistent paragraph-to-divider distance. React main commit `2e6ab0d61627df1b19a238f4b6af5cb27c8d9c8d` changes nested `Row` from `g-3 align-items-center` to `gx-3 gy-0 align-items-start` (no vertical gutter, top-aligned), reduces both header divider top margins from `mt-3` to `mt-1`, and slightly increases the six selectable list-row spaces from `mb-1` to `mb-2`. Donut retains explicit 245px height; no changes to values, selection, badges, backend, dependencies or CSS. Owner runs `git pull`, `npm run verify`, `npm run dev` and inspects at actual viewport; not yet visually verified.
+
+
+## CANDIDATE-PROTOTYPE-V2-STOCK-EVENT-CARD — 2026-10-12
+
+Status: **VERIFY** (owner local build/visual check pending).
+
+Owner requested a second separate Phoenix Stock Details Upcoming Events card immediately below existing white Resume System profile card, without the full attendee footer. React main commit `17d9f8053baf0985ecf2369f5855aa5526e81e1d` updates only `src/pages/system/CandidatePrototypeV2Resume.tsx`. The original `phoenix-react-reference/src/components/cards/UpcomingEventCard.tsx` is the source for Card/Row/Col/calendar, event heading + featured Badge, Feather clock/map, description, and two Phoenix buttons Interested/Going. Uses original Phoenix Stock mock strings and date (24 Mar, 2024), no candidate or API data. Intentionally omits the original `Avatar.Group`, '+604 people going' link, '1k people interested' footer, and `EventOffcanvas` to match owner-requested minimal card. Buttons remain visual/demo only. Existing Resume chart/categories/badges, sidebar, routes, and Dashboard unchanged. No new dependencies/CSS/backend changes.
+
+Owner verify via `git pull`, `npm run verify`, `npm run dev` and visual check that the second card is below the first, matches Phoenix, and attendee footer is absent. Do not mark DONE before owner confirms.
