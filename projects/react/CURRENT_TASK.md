@@ -530,3 +530,7 @@ Owner clarified that the Email, Phone, WhatsApp rows from Phoenix CRM Deals must
 
 ### Candidate Prototype V2 profile heading cleanup — 2026-10-12
 Status: **VERIFY**, owner build/visual check pending. React main commit `c5243b0b959d2627b1ff9c0d0eba55a0db41a03b` changes only `src/pages/system/CandidatePrototypeV2.tsx`: Phoenix name heading from `h3` to `h4`, removes demo `u/hansolo`, `1297 Followers` and `3971 Following` with their unused icons/imports. Existing divider, Email/Phone/WhatsApp rows, cover/avatar, routes and Resume untouched. No CSS or dependencies. Owner commands: `git pull`, `npm run verify`, `npm run dev`.
+
+
+## CANDIDATE-PROTOTYPE-V2-LOCAL-SPACING — 2026-10-12
+Status: **VERIFY**, owner local build and visual review pending. Owner approved tightening spacing only in Candidate Prototype V2, without global CSS or Phoenix architecture changes. React `main` commits `cd4b77f6a82fb1554ffd417a92bdd9ef2bb5436c` and `6abcced13a3c6f6c3267456ba760f23d0f6b6d3b`: `CandidatePrototypeV2.tsx` outer Row `g-6` -> `g-3`, left profile `Card.Body` -> `p-3`; `CandidatePrototypeV2Resume.tsx` two card body paddings -> `p-3`, card vertical separation `mb-4` -> `mb-3`. Internal diagram, content, typography, badges and interactions unchanged; no new CSS, dependencies or backend. Owner verifies with `git pull`, `npm run verify`, `npm run dev`; do not mark DONE before acceptance.
