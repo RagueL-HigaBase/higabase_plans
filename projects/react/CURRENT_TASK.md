@@ -443,3 +443,12 @@ Owner approved replacing the two inert prototype navigation comparisons with a s
 - No new CSS/dependencies, backend, candidate model, or other page changes.
 
 Owner verification: `git pull`, `npm run verify`, `npm run dev`; inspect size/appearance, active state, URLs and persistent left panel. Do not mark DONE without owner verification.
+
+
+## CANDIDATE-PROTOTYPE-V2-RESUME-FRAME — 2026-10-12
+
+Status: **VERIFY** — local build and owner browser review pending.
+
+Owner requested an empty white Phoenix frame on the Resume child route only, as a placeholder for future block-by-block design. React `main` commit `62c4b81481e5d42bda62e527727dc85f1f36bddb` changes `src/Routes.tsx`: `/system/candidate-prototype-v2/resume` now renders an otherwise empty React-Bootstrap `Card` with the existing Bootstrap `min-vh-100` class, so that the white frame is visible. Dashboard remains an empty `div`. Sidebar/profile, routing, mock-data boundaries and all other pages unchanged. No new CSS, copy, charts, API, dependencies or backend work.
+
+Owner verification: `git pull`, `npm run verify`, `npm run dev`; inspect Resume for empty card and Dashboard for empty content. Do not mark DONE until owner acceptance.
