@@ -575,3 +575,7 @@ Status: **VERIFY**. Owner corrected scope: remove only legacy **Candidate Protot
 
 ### Candidate V2 TypeScript TS2339 fix — 2026-10-12
 Owner `npm run verify` reported `CandidatePrototypeV2.tsx:65` TS2339 (`candidate.phone` on `never`). Cause: mock-only WhatsApp row guarded by `!candidate` still contained an unreachable `candidate ? candidate.phone` expression. React main commit `d728433080d93c49155fb32da26b7cc487074f5c` renders the static mock WhatsApp number only inside that mock-only branch. Real candidate WhatsApp remains absent; identity/phone/email mapping and other views unchanged. Status **VERIFY** pending owner rerun `git pull`, `npm run verify`, `npm run dev`.
+
+
+### Candidate Details V2 outer spacing correction — 2026-10-12
+Status **VERIFY**. Owner confirmed real name/family appear but the real candidate page layout is flush against top/navbar unlike approved Prototype V2. Found legacy route override `contentClassName="px-0 pt-navbar"` on `/recruitment/candidates/:candidateId` while `/system/candidate-prototype-v2` uses standard `WorkspaceLayout requireWorkspace`. React main commit `8adbeb62966fd0a071074ff6ceac68779d199af7` removes only the legacy contentClassName from the real candidate route; restores Phoenix default content gutters without changing card padding, chart, components, mock prototype, DB or API. Pending owner `git pull`, `npm run verify`, `npm run dev` and visual parity acceptance.
