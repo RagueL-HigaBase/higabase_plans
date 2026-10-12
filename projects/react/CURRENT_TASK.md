@@ -510,3 +510,12 @@ Status: **VERIFY** (owner local build/visual check pending).
 Owner requested a second separate Phoenix Stock Details Upcoming Events card immediately below existing white Resume System profile card, without the full attendee footer. React main commit `17d9f8053baf0985ecf2369f5855aa5526e81e1d` updates only `src/pages/system/CandidatePrototypeV2Resume.tsx`. The original `phoenix-react-reference/src/components/cards/UpcomingEventCard.tsx` is the source for Card/Row/Col/calendar, event heading + featured Badge, Feather clock/map, description, and two Phoenix buttons Interested/Going. Uses original Phoenix Stock mock strings and date (24 Mar, 2024), no candidate or API data. Intentionally omits the original `Avatar.Group`, '+604 people going' link, '1k people interested' footer, and `EventOffcanvas` to match owner-requested minimal card. Buttons remain visual/demo only. Existing Resume chart/categories/badges, sidebar, routes, and Dashboard unchanged. No new dependencies/CSS/backend changes.
 
 Owner verify via `git pull`, `npm run verify`, `npm run dev` and visual check that the second card is below the first, matches Phoenix, and attendee footer is absent. Do not mark DONE before owner confirms.
+
+
+## CANDIDATE-PROTOTYPE-V2-CONTACT-ROWS — 2026-10-12
+
+Status: **VERIFY** — owner local build and browser check pending.
+
+Owner selected only the *expanded detail table row presentation* from `phoenix-react-reference/src/components/cards/DealCard.tsx` on Phoenix CRM Deals, adapted to three contact fields: Email, Phone, WhatsApp. React `main` commit `9254b244936743ad4abb8332869395f6fa90c8db` adds a separate Phoenix `Card` beneath the stock event card in `src/pages/system/CandidatePrototypeV2Resume.tsx`. Each row reuses the reference `Table borderless size="sm"`, `td` layout, Feather 16px tertiary icon, semibold tertiary label, colon, and semibold emphasis value. Values are already-existing Candidate Dossier prototype mock contact data (`onpoll12@email.com` and `+11 123 456 7890`). No actual links or communication actions, API, persistence, new CSS, or dependencies. Existing Resume blocks remain unchanged.
+
+Owner checks `git pull`, `npm run verify`, `npm run dev`; verify the three rows and intended location. Not DONE until confirmed.
