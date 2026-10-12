@@ -526,3 +526,7 @@ Owner checks `git pull`, `npm run verify`, `npm run dev`; verify the three rows 
 Status: **VERIFY**, pending owner local build and visual acceptance.
 
 Owner clarified that the Email, Phone, WhatsApp rows from Phoenix CRM Deals must appear in the persistent left Social Profile card, below a single divider, **without adding an address**. React main commits `354c9140c5cfd94b2c5d1c1788b8d84ce898318c` and `f343e7a40147647ca8428a7a11ab392219705e2e`: added the existing 3-row `Table borderless size="sm"` with unchanged mock values below Followers/Following in `src/pages/system/CandidatePrototypeV2.tsx`, and removed the former standalone bottom contact Card from `src/pages/system/CandidatePrototypeV2Resume.tsx`. Left profile remains shared across Dashboard and Resume; no address, backend, CSS or dependencies added. Other Resume cards unchanged. Owner checks `git pull`, `npm run verify`, `npm run dev`; confirm fit at 25% width and both routes. Not DONE until verification.
+
+
+### Candidate Prototype V2 profile heading cleanup — 2026-10-12
+Status: **VERIFY**, owner build/visual check pending. React main commit `c5243b0b959d2627b1ff9c0d0eba55a0db41a03b` changes only `src/pages/system/CandidatePrototypeV2.tsx`: Phoenix name heading from `h3` to `h4`, removes demo `u/hansolo`, `1297 Followers` and `3971 Following` with their unused icons/imports. Existing divider, Email/Phone/WhatsApp rows, cover/avatar, routes and Resume untouched. No CSS or dependencies. Owner commands: `git pull`, `npm run verify`, `npm run dev`.
