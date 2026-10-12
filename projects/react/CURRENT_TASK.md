@@ -452,3 +452,14 @@ Status: **VERIFY** — local build and owner browser review pending.
 Owner requested an empty white Phoenix frame on the Resume child route only, as a placeholder for future block-by-block design. React `main` commit `62c4b81481e5d42bda62e527727dc85f1f36bddb` changes `src/Routes.tsx`: `/system/candidate-prototype-v2/resume` now renders an otherwise empty React-Bootstrap `Card` with the existing Bootstrap `min-vh-100` class, so that the white frame is visible. Dashboard remains an empty `div`. Sidebar/profile, routing, mock-data boundaries and all other pages unchanged. No new CSS, copy, charts, API, dependencies or backend work.
 
 Owner verification: `git pull`, `npm run verify`, `npm run dev`; inspect Resume for empty card and Dashboard for empty content. Do not mark DONE until owner acceptance.
+
+
+## CANDIDATE-PROTOTYPE-V2-RESUME-CHART-ISSUES — 2026-10-12
+
+Status: **VERIFY** — owner local `npm run verify` and visual checks outstanding.
+
+Owner-approved Resume white frame split into equal outer columns using Phoenix/Bootstrap `Row` and `Col xl={6}`. In the **left 50% only**, another two-column `Row` places the Phoenix CRM Dashboard `ContactsBySourceChart` donut on the left and the Phoenix Project Management `IssuesDiscovered` "Issue type" list on its right. The right outer 50% stays empty. Reference files: `phoenix-react-reference/src/components/charts/e-charts/ContactsBySourceChart.tsx`, `src/components/modules/crm/ContactsBySource.tsx` and `src/components/modules/project-management/dashboard/IssuesDiscovered.tsx`.
+
+React main commits `8289254c333a1ab872926b04beef19816fb3f9c0`, `ced372eaa85355433c6ba8cc00f816e6e9f47b6f`. New page `src/pages/system/CandidatePrototypeV2Resume.tsx` uses existing ECharts, Phoenix theme colors, original CRM demo sectors totaling 560, original Project Management Issue type mock rows (257). `src/Routes.tsx` points the Resume child route to this page. No invented copy, custom CSS, dependency, backend, real Candidate data, or Dashboard changes. The two source datasets intentionally represent separate demos, not synchronized metrics.
+
+Owner visual check should specifically inspect space constraints from nesting 50/50 columns inside the 75% page column, light/dark, and correct ring/list positioning. Owner commands: `git pull`, `npm run verify`, `npm run dev`. This is **not verified DONE**.
