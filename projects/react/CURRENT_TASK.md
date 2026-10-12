@@ -493,3 +493,7 @@ Pending owner `git pull`, `npm run verify`, `npm run dev` and browser review. No
 
 ### Resume V2 right heading divider — 2026-10-12
 Status: **VERIFY**. Owner requested the missing Phoenix divider below the right `System profile` heading/description. React main commit `f52b4202c72745ab09ff8245e4903185820f4572` adds the same existing `hr bg-body-secondary mb-2 mt-3` used on the left, adjusting only the preceding paragraph bottom margin. No badge, chart, layout, data, CSS or API changes. Owner `git pull`, `npm run verify`, `npm run dev` and visual check pending.
+
+
+### Resume V2 excess bottom spacing correction — 2026-10-12
+Status: **VERIFY**. Owner screenshot showed excessive empty space below the chart and badges. Root cause in code: right badge scroll viewport had forced `height: 245` after its heading, making the right column taller regardless of content. React main commit `c11c1a4b00b6b98161c128eda2f4c3b2c44425d9` replaces forced height with `maxHeight: 180` using the existing Phoenix/Bootstrap scroll container. The right panel now sizes to content up to the cap and scrolls beyond it; chart, two-column layout, interactions, and badges unchanged. Owner `git pull`, `npm run verify`, `npm run dev`, and visual check still pending.
