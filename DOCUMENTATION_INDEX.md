@@ -4,6 +4,8 @@ Updated: 2026-10-08. **This is the first document every new agent must read.**
 
 **Current tasks:** [TASKS.md](TASKS.md). **Project documentation:** [React](projects/react/) · [Express](projects/express/).
 
+**Deferred post-Candidate AI work:** [AI Usage, Dynamic Pricing & Billing Engine](docs/architecture/HIGA_AI_USAGE_PRICING_BILLING_ENGINE_2026-10-17.md) · [AI Orchestrator and Monitoring](docs/architecture/AI_ORCHESTRATOR_PROPOSAL_2026-10-17.md). Both are design proposals; not approved implementation or verified runtime.
+
 ## Mandatory reading order
 
 1. [Mandatory agent rules](AGENT_RULES.md): main-only, exact task scope and explicit architecture approval.
