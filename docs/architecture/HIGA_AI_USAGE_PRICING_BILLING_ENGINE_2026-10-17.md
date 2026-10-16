@@ -202,3 +202,126 @@ Index payer/time, actor/time, task/time, jobId and external provider call keys. 
 - System/finance owner can see platform commercial aggregates and scoped details; organization admin sees only their company; actor sees only their own consumption as allowed. Server enforces scope on each query/filter, not React alone.
 - Financial event keys and telemetry must not contain raw prompts, CV contents, media, credentials, health details or unnecessary personal data.
 
+
+## 12. System Admin — HIGA Intelligence Operations & Finance
+
+One admin experience, with clearly separated dimensions and actionable statuses. UI is only PROPOSED, not built.
+
+**Overview:** live active/queued jobs, worker utilization, API traffic RPS and MB/s, provider 429/5xx rate, input/output tokens/min, model/task/modality breakdown, rolling cost, customer revenue, contribution margin, estimated and unknown coverage.
+
+**Usage Explorer:** select last 60 seconds, 5 min, hour, day, month, or custom range; group by client/payer, actor user, domain application (Recruitment/Candidate/Messaging), named task, provider/model, data type and status. Show input/output/cached/reasoning without double counting. Include source job and call-level audit links, but no raw private media.
+
+**Client AI Pricing:** choose Client A/B, select exact AI task or category, see inherited/default coefficient, set client-specific x, effective date, status, quote examples and version history. Draft -> authorization/approval -> scheduled activation -> retirement. Require an explanation and immutable audit for price edits; test rule conflicts and inherited fallbacks.
+
+**Billing & Balances:** payer ledger, credit/load, usage charges, reserved funds, refunds/credits, transaction history, reconciliation and invoice-ready exports. Tenant admins can see only authorized views.
+
+**Jobs & Provider Calls:** technical execution timeline, retry/fallback, duration, output schema validation, job completion vs partial/unknown usage, detailed normalized units, upstream model and provider, expected vs actual job price, error classes.
+
+**Budgets & Alerts:** budget caps per account/actor/task, max spending per operation, approaching limit notifications, excessive retry/timeout warning, provider throttling, unusually expensive operation, reconciliation/price-rule misconfiguration, wallet exhaustion and backlog age.
+
+**Realtime transport:** initial REST snapshot plus authenticated server-sent events (SSE) for sanitized aggregates approximately every 2–5 seconds; safe reconnect and historical REST pagination; dedupe by event IDs, bound memory and connections. WebSockets only if a later feature actually needs bi-directional interaction.
+
+**Reporting principle:** never display a precise amount if usage/cost is ESTIMATED, PARTIAL or UNKNOWN. Display that status next to number, not buried in internal logs.
+
+**Phoenix design contract:** no UI accepted or route implemented now. Before visual work, create/link a dedicated Figma Design file for each actual AI Operations/Pricing page per existing States rules, keep visual/browser verification separate from source/test evidence. Status: FIGMA MISSING / NOT STARTED.
+
+## 13. Client-facing usage and commercial transparency
+
+An authorized user should be able to see:
+- which of their AI tasks ran and their usage units;
+- the customer-facing cost of each settled task (and any refund/correction);
+- account-level totals/available balance only with relevant finance permissions;
+- active pricing basis applicable to their accepted task or accessible agreement;
+- preflight estimate and max cost cap for potentially expensive operations;
+- reserved/processing/settled/refunded distinctions;
+- daily/monthly usage history and alerts before budget exhaustion.
+
+The platform does not have to reveal confidential upstream wholesale tariffs or other clients' x-coefficients. A task's retail amount must nevertheless be reproducible from its recorded accepted pricing agreement.
+
+## 14. Rate limits, scalability and abuse prevention
+
+Meter and control independently:
+1. Per actor/client/API route requests and network bytes.
+2. Per-client concurrent jobs, queued backlog, token/compute reservation and spending.
+3. Per-provider/model/project RPM, TPM, active in-flight calls and 429 retries.
+4. Per-task maximum API calls, output tokens, document pages/file size, image dimensions/count, audio/video duration and extraction sampling.
+5. Financial rate rule changes, wallet adjustments, payment retries and credit/refund operations.
+6. Fraud/anomaly warnings, emergency cost cutoff and low-balance controls.
+
+Queue fairness must prevent one client running 1,000 CV parses from starving other clients' interactive tasks. A single API key does not limit execution to one serial request; provider/project/model quotas still govern concurrency. External rate limits are not multiplied by creating extra API keys. Retry with bounded exponential backoff, preserve idempotency and stop after configured attempts. Never let model-selection fallback violate provider privacy or quote caps.
+
+## 15. Security, compliance, provider neutrality and privacy
+
+- API and payment secrets never appear in frontend code, queued job payloads or admin logs.
+- Role permissions differ for platform finance administrators, organization administrators, ordinary users and workers; price edits and refunds should require explicit auditing and possibly two-person approval.
+- The billing system is a payment/financial domain and must have access/retention controls independent from Candidate/Resume data. Store pseudonymous references rather than contents.
+- Production GDPR/DPA and provider data-handling checks required for personal CVs, photos, voice/video; decide purpose, consent/legal basis, retention, deletion/export, subprocessor location and access.
+- Financial record retention may have mandatory legal periods; specify approved limited retention/anonymization for technical usage vs invoices/tax.
+- VAT/tax rules, invoice issuance, payment provider, currency conversions, refunds and prepaid balances require separately reviewed accounting/legal policies.
+- Local/Ollama and future providers must expose typed normalized metering and auditable internal cost rates without changing client task contracts.
+- Monitor estimated vs final provider cost and reconcile against actual upstream invoices/usage endpoint where available.
+
+## 16. Acceptance and verification scenarios
+
+1. **100 concurrent users**, three organizations, mixed CV/chat/photo: correct attribution, bounded quotas, fair queuing, no cross-user data leakage.
+2. Same task submitted repeatedly with the same idempotency key results in exactly one authorized retail debit, even with concurrent workers.
+3. Company A has CV x5 and Video x10; Company B has CV x8; global defaults are applied only when no more specific active rule exists.
+4. Changing a multiplier during a running job does not change its accepted quote; new work uses the new effective rule.
+5. Cached input and reasoning output are recorded as subsets without token double counting.
+6. Tokens by completed minute reconcile to sum of known provider-call usage; missing provider responses are flagged UNKNOWN.
+7. One PDF produces file upload, extraction, two model calls and one final task; dashboard shows distinct network, job and AI usage categories.
+8. Failed model output/timeout with possible upstream charges does not create a fabricated user charge; internal costs remain visible.
+9. HIGA retry/fallback overhead is traceable but does not silently double-charge customer.
+10. Cancelled jobs and expired reservations release funds according to policy, with audit trail.
+11. Wallet simultaneous reservations/charges cannot overspend, go negative without approved credit, or post unbalanced ledger entries.
+12. Old tariffs, tax/FX rates and price snapshots reproduce historical charges; refund uses new correction entry rather than mutating charges.
+13. Global Candidate data accessed by two separately authorized companies: one payer does not acquire Candidate ownership or access to other agency's activity.
+14. Organization A cannot retrieve Organization B usage, user detail, pricing, wallet or statement via direct API or manipulated query.
+15. Audio/image/video bill by provider-native units rather than invented universal tokens; local GPU billed only with an approved rate basis.
+16. SSE disconnect/reconnect and aggregate rollups do not double-count; historical exports match source ledger and are access-scoped.
+17. System owner sees actual wholesale versus retail versus contribution margin, with explicit known/estimated/unknown coverage.
+18. No production DONE status without schema migration parity, automated tests, local backend/frontend verification, browser acceptance and security checks.
+
+## 17. Post-Candidate delivery plan — separate approvals
+
+**Gate 0 — NOW / DOCUMENTATION ONLY:** preserve accepted product decisions here. No implementation, DB migration, routes, frontend, queue installation, balance creation or charge processing. Candidate completion remains the only active priority.
+
+**Block A — Typed AI usage taxonomy:** versioned task and modality units, provider adapter capture, actor/payer/job correlation, sanitized trace IDs, known/estimated/unknown statuses. Validate existing CV task parity and privacy. No billing.
+
+**Block B — Durable technical Usage/Cost Ledger:** approved Prisma models, usage persistence, immutable provider rates, minute/task/user/client totals and provider reconciliation. No charges yet.
+
+**Block C — Orchestrator admission and workers:** durable jobs/outbox, Redis/BullMQ on separate workers, quota/multitenant fairness, idempotency, bounded retries, event delivery, spend authorization hook. Prove against a single approved real task before broader adoption.
+
+**Block D — Client-task Pricing Engine:** exact rule precedence, x per client/task, tariff versions, preview and immutable quote with cap, automated money math/unit tests, authorization/audit. No payment until approved.
+
+**Block E — Financial settlement:** payer accounts, spend reservations, prepaid or approved postpaid mode, append-only ledger, one-time debits, credits/refunds, reconciliation, defined chargeable outcome. Payment/invoice/tax only after separate signoff.
+
+**Block F — Admin and client analytics:** Phoenix AI Operations dashboard, usage explorer, client pricing editor, finances, budgets and SSE; page-specific Figma and user/browser acceptance.
+
+**Block G — Multimodal expansion and scaling:** photos/scans -> image editing/generation -> audio -> video; per-modality charging, data protection and separate workers, benchmarked cost/performance.
+
+For EACH implementation block: inspect current main/source/central state docs, propose exact affected files and schema effects, obtain owner approval, modify only main, update central CURRENT_TASK.md and domain MD in the same block, run evidence-based VERIFY and wait for owner acceptance before DONE. Never silently begin Block A just because this plan exists.
+
+## 18. Open technical and product decisions at start of implementation
+
+- What exact Candidate checkpoint must be considered finished before switching priority?
+- Billable cost basis: measured provider variable expense alone, or landed variable costs? Local GPU transfer-price accounting?
+- EUR wallet or optional HIGA Credits; prepaid versus approved organization credit line; PSP/invoicing integration?
+- Final currency/FX, decimal precision and microcharge accumulation/rounding rules?
+- Client-visible disclosure of x versus retail price only? Contract confidentiality and price changes?
+- Supported permitted coefficient range and who can publish/edit/approve rules?
+- How to calculate mandatory conservative quote/cap for recursive agent tasks?
+- Default charge/refund when partial output exists or the model fails strict schema validation?
+- Exact tax/VAT and invoice rules by operating jurisdiction?
+- Scope and permission policy for System Admin finance, organization finance and ordinary users?
+- GDPR retention, provider DPA and privacy rules for private media and usage events?
+- Alert thresholds, first multimodal tasks, route names, Figma pages, storage and provider selection?
+
+These are **open decisions**, not invitations to implement or assume product defaults.
+
+## 19. Final principle and scope record
+
+Every AI operation should be traceable through **actor -> authorized payer -> job/task -> provider usage and rate -> cost -> client-specific x -> immutable retail charge -> authorized balance/statement**.
+
+User expressly requested on 2026-10-17 that this idea be recorded end-to-end in MD and that the pricing engine be implemented **after Candidates**. Product direction agreed; technical details remain PROPOSED until individual gates. Existing Candidate, ESCO, organization and core app code, database and runtime were not modified by this documentation operation.
+
