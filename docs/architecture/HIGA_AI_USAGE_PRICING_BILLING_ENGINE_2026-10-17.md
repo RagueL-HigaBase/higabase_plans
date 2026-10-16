@@ -81,7 +81,7 @@ Initial deployment strategy: **modular monolith** in existing Express and Postgr
 
 **Illustrative formula (final cost basis, tax and rounding require review):**
 
-    BaseCostEUR(job) = SUM(eligible provider/compute unit costs x frozen unit rates x FX)
+    BaseCostEUR(job) = SUM(eligible measured unit quantity x frozen unit rate x FX conversion)
     RetailNetEUR(job) = BaseCostEUR(job) x EffectiveMultiplier(payer, task, date)
     RetailGrossEUR = RetailNetEUR + applicable VAT/tax
     PayableEUR = eligible gross amount after disclosed discounts/credits, rounded at settlement
