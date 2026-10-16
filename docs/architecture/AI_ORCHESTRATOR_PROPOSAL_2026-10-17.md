@@ -7,6 +7,8 @@ Scope: multimodal AI execution, traffic admission/quotas, durable queues, live o
 Authority: subordinate to AI_CORE.md, SYSTEM_ARCHITECTURE.md, CANDIDATE_ARCHITECTURE.md, AGENT_RULES.md and explicit owner decisions.
 This document is a DESIGN PROPOSAL only. No approval for dependencies, DB migrations, routes, UI, service extraction, privacy/authorization changes, provider integration, or rewriting Candidate/ESCO.
 
+**Commercial/metrology companion (2026-10-17):** [HIGA AI Usage, Dynamic Pricing & Billing Engine](HIGA_AI_USAGE_PRICING_BILLING_ENGINE_2026-10-17.md) records owner direction for actual usage-based charging, payer/actor attribution, x per client and task, finance ledgers, monitoring and deferred implementation after Candidate. Commercial agreement does not approve the proposed schema/queues/UI.
+
 ## 1. Goal and non-goals
 
 Provide an operational foundation for many concurrent users to execute named AI tasks across text, CV/PDF/DOCX, photos/scans, future audio/video, and structured data. An administrator must see real-time, privacy-safe traffic breakdowns, throughput, queued work, usage and estimated costs, provider failures, and service health.
