@@ -1,9 +1,23 @@
 # HigaBase Financial Policy
 
-Status: DRAFT / planning note  
-Last reviewed: 2026-10-06
+Status: DRAFT / **AI metered pricing business direction owner-confirmed; technical implementation deferred**  
+Last reviewed: 2026-10-17
 
 This note records the current pricing direction for HigaBase. It is not a final public price list.
+
+## 2026-10-17 owner decision — metered AI billing and client/task-specific pricing
+
+**This section supersedes conflicting older AI examples in this document.** The complete specification is [HIGA AI Usage, Dynamic Pricing & Billing Engine](docs/architecture/HIGA_AI_USAGE_PRICING_BILLING_ENGINE_2026-10-17.md); see also [AI Orchestrator](docs/architecture/AI_ORCHESTRATOR_PROPOSAL_2026-10-17.md).
+
+- Billable AI use must be measured and financially attributable to the initiating actor and authorized payer (organization/client account or later an individual account). Ordinary non-AI functionality remains part of the commercial platform model.
+- **Customer retail price is driven by actual eligible metered units and an effective configurable multiplier for that client AND that task**. Example multipliers x5 and x10 are not global fixed rates. Pricing resolution, cost basis, effective dating and tax are versioned; precise technical details remain proposals pending approval.
+- A single job can use many provider/model calls; text tokens, cached/reasoning subsets, photos, generated images, audio, video and storage/egress are **not interchangeable billing units**. Never double count tokens or invent exact amounts when upstream usage is missing.
+- Two ledgers: technical consumption/wholesale cost and customer-facing charges/balances; allow user, organization, task, provider, model, modality and minute-level reporting with explicit observed/estimated/unknown states.
+- Spending must be bounded and authorized; proposed wallet reservations are settled idempotently and releases/refunds are audited. HIGA internal retries should not silently double-charge clients.
+- **Previous fixed-per-CV charge and automatically included AI allowance are superseded as the default pricing model.** A trial/promotional allowance requires an explicit separately funded policy. Internal HIGA Credits are optional payment denomination, not a substitute for actual usage accounting.
+- Coefficients and commercial prices are configurable by authorized System Admin roles with versioned audit history; customer-facing reporting reveals their own costs and limits, not other clients' agreements.
+- **Implementation is deferred until Candidate architecture/work is completed**. This is a design/commercial-direction record, not authorization for database, payments, source code or UI changes.
+
 
 ## Core direction
 
@@ -56,7 +70,7 @@ Primary examples:
 - AI generation/analysis;
 - future automation whose cost scales directly with usage.
 
-The subscription may include a reasonable allowance. Additional capacity can be purchased after that allowance is used.
+**Updated AI direction (2026-10-17):** paid AI is metered by eligible measured usage. An explicit funded trial or promotional allowance is optional, not an assumed included unlimited/fixed allowance. Additional capacity may be prepaid or invoiced under a separately approved policy.
 
 ## Internal credits / units
 
@@ -66,7 +80,7 @@ This is a Higa billing unit, not an OpenAI token.
 
 Concept:
 
-EUR payment -> Higa balance -> eligible metered operations consume fixed Higa units
+EUR payment -> Higa balance -> eligible measured AI consumption is priced using the effective client-and-task coefficient and settled to the payer account
 
 The customer should see stable Higa pricing even if Higa changes AI provider/model internally.
 
@@ -75,9 +89,9 @@ The customer should see stable Higa pricing even if Higa changes AI provider/mod
 CV parsing is a primary metered case because cost scales with the number of documents processed.
 
 Direction:
-- include a reasonable allowance with the relevant subscription;
-- consume a fixed Higa amount per successfully processed CV;
-- allow additional capacity to be purchased;
+- meter the eligible provider/compute consumption of each CV processing job;
+- use the active individual client + CV parsing task coefficient to calculate retail cost;
+- allow explicitly funded trial promotions or additional capacity under agreed terms;
 - internal retries/model escalation are Higa's responsibility and should not double-charge the customer;
 - no silent negative balance;
 - exact limits and prices are decided later from real benchmark data.
@@ -116,9 +130,9 @@ This internal cost data is separate from customer-facing pricing.
 ## Commercial structure
 
 Base subscription
-+ optional fixed-price modules
-+ included AI/automation allowance
-+ optional additional Higa credits/capacity
++ optional fixed-price non-AI modules
++ measured AI consumption at client/task-specific tariffs
++ optional explicit funded trial allowance and/or Higa credits/capacity
 + recurring integration subscriptions
 + clearly separated third-party variable spend
 
@@ -128,8 +142,8 @@ Still to be decided:
 - final name of the internal unit;
 - EUR-to-unit conversion;
 - base subscription price;
-- included CV allowance;
-- CV parsing unit price;
+- whether an explicitly funded promotional AI allowance exists;
+- billable cost basis and per-task maximum authorized spend;
 - vacancy promotion model;
 - module prices;
 - integration price bands;
