@@ -101,3 +101,104 @@ Example **only** (not observed model pricing): CV parsing cost EUR 0.01000, Comp
 
 The customer must see an estimate or maximum spending authorization **before** an unbounded operation. Model changes or multi-call agents cannot secretly exceed the accepted spending cap. A new coefficient never changes a previous job's accepted pricing.
 
+
+## 6. Multimodal usage units and measurement accuracy
+
+| Modality | Observed technical units | Notes |
+|---|---|---|
+| Text and chat | input tokens, output tokens, optional cached and reasoning subcounts | cached is included within input; reasoning is included within output; never add twice |
+| CV/PDF/DOCX | file bytes/pages + tokens/usage of each AI call | uploading a PDF is not itself a known token count |
+| Photo/image inspection | dimensions, detail settings, image tokens or provider-native units | rate and usage depend on model and resolution |
+| Image generation/edit | generated count, size, quality, model-specific charged units | may not be token-denominated |
+| Audio transcription/analysis | input duration, transcript tokens and provider-native audio units | distinguish transcription from subsequent reasoning |
+| Audio generation | generated duration or provider-native audio units | separate from input audio |
+| Video | video duration, extracted frames, audio tracks, model-native units | frame sampling, multiple models and preprocessing vary widely |
+| Structured input | data size and model input/output usage | model usage measured separately from traffic |
+| Local inference | available token counts + audited CPU/GPU time/utilization | requires an internal transfer-price rate; no fictional provider invoice |
+
+Capture each provider request/step's actual usage where returned, along with model/provider, rate version, relevant source artifact ID, tenant/user attribution, duration, retry index, exact/estimated/unknown status. Avoid storing full sensitive payloads in the ledger.
+
+**Real-time minute metric:** distinguish (a) tokens attributable to provider calls **completed in that minute**, (b) estimated tokens of active calls and quota reservations, and (c) actual provider RPM/TPM caps. Aggregated completed-minute token totals are exact *for captured calls with provider-reported usage*, but not literal per-second emission and not automatically equal to upstream billing. Track missing responses and a completeness percentage.
+
+**Per-task cost:** sum all observed underlying calls and other approved cost units. A job's one user action can produce multiple model requests and technical steps. Network bandwidth, storage and provider computation are different expenses; adding byte/egress fees to customer billing requires a separately published client tariff.
+
+## 7. Rate catalog, cost accounting and margin
+
+Proposed cost/rate record includes provider, model, usage unit, unit rate DECIMAL, currency, plan/quality/cache/batch variant, validFrom/To, reviewedBy, source provenance and provider pricing version. Freeze a rate snapshot per event and store FX quote/source/time where applicable. Never backdate changes to settled charges.
+
+Keep three figures distinct:
+1. **Metered wholesale cost**: price of observed external provider usage or audited internal compute units.
+2. **Retail customer revenue**: retail job price under frozen client + task x, separate net/tax/gross.
+3. **Actual contribution margin**: revenue minus provider spend and other tracked variable costs, with separately disclosed infrastructure overhead.
+
+Recommended initial cost basis: multiply **provider measured variable charges only** for cloud workloads, but expose extra infra/media expenses in admin margin. Whether an expanded landed cost is multiplied is **not decided**. For self-hosted models, adopt a reviewed compute-cost basis before selling usage; zero cloud spend does not mean zero AI cost.
+
+Maintain wholesale cost for failed calls and HIGA retries independently from customer-billable usage, and reconcile periodic platform totals with provider billing. Difference may be due to unknown responses, discounts, provider fees, billing periods, or FX.
+
+## 8. Financial ledger, balances and settlement
+
+**Two separately audited records:**
+- **AI Usage/Cost Ledger:** call/step, user, authorized payer, task, reported units, provider/model, cost rate version, estimation/reconciliation status and infrastructure attribution.
+- **Customer Billing Ledger:** accepted quote, active client pricing rule, reserve, release, charge, tax, credits/refunds, payment and invoice links.
+
+Proposed prepaid workflow:
+1. Validate actor, domain access, billable account authorization, named task and enabled rule.
+2. Calculate conservative quote/max spend (output/media bounds). Show to client as required by agreement.
+3. Atomically reserve the authorized amount on that payer's wallet/budget and enforce concurrency/budget limits.
+4. Execute bounded job; collect provider-native usage and validate the resulting domain draft.
+5. Settle once using immutable retail price snapshot; release unused hold. No unauthorized negative balance.
+6. If user cancels or HIGA/provider fails, follow published failure/partial-result policy; issue correcting ledger entries rather than deleting transactions.
+7. Export invoice/statement as required, with separate VAT/tax and source operation references.
+
+Alternative enterprise postpaid invoices/credit lines are possible, but need approved credit limits and collection/invoicing rules. Client tokens should not be bank transactions: aggregate micro-consumption in internal precise EUR balances (or optionally explicit HIGA Credits). Final money/tax amount rounding must be deterministic; do not round every sub-cent model call up to €0.01. Use high-precision decimals or integer subunits; NEVER binary floating-point as accounting authority.
+
+Use append-only journal transactions or balanced accounting postings with unique charge IDs. Strong idempotency on reserve, settle, release, payment, refund and manual adjustments. Never modify settled history when tariffs change. Any manual correction needs reason, authorized actor and immutable audit trail.
+
+**Not yet resolved:** EUR wallet versus HIGA Credits; payment provider; tax jurisdiction; refunds and partial-results charge policy; thresholds for user confirmation; prepaid-only vs enterprise credit; treatment of explicitly funded promotional allowances.
+
+## 9. Failures, retries and customer fairness
+
+| Event | HIGA technical ledger | Customer billing proposal |
+|---|---|---|
+| Successful completed task | Record every eligible measured provider call | Settle usage at accepted price, under approved max |
+| Invalid/unauthorized task before provider | Record rejected attempt; no provider usage | No charge, release hold |
+| Internal HIGA retry/fallback | Record real extra technical cost | Do not double-charge invisible retries |
+| Provider rate limit 429 | Record error/retry | No invented usage; wait/backoff as allowed |
+| Provider timeout, unknown upstream usage | UNKNOWN or pending reconciliation | No guessed final charge |
+| User cancels before dispatch | No provider call | Release reservation |
+| User cancels during processing | Preserve partial measured calls | Follow separately agreed disclosed policy |
+| Failed strict output validation/unusable result | Technical cost remains visible | Default recommendation: do not charge for unusable result |
+| User voluntarily submits a new paid task | New independent quote and job | Separately bill if approved |
+| Duplicate HTTP submit with same idempotency key | Reuse existing job | Never debit twice |
+
+External provider may charge for a timed-out call, so **exactly-once API provider billing is not guaranteed**. HIGA financial settlement can and must be idempotent. Unknown quantities are neither zero nor precise billing evidence. Customer disputes/credits require scoped review and reason.
+
+## 10. Proposed technical schema, NOT Prisma migrations
+
+Integrate with Orchestrator's AiJob, AiJobStep, AiProviderCall and AiOutbox; do not create duplicate business Candidate or Organization tables.
+
+| Candidate model | Key attributes / responsibility |
+|---|---|
+| AiUsageMeterEvent | jobId, callId/stepId, actorId, payerId, task, time, modality, unit, quantity DECIMAL, source accuracy, dedupe key |
+| AiWholesaleRateVersion | provider/model/unit/currency/rate, applicability, effective dates, pricing provenance |
+| AiCostAllocation | meterEvent, rate snapshot, FX, baseCost, known/estimated/unknown, reconciliation |
+| AiBillingAccount | payer type/id, currency, billing mode, status, budget policy |
+| AiClientPricingRule | payer/category/task/version selector, multiplier DECIMAL, effective period, author/approver, state |
+| AiPriceQuoteSnapshot | accepted job/payer/task, resolved rule/version/x, wholesale cost basis, approved cap, currency/tax/FX |
+| AiSpendReservation | payer/job/quote, amount, status, expiry, hold/release reference |
+| AiCustomerCharge | unique job settlement, net/tax/gross, job/call attribution, price snapshot, status |
+| AiFinancialEntry | append-only balanced debit/credit/refund/payment/correction event, reason and actor |
+| AiBillingAuditEvent | old/new rule versions, who/why/when, permission scope |
+| AiUsageAggregate | rebuildable minute/hour/day scoped rollups, provider/job/user/client/modality/task, coverage flags |
+
+Index payer/time, actor/time, task/time, jobId and external provider call keys. Unique idempotency constraints for single job settlement and meter event ingestion. Use PostgreSQL transactions to protect wallet/ledger invariants; coordinate with Redis/outbox for distributed execution but do not treat queue insertion as a DB transaction.
+
+## 11. Client and actor authorization boundaries
+
+- Each authenticated AI submission must resolve a **payer** with spend rights. User account is not necessarily a wallet. Organization employees can share the corporate payer while retaining individual usage attribution.
+- A candidate/mobile identity is not the same entity as SystemUser. Any future candidate billing identity needs separate approved mapping; never merge accounts implicitly.
+- Existing SystemUser organization membership limits remain authoritative; AI billing never grants or changes Organization membership.
+- Global Candidate may be accessible to no organization or multiple authorized agencies. A technical payer association **does not grant or imply candidate ownership, consent, read, modify or share permission**.
+- System/finance owner can see platform commercial aggregates and scoped details; organization admin sees only their company; actor sees only their own consumption as allowed. Server enforces scope on each query/filter, not React alone.
+- Financial event keys and telemetry must not contain raw prompts, CV contents, media, credentials, health details or unnecessary personal data.
+
